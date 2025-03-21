@@ -36,7 +36,7 @@ const Navbar = () => {
   return <header className={cn("fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 px-6", isScrolled ? "bg-black/30 backdrop-blur-xl border-b border-white/10" : "bg-transparent")}>
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <a href="#home" className="text-2xl font-bold text-white hover:text-primary/90 transition-colors duration-300 flex items-center">
-          <span className="bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent text-right my-0 mx-[50px] py-[5px] text-base font-light">R.A.N</span>
+          <span className="bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent text-right my-0 mx-[50px] py-[5px] font-light text-2xl">R.A.N</span>
           <span className="ml-1 text-xs text-white/50 font-mono mt-1">
         </span>
         </a>
