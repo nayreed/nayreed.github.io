@@ -48,6 +48,11 @@
 
   body {
     @apply bg-black text-foreground font-sans selection:bg-primary/20;
+    cursor: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSI5IiBzdHJva2U9IiMzQjgyRjYiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg=="), auto;
+  }
+  
+  a, button, [role="button"] {
+    cursor: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIxMCIgZmlsbD0iIzNCODJGNiIgZmlsbC1vcGFjaXR5PSIwLjMiLz48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSI5IiBzdHJva2U9IiMzQjgyRjYiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg=="), pointer;
   }
 }
 
@@ -114,5 +119,58 @@
     0% { border-image-source: linear-gradient(0deg, rgba(59, 130, 246, 0.3), rgba(239, 68, 68, 0.3)); }
     50% { border-image-source: linear-gradient(180deg, rgba(59, 130, 246, 0.3), rgba(239, 68, 68, 0.3)); }
     100% { border-image-source: linear-gradient(360deg, rgba(59, 130, 246, 0.3), rgba(239, 68, 68, 0.3)); }
+  }
+  
+  /* New futuristic animations and effects */
+  .star {
+    animation: star-twinkle 3s infinite ease-in-out;
+  }
+  
+  @keyframes star-twinkle {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 0.2; }
+  }
+  
+  .typing-effect::after {
+    content: '|';
+    animation: blink 1s infinite step-end;
+  }
+  
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.4);
+    transform: scale(0);
+    animation: ripple-effect 0.6s linear;
+  }
+  
+  @keyframes ripple-effect {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+  
+  .scan-line {
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background: rgba(59, 130, 246, 0.2);
+    z-index: 10;
+    animation: scan 5s linear infinite;
+  }
+  
+  @keyframes scan {
+    0% {
+      top: 0%;
+    }
+    100% {
+      top: 100%;
+    }
   }
 }

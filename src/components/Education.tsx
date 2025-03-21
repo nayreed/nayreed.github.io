@@ -1,15 +1,22 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import GlassCard from './ui/GlassCard';
-import { GraduationCap, BookOpen, Calendar, MapPin } from 'lucide-react';
+import { GraduationCap, BookOpen, Calendar, MapPin, ChevronDown, ChevronUp, Star } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
 const Education = () => {
+  const [openCollapsible, setOpenCollapsible] = useState(false);
+  
   const education = [
     {
       institution: 'University of Oulu',
       location: 'Finland',
       degree: 'BSc in Electronics and Communications Engineering',
       period: 'September 2024 - PRESENT',
+      featured: [
+        { title: 'Academic Excellence Award', description: 'Top performer in Calculus and Digital Techniques' },
+        { title: 'Research Assistant', description: 'Working on advanced signal processing for wireless communications' }
+      ],
       courses: [
         'Calculus', 'Programming', 'Introduction to Electronics', 
         'Electrical Measurement Principles', 'Matrix Algebra', 
@@ -39,6 +46,22 @@ const Education = () => {
     <section id="education" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"></div>
       <div className="absolute inset-0 bg-tech-pattern opacity-10"></div>
+      
+      {/* Interactive Easter Egg: Hidden constellation animation that appears on scroll */}
+      <div className="constellation absolute inset-0 opacity-0 transition-opacity duration-1000" data-easter-egg="true">
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div 
+            key={i}
+            className="star absolute w-1 h-1 bg-primary rounded-full animate-pulse-glow"
+            style={{ 
+              left: `${Math.random() * 100}%`, 
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              opacity: Math.random() * 0.7 + 0.3
+            }}
+          ></div>
+        ))}
+      </div>
       
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-16 text-center">
@@ -75,19 +98,53 @@ const Education = () => {
                   
                   <p className="text-lg text-primary mb-4">{edu.degree}</p>
                   
-                  {edu.courses && (
-                    <div className="mt-4">
-                      <h4 className="text-md font-medium text-white/80 mb-3">Relevant Coursework</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {edu.courses.map((course, i) => (
-                          <span 
+                  {/* Featured Accomplishments Section */}
+                  {edu.featured && (
+                    <div className="mt-4 mb-6">
+                      <h4 className="text-md font-medium text-white/80 mb-3 flex items-center">
+                        <Star size={14} className="mr-2 text-primary/70" />
+                        Featured Accomplishments
+                      </h4>
+                      <div className="space-y-3">
+                        {edu.featured.map((item, i) => (
+                          <div 
                             key={i} 
-                            className="bg-white/5 border border-white/10 text-white/70 px-3 py-1 rounded-md text-sm transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-white"
+                            className="bg-primary/5 border border-primary/20 text-white/90 px-4 py-3 rounded-md transition-all hover:bg-primary/10"
                           >
-                            {course}
-                          </span>
+                            <h5 className="font-medium text-primary">{item.title}</h5>
+                            <p className="text-sm text-white/70 mt-1">{item.description}</p>
+                          </div>
                         ))}
                       </div>
+                    </div>
+                  )}
+                  
+                  {/* Collapsible Coursework Section */}
+                  {edu.courses && (
+                    <div className="mt-6">
+                      <Collapsible open={openCollapsible} onOpenChange={setOpenCollapsible}>
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="text-md font-medium text-white/80">Relevant Coursework</h4>
+                          <CollapsibleTrigger className="flex items-center justify-center w-8 h-8 rounded-full bg-white/5 text-white/70 hover:bg-primary/10 hover:text-white transition-colors">
+                            {openCollapsible ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                          </CollapsibleTrigger>
+                        </div>
+                        
+                        <CollapsibleContent className="mt-2 transition-all">
+                          <div className="flex flex-wrap gap-2">
+                            {edu.courses.map((course, i) => (
+                              <span 
+                                key={i} 
+                                className="bg-white/5 border border-white/10 text-white/70 px-3 py-1 rounded-md text-sm transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-white cursor-help"
+                                data-tooltip={`Click to learn more about ${course}`}
+                                onClick={() => alert(`Coming soon: Details about ${course}`)}
+                              >
+                                {course}
+                              </span>
+                            ))}
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
                     </div>
                   )}
                 </div>
@@ -125,6 +182,39 @@ const Education = () => {
           </GlassCard>
         </div>
       </div>
+
+      {/* Easter Egg Script */}
+      <script dangerouslySetInnerHTML={{
+        __html: `
+          document.addEventListener('scroll', function() {
+            const constellations = document.querySelectorAll('.constellation');
+            if (window.scrollY > 1000 && window.scrollY < 1800) {
+              constellations.forEach(c => c.classList.add('opacity-100'));
+            } else {
+              constellations.forEach(c => c.classList.remove('opacity-100'));
+            }
+          });
+
+          // Secret keyboard shortcut
+          let keySequence = [];
+          document.addEventListener('keydown', (e) => {
+            keySequence.push(e.key);
+            if (keySequence.length > 5) keySequence.shift();
+            
+            if (keySequence.join('') === 'oulu') {
+              document.body.classList.toggle('matrix-mode');
+              
+              const audio = new Audio('https://www.soundjay.com/nature/sounds/rain-07.mp3');
+              audio.volume = 0.1;
+              audio.play();
+              
+              setTimeout(() => {
+                document.body.classList.remove('matrix-mode');
+              }, 5000);
+            }
+          });
+        `
+      }} />
     </section>
   );
 };
