@@ -6,6 +6,13 @@ import { Code, ExternalLink, Github, Layers } from 'lucide-react';
 const Projects = () => {
   const projects = [
     {
+      title: 'Spectrum Analyzer 1.0',
+      description: 'Python Data Visualization Project',
+      details: 'A graphical tool for analyzing and visualizing spectral data, offering features like background removal, intensity calculation, and interactive plotting.',
+      tags: ["Python", "Data Visualization", "Spectral Analysis"],
+      link: null
+    },
+    {
       title: 'Minesweeper',
       description: 'Python Game Project',
       details: 'A classic Minesweeper game implementation using Python, featuring customizable difficulty levels and an intuitive user interface.',
@@ -17,7 +24,7 @@ const Projects = () => {
       description: 'Interactive Lottery Simulation Tool',
       details: 'A statistical tool that simulates lottery drawings and calculates probabilities of winning different prize tiers.',
       tags: ['Python', 'Statistics', 'Data Visualization'],
-      link: 'https://github.com/nayreed'
+      link: 'https://colab.research.google.com/drive/1Jlsu8hlgZTQ5yB4bv8W5YdJR91x-v0Uz?usp=sharing#scrollTo=KR205SBD_oD7'
     }
   ];
 
@@ -25,7 +32,7 @@ const Projects = () => {
     <section id="projects" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"></div>
       <div className="absolute inset-0 bg-grid opacity-10"></div>
-      
+
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-16 text-center">
           <div className="inline-flex items-center py-1 px-3 rounded-full bg-white/5 border border-white/10 text-sm text-white/70 font-medium mb-4 backdrop-blur-sm">
@@ -37,8 +44,8 @@ const Projects = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {projects.map((project, index) => (
-            <GlassCard 
-              key={index} 
+            <GlassCard
+              key={index}
               className="p-8 flex flex-col h-full border border-white/5"
               variant={index % 2 === 0 ? 'neon' : 'default'}
               hoverEffect
@@ -50,27 +57,27 @@ const Projects = () => {
                 <h3 className="text-xl font-bold text-white">{project.title}</h3>
                 <p className="text-white/50 text-sm mt-1">{project.description}</p>
               </div>
-              
+
               <p className="text-white/70 flex-grow mb-6">
                 {project.details}
               </p>
-              
+
               <div className="mt-auto">
                 <div className="flex flex-wrap gap-2 mb-6">
                   {project.tags.map((tag, i) => (
-                    <span 
-                      key={i} 
+                    <span
+                      key={i}
                       className="bg-white/5 border border-white/10 text-white/60 px-3 py-1 rounded-md text-xs"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
-                
+
                 {project.link ? (
-                  <a 
-                    href={project.link} 
-                    target="_blank" 
+                  <a
+                    href={project.link}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-primary hover:text-primary/80 transition-colors gap-1 text-sm group"
                   >
