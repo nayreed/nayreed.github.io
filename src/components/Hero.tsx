@@ -95,7 +95,7 @@ const Hero = () => {
 
           <div>
             <AnimatedText text="Rezwan Ahmad" tag="h1" className="text-5xl md:text-7xl font-bold tracking-tight text-white" delay={0.5} animation="blur-in" />
-            <AnimatedText text="Nayreed" tag="h1" className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-grey" delay={1} animation="blur-in" />
+            <AnimatedText text="Nayreed" tag="h1" className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent" delay={1} animation="blur-in" />
           </div>
 
           <p className={`text-lg md:text-xl text-white/70 max-w-2xl transition-all duration-1000 delay-[1500ms] ${isVisible ? 'opacity-100' : 'opacity-0 translate-y-8'}`}>
