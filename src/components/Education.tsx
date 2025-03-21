@@ -14,14 +14,14 @@ const Education = () => {
       degree: 'B.Sc (Technology) in Electronics and Communications Engineering',
       period: 'August 2024 - PRESENT',
       featured: [
-        { title: 'Academic Excellence Award', description: 'Top performer in Calculus and Digital Techniques' },
-        { title: 'Research Assistant', description: 'Working on advanced signal processing for wireless communications' }
+        { title: 'Artificial Intelligence', description: "Highly interested in AI and Machine Learning" },
+        { title: 'C++ Programming', description: "Proficient in C++ programming language" },
       ],
       courses: [
-        'Calculus', 'Programming', 'Introduction to Electronics',
-        'Electrical Measurement Principles', 'Matrix Algebra',
-        'Artificial Intelligence', 'Probability and Mathematical Statistics',
-        'Digital Techniques 1'
+        'Calculus I', 'Elementry Programming', 'Introduction to Electronics',
+        'Electrical Measurement Principles', 'Matrix Algebra', 'Calculus II',
+        'Digital Techniques 1', 'Differential Equations', 'Introduction to Internet',
+        'Probability and Mathematical Statistics'
       ]
     },
     {
@@ -100,39 +100,51 @@ const Education = () => {
 
                   {/* Featured Accomplishments Section */}
                   {edu.featured && (
-                    <div className="mt-4 mb-6">
-                      <h4 className="text-md font-medium text-white/80 mb-3 flex items-center">
-                        <Star size={14} className="mr-2 text-primary/70" />
-                        Featured Accomplishments
-                      </h4>
-                      <div className="space-y-3">
-                        {edu.featured.map((item, i) => (
-                          <div
-                            key={i}
-                            className="bg-primary/5 border border-primary/20 text-white/90 px-4 py-3 rounded-md transition-all hover:bg-primary/10"
-                          >
-                            <h5 className="font-medium text-primary">{item.title}</h5>
-                            <p className="text-sm text-white/70 mt-1">{item.description}</p>
-                          </div>
-                        ))}
-                      </div>
+                  <div className="mt-4 mb-6">
+                    <h4 className="text-md font-medium text-white/80 mb-3 flex items-center">
+                      <Star size={14} className="mr-2 text-primary/70" />
+                      Featured
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {edu.featured.map((item, i) => (
+                        <div
+                          key={i}
+                          className="bg-primary/5 border border-primary/20 text-white/90 p-3 rounded-md transition-all hover:bg-primary/10"
+                        >
+                          <h5 className="font-medium text-primary">{item.title}</h5>
+                          <p className="text-sm text-white/70 mt-1">{item.description}</p>
+                        </div>
+                      ))}
                     </div>
-                  )}
+                  </div>
+                )}
 
                   {/* Collapsible Coursework Section */}
                   {edu.courses && (
-                    <div className="mt-6">
-                      <Collapsible open={openCollapsible} onOpenChange={setOpenCollapsible}>
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="text-md font-medium text-white/80">Relevant Coursework</h4>
-                          <CollapsibleTrigger className="flex items-center justify-center w-8 h-8 rounded-full bg-white/5 text-white/70 hover:bg-primary/10 hover:text-white transition-colors">
-                            {openCollapsible ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                          </CollapsibleTrigger>
-                        </div>
+                      <div className="mt-6">
+                        <Collapsible open={openCollapsible} onOpenChange={setOpenCollapsible}>
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="text-md font-medium text-white/80">Relevant Coursework</h4>
+                            <CollapsibleTrigger className="flex items-center justify-center w-8 h-8 rounded-full bg-white/5 text-white/70 hover:bg-primary/10 hover:text-white transition-colors">
+                              {openCollapsible ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                            </CollapsibleTrigger>
+                          </div>
 
-                        <CollapsibleContent className="mt-2 transition-all">
-                          <div className="flex flex-wrap gap-2">
-                            {edu.courses.map((course, i) => (
+                        {/* Always show first 3 courses, toggle the rest */}
+                        <div className="flex flex-wrap gap-2">
+                          {edu.courses.slice(0, 3).map((course, i) => (
+                            <span
+                              key={i}
+                              className="bg-white/5 border border-white/10 text-white/70 px-3 py-1 rounded-md text-sm transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-white cursor-help"
+                              data-tooltip={`Click to learn more about ${course}`}
+                              onClick={() => alert(`Coming soon: Details about ${course}`)}
+                            >
+                              {course}
+                            </span>
+                          ))}
+
+                          <CollapsibleContent className="flex flex-wrap gap-2">
+                            {edu.courses.slice(3).map((course, i) => (
                               <span
                                 key={i}
                                 className="bg-white/5 border border-white/10 text-white/70 px-3 py-1 rounded-md text-sm transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-white cursor-help"
@@ -142,8 +154,8 @@ const Education = () => {
                                 {course}
                               </span>
                             ))}
-                          </div>
-                        </CollapsibleContent>
+                          </CollapsibleContent>
+                        </div>
                       </Collapsible>
                     </div>
                   )}
