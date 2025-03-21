@@ -95,7 +95,7 @@ const Contact = () => {
                   className="relative group bg-white/5 hover:bg-primary/20 text-white font-medium rounded-md px-6 py-3 transition-all duration-300 flex items-center border border-white/10 hover:border-primary/30"
                 >
                   <Mail size={16} className="mr-2" />
-                  Send Message
+                  Send Mail
                 </a>
               </div>
               <p className="text-center text-white/50 mt-4 text-sm">

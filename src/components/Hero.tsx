@@ -99,8 +99,8 @@ const Hero = () => {
           </div>
 
           <p className={`text-lg md:text-xl text-white/70 max-w-2xl transition-all duration-1000 delay-[1500ms] ${isVisible ? 'opacity-100' : 'opacity-0 translate-y-8'}`}>
-            B.Sc (Technology) student at University of Oulu, passionate about electronics, programming, and digital innovation.
-            Let's make impactful solutions.
+            B.Sc (Technology) student at University of Oulu, passionate about electronics, programming, and digital innovation.<br></br><br></br>
+            Let's make impactful solutions, shall we?
           </p>
 
           <div className={`flex flex-wrap gap-4 mt-6 transition-all duration-1000 delay-[1800ms] ${isVisible ? 'opacity-100' : 'opacity-0 translate-y-8'}`}>
