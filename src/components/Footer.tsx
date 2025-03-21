@@ -23,7 +23,7 @@ const Footer = () => {
 
           <div className="flex gap-4">
             <a
-              href="https://github.com/nayreed"
+              href="https://github.com/RA-Nayreed"
               target="_blank"
               rel="noopener noreferrer"
               className="w-10 h-10 rounded-full bg-white/5 hover:bg-primary/20 border border-white/10 flex items-center justify-center text-white/70 hover:text-primary transition-colors"

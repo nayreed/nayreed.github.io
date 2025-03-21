@@ -1,7 +1,9 @@
-
 import React from 'react';
 import GlassCard from './ui/GlassCard';
 import { Code, ExternalLink, Github, Layers } from 'lucide-react';
+import SpectrumAnalyzerIcon from '../assets/spectrum-analyzer.svg';
+import MinesweeperIcon from '../assets/minesweeper.svg';
+import FortuneWheelIcon from '../assets/slot-machine.svg';
 
 const Projects = () => {
   const projects = [
@@ -10,14 +12,14 @@ const Projects = () => {
       description: 'Python Data Visualization Project',
       details: 'A graphical tool for analyzing and visualizing spectral data, offering features like background removal, intensity calculation, and interactive plotting.',
       tags: ["Python", "Data Visualization", "Spectral Analysis"],
-      link: null
+      link: 'https://github.com/RA-Nayreed/Spectrum_Analyzer-1.0/tree/main'
     },
     {
       title: 'Minesweeper',
       description: 'Python Game Project',
       details: 'A classic Minesweeper game implementation using Python, featuring customizable difficulty levels and an intuitive user interface.',
       tags: ['Python', 'Game Development', 'UI Design'],
-      link: null
+      link: 'https://github.com/RA-Nayreed/Minesweeper/tree/main'
     },
     {
       title: 'Lottery Simulator',
@@ -52,7 +54,15 @@ const Projects = () => {
             >
               <div className="mb-4">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-4">
-                  <Code size={20} />
+                  {project.title === 'Spectrum Analyzer 1.0' ? (
+                    <img src={SpectrumAnalyzerIcon} alt="Spectrum Analyzer Icon" className="w-6 h-6" />
+                  ) : project.title === 'Minesweeper' ? (
+                    <img src={MinesweeperIcon} alt="Minesweeper Icon" className="w-6 h-6" />
+                  ) : project.title === 'Lottery Simulator' ? (
+                    <img src={FortuneWheelIcon} alt="Lottery Simulator Icon" className="w-6 h-6" />
+                  ) : (
+                    <Code size={20} />
+                  )}
                 </div>
                 <h3 className="text-xl font-bold text-white">{project.title}</h3>
                 <p className="text-white/50 text-sm mt-1">{project.description}</p>

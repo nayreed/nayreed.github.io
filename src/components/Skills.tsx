@@ -9,14 +9,14 @@ const Skills = () => {
       title: 'Technical Skills',
       icon: <Code className="text-primary" size={20} />,
       skills: [
-        'Python', 'C++', 'MATLAB', 'KiCAD', 'HTML5', 'JavaScript', 'GitHub'
+        'Python', 'C++', 'MATLAB', 'KiCAD', 'HTML5', 'CSS', 'JavaScript', 'React', 'Node.js', 'GitHub', 'Powershell', 'WordPress', 'Shopify', 'Microsoft Office'
       ]
     },
     {
       title: 'Professional Skills',
       icon: <Server className="text-primary" size={20} />,
       skills: [
-        'Shopify', 'Organization Skills', 'Digital Strategy', 'Social Media', 'Microsoft Office'
+        'Student tutor', 'Digital Strategy', 'Social Media', 'Organization Skills'
       ]
     },
     {
@@ -32,7 +32,7 @@ const Skills = () => {
     { name: 'English', level: 'C1 (Advanced)', proficiency: 90 },
     { name: 'Bangla', level: 'C2 (Native)', proficiency: 100 },
     { name: 'Urdu', level: 'B1 (Intermediate)', proficiency: 65 },
-    { name: 'Hindi', level: 'B1 (Intermediate)', proficiency: 65 },
+    { name: 'Hindi', level: 'B1 (Intermediate)', proficiency: 60},
     { name: 'Finnish', level: 'A1.2 (Basic)', proficiency: 30 }
   ];
 
@@ -40,7 +40,7 @@ const Skills = () => {
     <section id="skills" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"></div>
       <div className="absolute inset-0 bg-grid opacity-20"></div>
-      
+
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-16 text-center">
           <div className="inline-flex items-center py-1 px-3 rounded-full bg-white/5 border border-white/10 text-sm text-white/70 font-medium mb-4 backdrop-blur-sm">
@@ -62,8 +62,8 @@ const Skills = () => {
                 </div>
                 <div className="flex flex-wrap gap-3">
                   {category.skills.map((skill, i) => (
-                    <span 
-                      key={i} 
+                    <span
+                      key={i}
                       className="bg-white/5 border border-white/10 text-white/90 px-4 py-2 rounded-md text-sm transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-white cursor-default"
                     >
                       {skill}
@@ -84,7 +84,7 @@ const Skills = () => {
                     <p className="text-sm text-white/50">{language.level}</p>
                   </div>
                   <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/10">
-                    <div 
+                    <div
                       className="h-full bg-gradient-to-r from-primary to-blue-400 rounded-full transition-all duration-1000 ease-out"
                       style={{ width: `${language.proficiency}%` }}
                     ></div>

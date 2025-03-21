@@ -1,8 +1,9 @@
-
 import React, { useState } from 'react';
 import GlassCard from './ui/GlassCard';
 import { GraduationCap, BookOpen, Calendar, MapPin, ChevronDown, ChevronUp, Star } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
+import FinlandIcon from '../assets/finland.svg';
+import BangladeshIcon from '../assets/bangladesh.svg';
 
 const Education = () => {
   const [openCollapsible, setOpenCollapsible] = useState(false);
@@ -91,7 +92,13 @@ const Education = () => {
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-2">
                     <h3 className="text-xl font-bold text-white">{edu.institution}</h3>
                     <div className="flex items-center text-white/50 text-sm">
-                      <MapPin size={14} className="mr-2 text-primary/70" />
+                      {edu.location === 'Oulu, Finland' ? (
+                        <img src={FinlandIcon} alt="Finland Icon" className="w-6 h-6 mr-2" />
+                      ) : edu.location === 'Dhaka, Bangladesh' ? (
+                        <img src={BangladeshIcon} alt="Bangladesh Icon" className="w-6 h-6 mr-2" />
+                      ) : (
+                        <MapPin size={14} className="mr-2 text-primary/70" />
+                      )}
                       <span>{edu.location}</span>
                     </div>
                   </div>

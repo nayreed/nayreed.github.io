@@ -1,14 +1,14 @@
-
 import React from 'react';
 import GlassCard from './ui/GlassCard';
-import { Briefcase, Calendar, MapPin } from 'lucide-react';
+import { Briefcase, Calendar } from 'lucide-react';
+import UsaIcon from '../assets/usa.svg';
 
 const Experience = () => {
   const experiences = [
     {
       title: 'Independent Contractor',
       company: 'BGF Consulting, LLC',
-      location: 'Apopka, Florida',
+      location: 'Florida, United States',
       period: 'March 2020 - September 2023',
       achievements: [
         'Designed and developed the company website, improving user experience and increasing traffic by 27% over six months, ensuring it met modern web standards and reflected the brand identity.',
@@ -49,7 +49,7 @@ const Experience = () => {
                     </div>
 
                     <div className="hidden md:flex items-center text-white/50 text-sm">
-                      <MapPin size={14} className="mr-2 text-primary/70" />
+                      <img src={UsaIcon} alt="USA Icon" className="w-6 h-6 mr-2" />
                       <span>{exp.location}</span>
                     </div>
                   </div>
@@ -58,7 +58,7 @@ const Experience = () => {
                     <h3 className="text-xl font-bold text-white mb-1">{exp.title}</h3>
                     <p className="text-lg text-primary mb-2">{exp.company}</p>
                     <div className="md:hidden flex items-center text-white/50 text-sm mb-4">
-                      <MapPin size={14} className="mr-2 text-primary/70" />
+                      <img src={UsaIcon} alt="USA Icon" className="w-6 h-6 mr-2" />
                       <span>{exp.location}</span>
                     </div>
 
