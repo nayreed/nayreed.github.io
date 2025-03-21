@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import GlassCard from './ui/GlassCard';
-import { GraduationCap, BookOpen, Calendar, MapPin, ChevronDown, ChevronUp, Star, Globe } from 'lucide-react';
+import { GraduationCap, BookOpen, Calendar, MapPin, ChevronDown, ChevronUp, Star } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
 const Education = () => {
@@ -11,13 +11,11 @@ const Education = () => {
     {
       institution: 'University of Oulu',
       location: 'Finland',
-      map: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1720.1108980891366!2d25.471590977619566!3d65.05909804158667!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4681cd52dd5afebb%3A0x99a23d2f7e6bae85!2sUniversity%20of%20Oulu!5e0!3m2!1sen!2sfi!4v1671896015370!5m2!1sen!2sfi',
       degree: 'BSc in Electronics and Communications Engineering',
       period: 'September 2024 - PRESENT',
       featured: [
         { title: 'Academic Excellence Award', description: 'Top performer in Calculus and Digital Techniques' },
-        { title: 'Research Assistant', description: 'Working on advanced signal processing for wireless communications' },
-        { title: 'C++ Programming', description: 'Developed efficient algorithms for embedded systems' }
+        { title: 'Research Assistant', description: 'Working on advanced signal processing for wireless communications' }
       ],
       courses: [
         'Calculus', 'Programming', 'Introduction to Electronics', 
@@ -29,7 +27,6 @@ const Education = () => {
     {
       institution: 'Shaheed Bir Bikram Ramiz Uddin Cantonment College',
       location: 'Bangladesh',
-      map: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.2124647797814!2d90.38645097516324!3d23.77669438037707!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c72ee9d3d9cb%3A0xf12d5646dff42a!2sShaheed%20Bir%20Bikram%20Ramiz%20Uddin%20Cantonment%20College!5e0!3m2!1sen!2sfi!4v1686907715461!5m2!1sen!2sfi',
       degree: 'Higher Secondary School Certificate',
       period: 'February 2022 - November 2023'
     }
@@ -44,10 +41,6 @@ const Education = () => {
       { subject: 'Reading & Writing', score: '620' }
     ]
   };
-
-  // Show the first 3 courses without collapsing
-  const firstFewCourses = education[0].courses.slice(0, 3);
-  const remainingCourses = education[0].courses.slice(3);
 
   return (
     <section id="education" className="py-24 relative overflow-hidden">
@@ -98,28 +91,12 @@ const Education = () => {
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-2">
                     <h3 className="text-xl font-bold text-white">{edu.institution}</h3>
                     <div className="flex items-center text-white/50 text-sm">
-                      <Globe size={14} className="mr-2 text-primary/70" />
+                      <MapPin size={14} className="mr-2 text-primary/70" />
                       <span>{edu.location}</span>
                     </div>
                   </div>
                   
                   <p className="text-lg text-primary mb-4">{edu.degree}</p>
-                  
-                  {/* Location Map */}
-                  {edu.map && (
-                    <div className="mt-4 mb-6 overflow-hidden rounded-lg border border-primary/20">
-                      <div className="aspect-video relative">
-                        <iframe 
-                          src={edu.map} 
-                          className="absolute inset-0 w-full h-full"
-                          allowFullScreen 
-                          loading="lazy" 
-                          referrerPolicy="no-referrer-when-downgrade"
-                          title={`Map of ${edu.institution}`}
-                        ></iframe>
-                      </div>
-                    </div>
-                  )}
                   
                   {/* Featured Accomplishments Section */}
                   {edu.featured && (
@@ -142,29 +119,12 @@ const Education = () => {
                     </div>
                   )}
                   
-                  {/* Always visible courses and Collapsible Coursework Section */}
+                  {/* Collapsible Coursework Section */}
                   {edu.courses && (
                     <div className="mt-6">
-                      <h4 className="text-md font-medium text-white/80 mb-2">Relevant Coursework</h4>
-                      
-                      {/* Always visible courses */}
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {firstFewCourses.map((course, i) => (
-                          <span 
-                            key={i} 
-                            className="bg-white/5 border border-white/10 text-white/70 px-3 py-1 rounded-md text-sm transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-white cursor-help"
-                            data-tooltip={`Click to learn more about ${course}`}
-                            onClick={() => alert(`Coming soon: Details about ${course}`)}
-                          >
-                            {course}
-                          </span>
-                        ))}
-                      </div>
-                      
-                      {/* Collapsible remaining courses */}
                       <Collapsible open={openCollapsible} onOpenChange={setOpenCollapsible}>
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm text-white/50">More courses</span>
+                          <h4 className="text-md font-medium text-white/80">Relevant Coursework</h4>
                           <CollapsibleTrigger className="flex items-center justify-center w-8 h-8 rounded-full bg-white/5 text-white/70 hover:bg-primary/10 hover:text-white transition-colors">
                             {openCollapsible ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                           </CollapsibleTrigger>
@@ -172,7 +132,7 @@ const Education = () => {
                         
                         <CollapsibleContent className="mt-2 transition-all">
                           <div className="flex flex-wrap gap-2">
-                            {remainingCourses.map((course, i) => (
+                            {edu.courses.map((course, i) => (
                               <span 
                                 key={i} 
                                 className="bg-white/5 border border-white/10 text-white/70 px-3 py-1 rounded-md text-sm transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-white cursor-help"

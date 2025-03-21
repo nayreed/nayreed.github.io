@@ -1,7 +1,7 @@
 
 import React from 'react';
 import GlassCard from './ui/GlassCard';
-import { MapPin, Phone, Mail, Linkedin, ExternalLink, MessageSquare, Github } from 'lucide-react';
+import { MapPin, Phone, Mail, Linkedin, ExternalLink, MessageSquare } from 'lucide-react';
 
 const Contact = () => {
   const contactInfo = [
@@ -34,12 +34,6 @@ const Contact = () => {
       label: 'LinkedIn',
       value: 'linkedin.com/in/nayreed',
       link: 'https://www.linkedin.com/in/nayreed/'
-    },
-    {
-      icon: <Github size={18} />,
-      label: 'GitHub',
-      value: 'github.com/Nayreed',
-      link: 'https://github.com/Nayreed'
     }
   ];
 
@@ -55,28 +49,6 @@ const Contact = () => {
             <span>Get in Touch</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-white">Contact Information</h2>
-        </div>
-
-        {/* LinkedIn Post Embed */}
-        <div className="max-w-3xl mx-auto mb-12">
-          <GlassCard className="p-6 border border-white/10" variant="neon" hoverEffect>
-            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-              <Linkedin size={20} className="mr-2 text-primary" />
-              Latest from LinkedIn
-            </h3>
-            <div className="aspect-video relative overflow-hidden rounded-lg bg-primary/5 border border-primary/20">
-              <iframe
-                src="https://www.linkedin.com/embed/feed/update/urn:li:share:7113172882529411072"
-                className="absolute inset-0 w-full h-full"
-                frameBorder="0"
-                allowFullScreen
-                title="LinkedIn Post"
-              ></iframe>
-            </div>
-            <p className="text-white/50 mt-4 text-sm text-center">
-              Connect with me on LinkedIn for more updates
-            </p>
-          </GlassCard>
         </div>
 
         <div className="max-w-3xl mx-auto">
