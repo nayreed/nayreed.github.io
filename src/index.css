@@ -5,65 +5,35 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --background: 215 25% 27%;
+    --foreground: 213 31% 91%;
 
     --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221 83% 53%;
-
-    --radius: 0.75rem;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 215 25% 27%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 220 100% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --border: 217 33% 17%;
+    --input: 215 20% 65%;
+    --ring: 221 83% 53%;
+
+    --radius: 0.75rem;
   }
 }
 
@@ -77,7 +47,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans selection:bg-primary/20;
+    @apply bg-black text-foreground font-sans selection:bg-primary/20;
   }
 }
 
@@ -86,9 +56,13 @@
     @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-lg;
   }
 
+  .neo-glass {
+    @apply bg-black/50 backdrop-blur-xl border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.3)];
+  }
+
   .bg-grid {
-    background-image: linear-gradient(to right, rgba(100, 116, 139, 0.05) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(100, 116, 139, 0.05) 1px, transparent 1px);
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
     background-size: 24px 24px;
   }
 
@@ -104,5 +78,41 @@
 
   .mask-linear-fade {
     mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  }
+  
+  .bg-tech-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent;
+  }
+  
+  .glow {
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+  }
+  
+  .animate-floating {
+    animation: floating 6s ease-in-out infinite;
+  }
+  
+  @keyframes floating {
+    0% { transform: translateY(0) translateX(0); }
+    50% { transform: translateY(-20px) translateX(10px); }
+    100% { transform: translateY(0) translateX(0); }
+  }
+  
+  .animated-border {
+    position: relative;
+    background: linear-gradient(#000, #000) padding-box,
+                linear-gradient(90deg, rgba(59, 130, 246, 0.8), rgba(239, 68, 68, 0.8)) border-box;
+    border: 1px solid transparent;
+    animation: border-rotate 4s linear infinite;
+  }
+  
+  @keyframes border-rotate {
+    0% { border-image-source: linear-gradient(0deg, rgba(59, 130, 246, 0.3), rgba(239, 68, 68, 0.3)); }
+    50% { border-image-source: linear-gradient(180deg, rgba(59, 130, 246, 0.3), rgba(239, 68, 68, 0.3)); }
+    100% { border-image-source: linear-gradient(360deg, rgba(59, 130, 246, 0.3), rgba(239, 68, 68, 0.3)); }
   }
 }
