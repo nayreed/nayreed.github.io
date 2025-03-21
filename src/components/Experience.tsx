@@ -7,7 +7,7 @@ const Experience = () => {
   const experiences = [
     {
       title: 'Independent Contractor',
-      company: 'BGF Consulting LLC',
+      company: 'BGF Consulting, LLC',
       location: 'Apopka, Florida',
       period: 'March 2020 - September 2023',
       achievements: [
@@ -23,7 +23,7 @@ const Experience = () => {
     <section id="experience" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"></div>
       <div className="absolute inset-0 bg-tech-pattern opacity-10"></div>
-      
+
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-16 text-center">
           <div className="inline-flex items-center py-1 px-3 rounded-full bg-white/5 border border-white/10 text-sm text-white/70 font-medium mb-4 backdrop-blur-sm">
@@ -42,18 +42,18 @@ const Experience = () => {
                     <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
                       <Briefcase size={20} />
                     </div>
-                    
+
                     <div className="flex items-center text-white/50 text-sm">
                       <Calendar size={14} className="mr-2 text-primary/70" />
                       <span>{exp.period}</span>
                     </div>
-                    
+
                     <div className="hidden md:flex items-center text-white/50 text-sm">
                       <MapPin size={14} className="mr-2 text-primary/70" />
                       <span>{exp.location}</span>
                     </div>
                   </div>
-                  
+
                   <div className="flex-grow">
                     <h3 className="text-xl font-bold text-white mb-1">{exp.title}</h3>
                     <p className="text-lg text-primary mb-2">{exp.company}</p>
@@ -61,7 +61,7 @@ const Experience = () => {
                       <MapPin size={14} className="mr-2 text-primary/70" />
                       <span>{exp.location}</span>
                     </div>
-                    
+
                     <ul className="space-y-3 mt-4">
                       {exp.achievements.map((achievement, i) => (
                         <li key={i} className="flex gap-3 group">

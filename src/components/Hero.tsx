@@ -124,17 +124,17 @@ const Hero = () => {
               View Experience
             </a>
             <a
-              href="#"
+              href="/Resume.pdf"  // File path to your resume
               className="bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 text-white font-medium rounded-md px-6 py-3 transition-all duration-300 flex items-center secret-resume-button"
+              download="Resume"  // This will suggest the filename for the downloaded file
               onClick={(e) => {
                 e.preventDefault();
-                alert('Easter egg: Resume download coming soon!');
                 document.querySelector('.secret-resume-button')?.classList.add('pulse-animation');
                 setTimeout(() => {
                   document.querySelector('.secret-resume-button')?.classList.remove('pulse-animation');
                 }, 1000);
               }}
-              data-tooltip="Download my resume (Easter egg!)"
+              data-tooltip="Download my resume"
             >
               <Download size={16} className="mr-2" />
               Resume PDF

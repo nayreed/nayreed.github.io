@@ -6,27 +6,27 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collap
 
 const Education = () => {
   const [openCollapsible, setOpenCollapsible] = useState(false);
-  
+
   const education = [
     {
       institution: 'University of Oulu',
-      location: 'Finland',
-      degree: 'BSc in Electronics and Communications Engineering',
-      period: 'September 2024 - PRESENT',
+      location: 'Oulu, Finland',
+      degree: 'B.Sc (Technology) in Electronics and Communications Engineering',
+      period: 'August 2024 - PRESENT',
       featured: [
         { title: 'Academic Excellence Award', description: 'Top performer in Calculus and Digital Techniques' },
         { title: 'Research Assistant', description: 'Working on advanced signal processing for wireless communications' }
       ],
       courses: [
-        'Calculus', 'Programming', 'Introduction to Electronics', 
-        'Electrical Measurement Principles', 'Matrix Algebra', 
-        'Artificial Intelligence', 'Probability and Mathematical Statistics', 
+        'Calculus', 'Programming', 'Introduction to Electronics',
+        'Electrical Measurement Principles', 'Matrix Algebra',
+        'Artificial Intelligence', 'Probability and Mathematical Statistics',
         'Digital Techniques 1'
       ]
     },
     {
       institution: 'Shaheed Bir Bikram Ramiz Uddin Cantonment College',
-      location: 'Bangladesh',
+      location: 'Dhaka, Bangladesh',
       degree: 'Higher Secondary School Certificate',
       period: 'February 2022 - November 2023'
     }
@@ -46,15 +46,15 @@ const Education = () => {
     <section id="education" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"></div>
       <div className="absolute inset-0 bg-tech-pattern opacity-10"></div>
-      
+
       {/* Interactive Easter Egg: Hidden constellation animation that appears on scroll */}
       <div className="constellation absolute inset-0 opacity-0 transition-opacity duration-1000" data-easter-egg="true">
         {Array.from({ length: 50 }).map((_, i) => (
-          <div 
+          <div
             key={i}
             className="star absolute w-1 h-1 bg-primary rounded-full animate-pulse-glow"
-            style={{ 
-              left: `${Math.random() * 100}%`, 
+            style={{
+              left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               animationDelay: `${Math.random() * 5}s`,
               opacity: Math.random() * 0.7 + 0.3
@@ -62,7 +62,7 @@ const Education = () => {
           ></div>
         ))}
       </div>
-      
+
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-16 text-center">
           <div className="inline-flex items-center py-1 px-3 rounded-full bg-white/5 border border-white/10 text-sm text-white/70 font-medium mb-4 backdrop-blur-sm">
@@ -80,13 +80,13 @@ const Education = () => {
                   <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
                     <GraduationCap size={20} />
                   </div>
-                  
+
                   <div className="flex items-center text-white/50 text-sm">
                     <Calendar size={14} className="mr-2 text-primary/70" />
                     <span>{edu.period}</span>
                   </div>
                 </div>
-                
+
                 <div className="flex-grow">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-2">
                     <h3 className="text-xl font-bold text-white">{edu.institution}</h3>
@@ -95,9 +95,9 @@ const Education = () => {
                       <span>{edu.location}</span>
                     </div>
                   </div>
-                  
+
                   <p className="text-lg text-primary mb-4">{edu.degree}</p>
-                  
+
                   {/* Featured Accomplishments Section */}
                   {edu.featured && (
                     <div className="mt-4 mb-6">
@@ -107,8 +107,8 @@ const Education = () => {
                       </h4>
                       <div className="space-y-3">
                         {edu.featured.map((item, i) => (
-                          <div 
-                            key={i} 
+                          <div
+                            key={i}
                             className="bg-primary/5 border border-primary/20 text-white/90 px-4 py-3 rounded-md transition-all hover:bg-primary/10"
                           >
                             <h5 className="font-medium text-primary">{item.title}</h5>
@@ -118,7 +118,7 @@ const Education = () => {
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Collapsible Coursework Section */}
                   {edu.courses && (
                     <div className="mt-6">
@@ -129,12 +129,12 @@ const Education = () => {
                             {openCollapsible ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                           </CollapsibleTrigger>
                         </div>
-                        
+
                         <CollapsibleContent className="mt-2 transition-all">
                           <div className="flex flex-wrap gap-2">
                             {edu.courses.map((course, i) => (
-                              <span 
-                                key={i} 
+                              <span
+                                key={i}
                                 className="bg-white/5 border border-white/10 text-white/70 px-3 py-1 rounded-md text-sm transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-white cursor-help"
                                 data-tooltip={`Click to learn more about ${course}`}
                                 onClick={() => alert(`Coming soon: Details about ${course}`)}
@@ -159,7 +159,7 @@ const Education = () => {
                   <BookOpen size={20} />
                 </div>
               </div>
-              
+
               <div className="flex-grow">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-4">
                   <h3 className="text-xl font-bold text-white">{testScores.name}</h3>
@@ -168,7 +168,7 @@ const Education = () => {
                     <span>{testScores.date}</span>
                   </div>
                 </div>
-                
+
                 <div className="space-y-4 border-l-2 border-primary/30 pl-4">
                   {testScores.scores.map((item, i) => (
                     <div key={i} className="flex justify-between items-center">
@@ -200,14 +200,14 @@ const Education = () => {
           document.addEventListener('keydown', (e) => {
             keySequence.push(e.key);
             if (keySequence.length > 5) keySequence.shift();
-            
+
             if (keySequence.join('') === 'oulu') {
               document.body.classList.toggle('matrix-mode');
-              
+
               const audio = new Audio('https://www.soundjay.com/nature/sounds/rain-07.mp3');
               audio.volume = 0.1;
               audio.play();
-              
+
               setTimeout(() => {
                 document.body.classList.remove('matrix-mode');
               }, 5000);
