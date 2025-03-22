@@ -33,7 +33,7 @@ const Education = () => {
         { name: 'Introduction to Internet', grade: 'NULL' },
         { name: 'Probability and Mathematical Statistics', grade: 'NULL' }
       ],
-      transcript: "transcript.pdf" // Placeholder for transcript file
+      transcript: "https://unioulu-my.sharepoint.com/:b:/g/personal/rnayreed24_student_oulu_fi/ESkH4j5c_KROsDwJynRY9HYBRI5SD76OHsHmjn7a96__xg?e=noK0sb" // Updated transcript URL
     },
     {
       institution: 'Shaheed Bir Bikram Ramiz Uddin Cantonment College',
@@ -54,15 +54,12 @@ const Education = () => {
   };
 
   const handleDownloadTranscript = () => {
-    // This would be replaced with actual file download logic
-    alert('Transcript download will be implemented. This is a placeholder.');
-    // For actual implementation:
-    // const link = document.createElement('a');
-    // link.href = education[0].transcript;
-    // link.download = 'University_Transcript.pdf';
-    // document.body.appendChild(link);
-    // link.click();
-    // document.body.removeChild(link);
+    const link = document.createElement('a');
+    link.href = education[0].transcript;
+    link.download = 'University_Transcript.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
