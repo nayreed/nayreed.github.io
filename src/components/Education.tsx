@@ -1,9 +1,13 @@
+
 import React, { useState } from 'react';
 import GlassCard from './ui/GlassCard';
-import { GraduationCap, BookOpen, Calendar, MapPin, ChevronDown, ChevronUp, Star } from 'lucide-react';
+import { GraduationCap, BookOpen, Calendar, ChevronDown, ChevronUp, Star, Download, HelpCircle } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import FinlandIcon from '../assets/finland.svg';
 import BangladeshIcon from '../assets/bangladesh.svg';
+import { Button } from './ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
 
 const Education = () => {
   const [openCollapsible, setOpenCollapsible] = useState(false);
@@ -19,11 +23,18 @@ const Education = () => {
         { title: 'C++ Programming', description: "Proficient in C++ programming language" },
       ],
       courses: [
-        'Calculus I', 'Elementry Programming', 'Introduction to Electronics',
-        'Electrical Measurement Principles', 'Matrix Algebra', 'Calculus II',
-        'Digital Techniques 1', 'Differential Equations', 'Introduction to Internet',
-        'Probability and Mathematical Statistics'
-      ]
+        { name: 'Calculus I', grade: 'A' }, 
+        { name: 'Elementry Programming', grade: 'A+' }, 
+        { name: 'Introduction to Electronics', grade: 'A-' },
+        { name: 'Electrical Measurement Principles', grade: 'B+' }, 
+        { name: 'Matrix Algebra', grade: 'A' }, 
+        { name: 'Calculus II', grade: 'A-' },
+        { name: 'Digital Techniques 1', grade: 'A' }, 
+        { name: 'Differential Equations', grade: 'B+' }, 
+        { name: 'Introduction to Internet', grade: 'A' },
+        { name: 'Probability and Mathematical Statistics', grade: 'B+' }
+      ],
+      transcript: "transcript.pdf" // Placeholder for transcript file
     },
     {
       institution: 'Shaheed Bir Bikram Ramiz Uddin Cantonment College',
@@ -41,6 +52,18 @@ const Education = () => {
       { subject: 'Math', score: '740' },
       { subject: 'Reading & Writing', score: '620' }
     ]
+  };
+
+  const handleDownloadTranscript = () => {
+    // This would be replaced with actual file download logic
+    alert('Transcript download will be implemented. This is a placeholder.');
+    // For actual implementation:
+    // const link = document.createElement('a');
+    // link.href = education[0].transcript;
+    // link.download = 'University_Transcript.pdf';
+    // document.body.appendChild(link);
+    // link.click();
+    // document.body.removeChild(link);
   };
 
   return (
@@ -86,6 +109,28 @@ const Education = () => {
                     <Calendar size={14} className="mr-2 text-primary/70" />
                     <span>{edu.period}</span>
                   </div>
+
+                  {/* Download Transcript Button - Only for the first education entry */}
+                  {index === 0 && edu.transcript && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            onClick={handleDownloadTranscript} 
+                            variant="outline" 
+                            size="sm" 
+                            className="mt-2 bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
+                          >
+                            <Download size={14} className="mr-2" />
+                            Transcript
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Download official transcript</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
                 </div>
 
                 <div className="flex-grow">
@@ -96,9 +141,7 @@ const Education = () => {
                         <img src={FinlandIcon} alt="Finland Icon" className="w-6 h-6 mr-2" />
                       ) : edu.location === 'Dhaka, Bangladesh' ? (
                         <img src={BangladeshIcon} alt="Bangladesh Icon" className="w-6 h-6 mr-2" />
-                      ) : (
-                        <MapPin size={14} className="mr-2 text-primary/70" />
-                      )}
+                      ) : null}
                       <span>{edu.location}</span>
                     </div>
                   </div>
@@ -126,12 +169,24 @@ const Education = () => {
                   </div>
                 )}
 
-                  {/* Collapsible Coursework Section */}
+                  {/* Collapsible Coursework Section with Grades on Hover */}
                   {edu.courses && (
                       <div className="mt-6">
                         <Collapsible open={openCollapsible} onOpenChange={setOpenCollapsible}>
                           <div className="flex items-center justify-between mb-2">
-                            <h4 className="text-md font-medium text-white/80">Relevant Coursework</h4>
+                            <h4 className="text-md font-medium text-white/80 flex items-center">
+                              Relevant Coursework
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <HelpCircle size={14} className="ml-2 text-primary/70 cursor-help" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Hover over courses to see grades</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </h4>
                             <CollapsibleTrigger className="flex items-center justify-center w-8 h-8 rounded-full bg-white/5 text-white/70 hover:bg-primary/10 hover:text-white transition-colors">
                               {openCollapsible ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                             </CollapsibleTrigger>
@@ -140,26 +195,40 @@ const Education = () => {
                         {/* Always show first 3 courses, toggle the rest */}
                         <div className="flex flex-wrap gap-2">
                           {edu.courses.slice(0, 3).map((course, i) => (
-                            <span
-                              key={i}
-                              className="bg-white/5 border border-white/10 text-white/70 px-3 py-1 rounded-md text-sm transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-white cursor-help"
-                              data-tooltip={`Click to learn more about ${course}`}
-                              onClick={() => alert(`Coming soon: Details about ${course}`)}
-                            >
-                              {course}
-                            </span>
+                            <HoverCard key={i}>
+                              <HoverCardTrigger asChild>
+                                <span
+                                  className="bg-white/5 border border-white/10 text-white/70 px-3 py-1 rounded-md text-sm transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-white cursor-help"
+                                >
+                                  {course.name}
+                                </span>
+                              </HoverCardTrigger>
+                              <HoverCardContent className="w-auto bg-black/80 border border-primary/20 text-white backdrop-blur-lg">
+                                <div className="flex justify-between items-center">
+                                  <span>{course.name}</span>
+                                  <span className="ml-4 font-bold text-primary">{course.grade}</span>
+                                </div>
+                              </HoverCardContent>
+                            </HoverCard>
                           ))}
 
                           <CollapsibleContent className="flex flex-wrap gap-2">
                             {edu.courses.slice(3).map((course, i) => (
-                              <span
-                                key={i}
-                                className="bg-white/5 border border-white/10 text-white/70 px-3 py-1 rounded-md text-sm transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-white cursor-help"
-                                data-tooltip={`Click to learn more about ${course}`}
-                                onClick={() => alert(`Coming soon: Details about ${course}`)}
-                              >
-                                {course}
-                              </span>
+                              <HoverCard key={i}>
+                                <HoverCardTrigger asChild>
+                                  <span
+                                    className="bg-white/5 border border-white/10 text-white/70 px-3 py-1 rounded-md text-sm transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-white cursor-help"
+                                  >
+                                    {course.name}
+                                  </span>
+                                </HoverCardTrigger>
+                                <HoverCardContent className="w-auto bg-black/80 border border-primary/20 text-white backdrop-blur-lg">
+                                  <div className="flex justify-between items-center">
+                                    <span>{course.name}</span>
+                                    <span className="ml-4 font-bold text-primary">{course.grade}</span>
+                                  </div>
+                                </HoverCardContent>
+                              </HoverCard>
                             ))}
                           </CollapsibleContent>
                         </div>
