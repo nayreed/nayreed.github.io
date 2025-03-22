@@ -17,7 +17,7 @@ const Footer = () => {
               R.A.N
             </a>
             <p className="text-white/50 mt-2 max-w-md">
-              Thank you for visiting my portfolio.
+              Thank you for visiting my Website.
             </p>
           </div>
 

@@ -1,10 +1,14 @@
-
 import React from 'react';
 import GlassCard from './ui/GlassCard';
 import { Cpu, Code, Briefcase, Coffee, Globe, Star } from 'lucide-react';
 import ProgrammingSkillsIcon from '../assets/programming.svg';
 import ProfessionalSkillsIcon from '../assets/professional.svg';
 import OtherSkillsIcon from '../assets/other.svg';
+import EnglishIcon from '../assets/english.svg';
+import BanglaIcon from '../assets/bangla.svg';
+import UrduIcon from '../assets/urdu.svg';
+import HindiIcon from '../assets/hindi.svg';
+import FinnishIcon from '../assets/finnish.svg';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 
@@ -31,17 +35,17 @@ const Skills = () => {
       icon: <img src={OtherSkillsIcon} alt="Other Skills Icon" className="w-6 h-6" />,
       lucideIcon: <Coffee size={20} className="text-primary" />,
       skills: [
-        'Coffee Roasting', 'Barista'
+        'Coffee Roasting', 'Barista', 'Hiking', 'Photography', 'Traveling'
       ]
     }
   ];
 
   const languages = [
-    { name: 'English', level: 'C1 (Advanced)', proficiency: 90 },
-    { name: 'Bangla', level: 'C2 (Native)', proficiency: 100 },
-    { name: 'Urdu', level: 'B1 (Intermediate)', proficiency: 65 },
-    { name: 'Hindi', level: 'B1 (Intermediate)', proficiency: 60},
-    { name: 'Finnish', level: 'A1.2 (Basic)', proficiency: 30 }
+    { name: 'English', level: 'C1 (Advanced)', proficiency: 90, icon: EnglishIcon },
+    { name: 'Bangla', level: 'C2 (Native)', proficiency: 100, icon: BanglaIcon },
+    { name: 'Urdu', level: 'B1 (Intermediate)', proficiency: 65, icon: UrduIcon },
+    { name: 'Hindi', level: 'B1 (Intermediate)', proficiency: 60, icon: HindiIcon },
+    { name: 'Finnish', level: 'A1.2 (Basic)', proficiency: 30, icon: FinnishIcon }
   ];
 
   const SkillBadge = ({ skill }: { skill: string }) => (
@@ -56,7 +60,7 @@ const Skills = () => {
     <div className="space-y-2">
       <div className="flex justify-between items-center">
         <div className="flex items-center">
-          <Globe className="w-4 h-4 mr-2 text-primary" />
+          <img src={language.icon} alt={`${language.name} Icon`} className="w-4 h-4 mr-2" />
           <p className="font-medium text-white">{language.name}</p>
         </div>
         <div className="flex items-center">
