@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import AnimatedText from './ui/AnimatedText';
 import { ArrowDown, Code, Cpu, Zap, Download } from 'lucide-react';
@@ -126,14 +125,7 @@ const Hero = () => {
             <a
               href="https://docs.google.com/document/d/1QKXNlwJ7PO7pA9w7Uz_vcUj7Yi34Gn9QSUJvCP9Ijpk/export?format=pdf"  // File path to your resume
               className="bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 text-white font-medium rounded-md px-6 py-3 transition-all duration-300 flex items-center secret-resume-button"
-              download="Resume"  // This will suggest the filename for the downloaded file
-              onClick={(e) => {
-                e.preventDefault();
-                document.querySelector('.secret-resume-button')?.classList.add('pulse-animation');
-                setTimeout(() => {
-                  document.querySelector('.secret-resume-button')?.classList.remove('pulse-animation');
-                }, 1000);
-              }}
+              download="Rezwan_Ahmad_Nayreed_Resume.pdf"  // This will suggest the filename for the downloaded file
               data-tooltip="Download my resume"
             >
               <Download size={16} className="mr-2" />
