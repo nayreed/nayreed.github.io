@@ -52,7 +52,7 @@ const Skills = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-white">Skills & Languages</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
           <div className="space-y-8">
             {skillCategories.map((category, index) => (
               <GlassCard key={index} className="p-8" variant={index === 0 ? 'neon' : 'default'} hoverEffect>
@@ -76,25 +76,27 @@ const Skills = () => {
             ))}
           </div>
 
-          <GlassCard className="p-8 h-full" variant="dark" hoverEffect>
-            <h3 className="text-xl font-bold text-white mb-8">Languages</h3>
-            <div className="space-y-6">
-              {languages.map((language, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex justify-between">
-                    <p className="font-medium text-white">{language.name}</p>
-                    <p className="text-sm text-white/50">{language.level}</p>
+          <div className="space-y-8">
+            <GlassCard className="p-8 h-full" variant="dark" hoverEffect>
+              <h3 className="text-xl font-bold text-white mb-8">Languages</h3>
+              <div className="space-y-6">
+                {languages.map((language, index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="flex justify-between">
+                      <p className="font-medium text-white">{language.name}</p>
+                      <p className="text-sm text-white/50">{language.level}</p>
+                    </div>
+                    <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/10">
+                      <div
+                        className="h-full bg-gradient-to-r from-primary to-blue-400 rounded-full transition-all duration-1000 ease-out"
+                        style={{ width: `${language.proficiency}%` }}
+                      ></div>
+                    </div>
                   </div>
-                  <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/10">
-                    <div
-                      className="h-full bg-gradient-to-r from-primary to-blue-400 rounded-full transition-all duration-1000 ease-out"
-                      style={{ width: `${language.proficiency}%` }}
-                    ></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </GlassCard>
+                ))}
+              </div>
+            </GlassCard>
+          </div>
         </div>
       </div>
     </section>
