@@ -23,7 +23,7 @@ const Education = () => {
       ],
       courses: [
         { name: 'Calculus I', grade: '4' },
-        { name: 'Elementry Programming', grade: '3' },
+        { name: 'Elementary Programming', grade: '3' },
         { name: 'Introduction to Electronics', grade: '4' },
         { name: 'Electrical Measurement Principles', grade: '5' },
         { name: 'Matrix Algebra', grade: '5' },
