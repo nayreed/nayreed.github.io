@@ -1,27 +1,29 @@
-
 import React from 'react';
 import GlassCard from './ui/GlassCard';
-import { Code, Server, Globe, Cpu } from 'lucide-react';
+import { Cpu } from 'lucide-react';
+import ProgrammingSkillsIcon from '../assets/programming.svg';
+import ProfessionalSkillsIcon from '../assets/professional.svg';
+import OtherSkillsIcon from '../assets/other.svg';
 
 const Skills = () => {
   const skillCategories = [
     {
       title: 'Technical Skills',
-      icon: <Code className="text-primary" size={20} />,
+      icon: <img src={ProgrammingSkillsIcon} alt="Programming Skills Icon" className="w-6 h-6" />,
       skills: [
         'Python', 'C++', 'MATLAB', 'KiCAD', 'HTML5', 'CSS', 'JavaScript', 'React', 'Node.js', 'GitHub', 'Powershell', 'WordPress', 'Shopify', 'Microsoft Office'
       ]
     },
     {
       title: 'Professional Skills',
-      icon: <Server className="text-primary" size={20} />,
+      icon: <img src={ProfessionalSkillsIcon} alt="Professional Skills Icon" className="w-6 h-6" />,
       skills: [
         'Student tutor', 'Digital Strategy', 'Social Media', 'Organization Skills'
       ]
     },
     {
       title: 'Other Skills',
-      icon: <Globe className="text-primary" size={20} />,
+      icon: <img src={OtherSkillsIcon} alt="Other Skills Icon" className="w-6 h-6" />,
       skills: [
         'Coffee Roasting', 'Barista'
       ]
