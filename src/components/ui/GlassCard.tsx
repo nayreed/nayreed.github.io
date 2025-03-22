@@ -30,7 +30,7 @@ const GlassCard = ({
       {...props}
     >
       {variant === 'neon' && (
-        <div className="absolute -inset-[1px] bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-xl blur opacity-30 group-hover:opacity-100 transition duration-1000"></div>
+        <div className="absolute -inset-[1px] bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-xl opacity-30 group-hover:opacity-100 transition duration-1000"></div>
       )}
       <div className="relative z-10">
         {children}
