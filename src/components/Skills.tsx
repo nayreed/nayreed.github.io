@@ -45,8 +45,8 @@ const Skills = () => {
   ];
 
   const SkillBadge = ({ skill }: { skill: string }) => (
-    <div className="bg-white/5 border border-white/10 text-white/90 px-4 py-2 rounded-md text-sm transition-all 
-                    hover:bg-primary/10 hover:border-primary/30 hover:text-white hover:scale-105 
+    <div className="bg-white/5 border border-white/10 text-white/90 px-4 py-2 rounded-md text-sm transition-all
+                    hover:bg-primary/10 hover:border-primary/30 hover:text-white hover:scale-105
                     cursor-default flex items-center space-x-1">
       <span>{skill}</span>
     </div>
@@ -63,13 +63,13 @@ const Skills = () => {
           <p className="text-sm text-white/50 mr-2">{language.level}</p>
           <div className="flex">
             {[1, 2, 3, 4, 5].map((star) => (
-              <Star 
-                key={star} 
-                size={12} 
+              <Star
+                key={star}
+                size={12}
                 className={cn(
                   "mx-0.5",
-                  language.proficiency >= star * 20 
-                    ? "fill-primary text-primary" 
+                  language.proficiency >= star * 20
+                    ? "fill-primary text-primary"
                     : "text-white/20"
                 )}
               />
@@ -112,14 +112,14 @@ const Skills = () => {
                 </TabsTrigger>
               </TabsList>
             </div>
-            
+
             <TabsContent value="skills" className="space-y-8 animate-fade-in">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {skillCategories.map((category, index) => (
-                  <GlassCard 
-                    key={index} 
-                    className="p-6 h-full" 
-                    variant={index === 0 ? 'neon' : 'default'} 
+                  <GlassCard
+                    key={index}
+                    className="p-6 h-full"
+                    variant={index === 0 ? 'neon' : 'default'}
                     hoverEffect
                   >
                     <div className="flex items-center mb-6">
@@ -137,7 +137,7 @@ const Skills = () => {
                 ))}
               </div>
             </TabsContent>
-            
+
             <TabsContent value="languages" className="animate-fade-in">
               <GlassCard className="p-8" variant="dark" hoverEffect>
                 <div className="mb-6 flex justify-center">
