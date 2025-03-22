@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import GlassCard from './ui/GlassCard';
 import { GraduationCap, BookOpen, Calendar, ChevronDown, ChevronUp, Star, Download, HelpCircle } from 'lucide-react';
@@ -203,7 +202,7 @@ const Education = () => {
                                   {course.name}
                                 </span>
                               </HoverCardTrigger>
-                              <HoverCardContent className="w-auto bg-black/80 border border-primary/20 text-white backdrop-blur-lg">
+                              <HoverCardContent className="w-auto bg-black/80 border border-primary/20 text-white backdrop-blur-lg hovercard-content">
                                 <div className="flex justify-between items-center">
                                   <span>{course.name}</span>
                                   <span className="ml-4 font-bold text-primary">{course.grade}</span>
@@ -222,7 +221,7 @@ const Education = () => {
                                     {course.name}
                                   </span>
                                 </HoverCardTrigger>
-                                <HoverCardContent className="w-auto bg-black/80 border border-primary/20 text-white backdrop-blur-lg">
+                                <HoverCardContent className="w-auto bg-black/80 border border-primary/20 text-white backdrop-blur-lg hovercard-content">
                                   <div className="flex justify-between items-center">
                                     <span>{course.name}</span>
                                     <span className="ml-4 font-bold text-primary">{course.grade}</span>
