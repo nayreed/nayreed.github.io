@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Calendar, ChevronDown, ChevronUp, Star, Download, HelpCircle } from 'lucide-react';
+import { Calendar, ChevronDown, ChevronUp, Star, Download, HelpCircle, GraduationCap } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 import FinlandIcon from '../../assets/finland.svg';
 import BangladeshIcon from '../../assets/bangladesh.svg';
@@ -65,7 +64,6 @@ const EducationCard: React.FC<EducationCardProps> = ({ education, index, openCol
             <span>{education.period}</span>
           </div>
 
-          {/* Download Transcript Button - Only for the first education entry */}
           {index === 0 && education.transcript && (
             <TooltipProvider>
               <Tooltip>
@@ -99,10 +97,8 @@ const EducationCard: React.FC<EducationCardProps> = ({ education, index, openCol
 
           <p className="text-lg text-primary mb-4">{education.degree}</p>
 
-          {/* Featured Items Component */}
           {education.featured && <FeaturedItems featured={education.featured} />}
 
-          {/* Courses Component */}
           {education.courses && (
             <CoursesSection 
               courses={education.courses} 
@@ -116,7 +112,6 @@ const EducationCard: React.FC<EducationCardProps> = ({ education, index, openCol
   );
 };
 
-// Featured Items Component
 interface FeaturedItemsProps {
   featured: FeaturedItem[];
 }
@@ -148,7 +143,6 @@ const FeaturedItems: React.FC<FeaturedItemsProps> = ({ featured }) => {
   );
 };
 
-// Courses Section Component
 interface CoursesSectionProps {
   courses: Course[];
   openCollapsible: boolean;
@@ -178,7 +172,6 @@ const CoursesSection: React.FC<CoursesSectionProps> = ({ courses, openCollapsibl
           </CollapsibleTrigger>
         </div>
 
-        {/* Always show first 3 courses, toggle the rest */}
         <div className="flex flex-wrap gap-2">
           {courses.slice(0, 3).map((course, i) => (
             <CourseItem key={i} course={course} />
@@ -195,7 +188,6 @@ const CoursesSection: React.FC<CoursesSectionProps> = ({ courses, openCollapsibl
   );
 };
 
-// Individual Course Item
 interface CourseItemProps {
   course: Course;
 }
