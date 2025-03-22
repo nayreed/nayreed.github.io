@@ -18,8 +18,8 @@ const Education = () => {
       degree: 'B.Sc (Technology) in Electronics and Communications Engineering',
       period: 'August 2024 - PRESENT',
       featured: [
-        { title: 'Artificial Intelligence', description: "Highly interested in AI and Machine Learning" },
-        { title: 'C++ Programming', description: "Proficient in C++ programming language" },
+        { title: 'Artificial Intelligence', description: "Highly interested in AI and Machine Learning", grade: '5' },
+        { title: 'C++ Programming', description: "Proficient in C++ programming language", grade: '4' },
       ],
       courses: [
         { name: 'Calculus I', grade: '4' },
@@ -147,7 +147,7 @@ const Education = () => {
 
                   <p className="text-lg text-primary mb-4">{edu.degree}</p>
 
-                  {/* Featured Accomplishments Section */}
+                  {/* Featured Accomplishments Section with Flip Animation */}
                   {edu.featured && (
                   <div className="mt-4 mb-6">
                     <h4 className="text-md font-medium text-white/80 mb-3 flex items-center">
@@ -158,10 +158,18 @@ const Education = () => {
                       {edu.featured.map((item, i) => (
                         <div
                           key={i}
-                          className="bg-primary/5 border border-primary/20 text-white/90 p-3 rounded-md transition-all hover:bg-primary/10"
+                          className="flip-card relative h-32"
                         >
-                          <h5 className="font-medium text-primary">{item.title}</h5>
-                          <p className="text-sm text-white/70 mt-1">{item.description}</p>
+                          <div className="flip-card-inner w-full h-full transition-transform duration-700 transform-style-preserve-3d hover:rotate-y-180">
+                            <div className="flip-card-front absolute w-full h-full backface-hidden bg-primary/5 border border-primary/20 text-white/90 p-3 rounded-md">
+                              <h5 className="font-medium text-primary">{item.title}</h5>
+                              <p className="text-sm text-white/70 mt-1">{item.description}</p>
+                            </div>
+                            <div className="flip-card-back absolute w-full h-full backface-hidden rotate-y-180 bg-primary/10 border border-primary/30 text-white p-3 rounded-md flex flex-col justify-center items-center">
+                              <span className="text-white/80 mb-2">Grade</span>
+                              <span className="text-2xl font-bold text-primary">{item.grade}</span>
+                            </div>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -269,6 +277,22 @@ const Education = () => {
           </GlassCard>
         </div>
       </div>
+
+      {/* Custom styles for flip cards */}
+      <style jsx>{`
+        .flip-card {
+          perspective: 1000px;
+        }
+        .transform-style-preserve-3d {
+          transform-style: preserve-3d;
+        }
+        .backface-hidden {
+          backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+          transform: rotateY(180deg);
+        }
+      `}</style>
 
       {/* Easter Egg Script */}
       <script dangerouslySetInnerHTML={{
