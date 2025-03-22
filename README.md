@@ -7,7 +7,6 @@ Welcome to my personal portfolio website! This site showcases my **skills, proje
 - **Responsive Design** for a seamless user experience across devices.
 - **Dark Mode UI** with a modern and professional aesthetic.
 - **Skills & Languages Toggle** to switch between different skill categories.
-- **Hosted on GitHub Pages** for easy deployment.
 
 ## 🛠️ Tech Stack
 - **Frontend:** React, Vite, JavaScript, HTML5, CSS
