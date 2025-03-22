@@ -1,53 +1,26 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
-import Experience from '@/components/Experience';
-import Education from '@/components/Education';
 import Skills from '@/components/Skills';
+import Experience from '@/components/Experience';
 import Projects from '@/components/Projects';
+import Education from '@/components/education/Education';
 import Articles from '@/components/Articles';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 
 const Index = () => {
-  // Add smooth scroll behavior for anchor links
-  useEffect(() => {
-    const handleAnchorClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const anchorLink = target.closest('a[href^="#"]');
-      
-      if (anchorLink) {
-        e.preventDefault();
-        const targetId = anchorLink.getAttribute('href');
-        if (targetId && targetId !== '#') {
-          const targetElement = document.querySelector(targetId);
-          if (targetElement) {
-            window.scrollTo({
-              top: targetElement.getBoundingClientRect().top + window.scrollY - 100,
-              behavior: 'smooth'
-            });
-          }
-        }
-      }
-    };
-
-    document.addEventListener('click', handleAnchorClick);
-    return () => document.removeEventListener('click', handleAnchorClick);
-  }, []);
-
   return (
-    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f172a] text-[#1e293b] dark:text-[#e2e8f0] antialiased">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <main>
-        <Hero />
-        <Experience />
-        <Education />
-        <Skills />
-        <Projects />
-        <Articles />
-        <Contact />
-      </main>
+      <Hero />
+      <Skills />
+      <Experience />
+      <Projects />
+      <Education />
+      <Articles />
+      <Contact />
       <Footer />
     </div>
   );

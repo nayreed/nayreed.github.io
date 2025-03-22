@@ -1,0 +1,25 @@
+
+import React from 'react';
+
+const FlipCardStyles: React.FC = () => {
+  return (
+    <style>
+      {`
+        .flip-card {
+          perspective: 1000px;
+        }
+        .transform-style-preserve-3d {
+          transform-style: preserve-3d;
+        }
+        .backface-hidden {
+          backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+          transform: rotateY(180deg);
+        }
+      `}
+    </style>
+  );
+};
+
+export default FlipCardStyles;
