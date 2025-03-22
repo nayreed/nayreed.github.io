@@ -23,16 +23,16 @@ const Education = () => {
         { title: 'C++ Programming', description: "Proficient in C++ programming language" },
       ],
       courses: [
-        { name: 'Calculus I', grade: 'A' }, 
-        { name: 'Elementry Programming', grade: 'A+' }, 
-        { name: 'Introduction to Electronics', grade: 'A-' },
-        { name: 'Electrical Measurement Principles', grade: 'B+' }, 
-        { name: 'Matrix Algebra', grade: 'A' }, 
-        { name: 'Calculus II', grade: 'A-' },
-        { name: 'Digital Techniques 1', grade: 'A' }, 
-        { name: 'Differential Equations', grade: 'B+' }, 
-        { name: 'Introduction to Internet', grade: 'A' },
-        { name: 'Probability and Mathematical Statistics', grade: 'B+' }
+        { name: 'Calculus I', grade: '4' },
+        { name: 'Elementry Programming', grade: '3' },
+        { name: 'Introduction to Electronics', grade: '4' },
+        { name: 'Electrical Measurement Principles', grade: '5' },
+        { name: 'Matrix Algebra', grade: '5' },
+        { name: 'Calculus II', grade: '5' },
+        { name: 'Digital Techniques 1', grade: 'Passed' },
+        { name: 'Differential Equations', grade: 'NULL' },
+        { name: 'Introduction to Internet', grade: 'NULL' },
+        { name: 'Probability and Mathematical Statistics', grade: 'NULL' }
       ],
       transcript: "transcript.pdf" // Placeholder for transcript file
     },
@@ -115,10 +115,10 @@ const Education = () => {
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Button 
-                            onClick={handleDownloadTranscript} 
-                            variant="outline" 
-                            size="sm" 
+                          <Button
+                            onClick={handleDownloadTranscript}
+                            variant="outline"
+                            size="sm"
                             className="mt-2 bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
                           >
                             <Download size={14} className="mr-2" />
