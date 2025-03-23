@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GlassCard from './ui/GlassCard';
 import { GraduationCap, BookOpen, Calendar, ChevronDown, ChevronUp, Star, Download, HelpCircle } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
@@ -61,6 +61,44 @@ const Education = () => {
     link.click();
     document.body.removeChild(link);
   };
+
+  useEffect(() => {
+    let keySequence: string[] = [];
+
+    const handleScroll = () => {
+      const constellations = document.querySelectorAll('.constellation');
+      if (window.scrollY > 1000 && window.scrollY < 1800) {
+        constellations.forEach(c => c.classList.add('opacity-100'));
+      } else {
+        constellations.forEach(c => c.classList.remove('opacity-100'));
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      keySequence.push(e.key);
+      if (keySequence.length > 5) keySequence.shift();
+
+      if (keySequence.join('') === 'oulu') {
+        document.body.classList.toggle('matrix-mode');
+
+        const audio = new Audio('https://www.soundjay.com/nature/sounds/rain-07.mp3');
+        audio.volume = 0.1;
+        audio.play();
+
+        setTimeout(() => {
+          document.body.classList.remove('matrix-mode');
+        }, 5000);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   return (
     <section id="education" className="py-24 relative overflow-hidden">
@@ -300,39 +338,6 @@ const Education = () => {
           transform: rotateY(180deg);
         }
       `}</style>
-
-      {/* Easter Egg Script */}
-      <script dangerouslySetInnerHTML={{
-        __html: `
-          document.addEventListener('scroll', function() {
-            const constellations = document.querySelectorAll('.constellation');
-            if (window.scrollY > 1000 && window.scrollY < 1800) {
-              constellations.forEach(c => c.classList.add('opacity-100'));
-            } else {
-              constellations.forEach(c => c.classList.remove('opacity-100'));
-            }
-          });
-
-          // Secret keyboard shortcut
-          let keySequence = [];
-          document.addEventListener('keydown', (e) => {
-            keySequence.push(e.key);
-            if (keySequence.length > 5) keySequence.shift();
-
-            if (keySequence.join('') === 'oulu') {
-              document.body.classList.toggle('matrix-mode');
-
-              const audio = new Audio('https://www.soundjay.com/nature/sounds/rain-07.mp3');
-              audio.volume = 0.1;
-              audio.play();
-
-              setTimeout(() => {
-                document.body.classList.remove('matrix-mode');
-              }, 5000);
-            }
-          });
-        `
-      }} />
     </section>
   );
 };
