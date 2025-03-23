@@ -18,8 +18,8 @@ const Education = () => {
       degree: 'B.Sc (Technology) in Electronics and Communications Engineering',
       period: 'August 2024 - PRESENT',
       featured: [
-        { title: 'Artificial Intelligence', description: "Highly interested in AI and Machine Learning", grade: '5' },
-        { title: 'C++ Programming', description: "Proficient in C++ programming language", grade: '4' },
+        { title: 'Artificial Intelligence', description: "Highly interested in AI and Machine Learning", grade: 'NULL' },
+        { title: 'C++ Programming', description: "Proficient in C++ programming language", grade: 'NULL' },
       ],
       courses: [
         { name: 'Calculus I', grade: '4' },
@@ -280,13 +280,23 @@ const Education = () => {
         .flip-card {
           perspective: 1000px;
         }
-        .transform-style-preserve-3d {
+        .flip-card-inner {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          transition: transform 0.6s;
           transform-style: preserve-3d;
         }
-        .backface-hidden {
+        .flip-card:hover .flip-card-inner {
+          transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+          position: absolute;
+          width: 100%;
+          height: 100%;
           backface-visibility: hidden;
         }
-        .rotate-y-180 {
+        .flip-card-back {
           transform: rotateY(180deg);
         }
       `}</style>
