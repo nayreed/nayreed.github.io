@@ -9,7 +9,7 @@ const Experience = () => {
       title: 'Independent Contractor',
       company: 'BGF Consulting, LLC',
       location: 'Florida, United States',
-      period: 'March 2020 - September 2023',
+      period: 'March 2020 - December 2023',
       achievements: [
         'Designed and developed the company website, improving user experience and increasing traffic by 27% over six months, ensuring it met modern web standards and reflected the brand identity.',
         'Edited video presentations for internal and client-facing purposes, improving clarity and visual appeal, leading to a 22% increase in viewer engagement.',
