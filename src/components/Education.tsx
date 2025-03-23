@@ -13,7 +13,7 @@ const Education = () => {
 
   const education = [
     {
-      institution: 'University of Oulu',
+      institution: 'University of Oulu (Oulun Yliopisto)',
       location: 'Oulu, Finland',
       degree: 'B.Sc (Technology) in Electronics and Communications Engineering',
       period: 'August 2024 - PRESENT',
