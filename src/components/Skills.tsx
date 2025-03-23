@@ -31,7 +31,7 @@ const Skills = () => {
       ]
     },
     {
-      title: 'Other Skills',
+      title: 'Others',
       icon: <img src={OtherSkillsIcon} alt="Other Skills Icon" className="w-6 h-6" />,
       lucideIcon: <Coffee size={20} className="text-primary" />,
       skills: [
