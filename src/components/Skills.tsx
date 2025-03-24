@@ -27,7 +27,7 @@ const Skills = () => {
       icon: <img src={ProfessionalSkillsIcon} alt="Professional Skills Icon" className="w-6 h-6" />,
       lucideIcon: <Briefcase size={20} className="text-primary" />,
       skills: [
-        'Student tutor', 'Digital Strategy', , 'Microsoft Office', 'Social Media', 'Organization Skills'
+        'Student Tutor', 'Digital Strategy', , 'Microsoft Office', 'Social Media', 'Organization Skills'
       ]
     },
     {
