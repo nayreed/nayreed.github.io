@@ -2,7 +2,6 @@ import React from 'react';
 import GlassCard from './ui/GlassCard';
 import { Briefcase, Calendar } from 'lucide-react';
 import UsaIcon from '../assets/usa.svg';
-import Constellations from '../components/Constellations'; // Corrected import path
 
 const Experience = () => {
   const experiences = [
