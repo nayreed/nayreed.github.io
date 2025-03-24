@@ -24,9 +24,6 @@ const Experience = () => {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"></div>
       <div className="absolute inset-0 bg-tech-pattern opacity-10"></div>
 
-      {/* Constellations effect */}
-      <Constellations />
-
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-16 text-center">
           <div className="inline-flex items-center py-1 px-3 rounded-full bg-white/5 border border-white/10 text-sm text-white/70 font-medium mb-4 backdrop-blur-sm">
