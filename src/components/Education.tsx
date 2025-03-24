@@ -85,10 +85,6 @@ const Education = () => {
         const audio = new Audio(shSound);
         audio.volume = 0.5;
         audio.play();
-
-        setTimeout(() => {
-          document.body.classList.remove('matrix-mode');
-        }, 5000);
       }
     };
 
