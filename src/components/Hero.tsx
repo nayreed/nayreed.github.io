@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AnimatedText from './ui/AnimatedText';
 import { ArrowDown, Code, Cpu, Zap, Download } from 'lucide-react';
+import Constellations from '../components/Constellations';
 
 const Hero = () => {
   const [isVisible, setIsVisible] = useState(false);

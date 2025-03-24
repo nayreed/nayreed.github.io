@@ -7,6 +7,7 @@ import BangladeshIcon from '../assets/bangladesh.svg';
 import { Button } from './ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
+import shSound from '../assets/sh.mp3'; // Import the audio file
 
 const Education = () => {
   const [openCollapsible, setOpenCollapsible] = useState(false);
@@ -81,8 +82,8 @@ const Education = () => {
       if (keySequence.join('') === 'oulu') {
         document.body.classList.toggle('matrix-mode');
 
-        const audio = new Audio('https://www.soundjay.com/nature/sounds/rain-07.mp3');
-        audio.volume = 0.1;
+        const audio = new Audio(shSound);
+        audio.volume = 0.5;
         audio.play();
 
         setTimeout(() => {

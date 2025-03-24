@@ -1,4 +1,3 @@
-
 import React from 'react';
 import GlassCard from './ui/GlassCard';
 import { MapPin, Phone, Mail, Linkedin, ExternalLink, MessageSquare, Github } from 'lucide-react';
@@ -8,7 +7,7 @@ const Contact = () => {
     {
       icon: <MapPin size={18} />,
       label: 'Location',
-      value: 'Kajaanintie 32 B 15/2, Oulu, Finland',
+      value: 'Kajaanintie 32 B 15/2, Oulu-90130, Finland',
       link: null
     },
     {
@@ -87,6 +86,21 @@ const Contact = () => {
                 </div>
               ))}
             </div>
+
+      <div className="constellation absolute inset-0 opacity-0 transition-opacity duration-1000" data-easter-egg="true">
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div
+            key={i}
+            className="star absolute w-1 h-1 bg-primary rounded-full animate-pulse-glow"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              opacity: Math.random() * 0.7 + 0.3
+            }}
+          ></div>
+        ))}
+      </div>
 
             <div className="mt-10 pt-6 border-t border-white/10">
               <div className="flex items-center justify-center">

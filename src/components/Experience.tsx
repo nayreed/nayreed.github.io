@@ -2,6 +2,7 @@ import React from 'react';
 import GlassCard from './ui/GlassCard';
 import { Briefcase, Calendar } from 'lucide-react';
 import UsaIcon from '../assets/usa.svg';
+import Constellations from '../components/Constellations'; // Corrected import path
 
 const Experience = () => {
   const experiences = [
@@ -23,6 +24,9 @@ const Experience = () => {
     <section id="experience" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"></div>
       <div className="absolute inset-0 bg-tech-pattern opacity-10"></div>
+
+      {/* Constellations effect */}
+      <Constellations />
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-16 text-center">
