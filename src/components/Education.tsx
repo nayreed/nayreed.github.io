@@ -30,6 +30,8 @@ const Education = () => {
         { name: 'Matrix Algebra', grade: '5' },
         { name: 'Calculus II', grade: '5' },
         { name: 'Digital Techniques 1', grade: 'Passed' },
+        { name: 'Professional Communication for Technology', grade: 'Passed' },
+        { name: 'Opctical Systems', grade: 'NULL' },
         { name: 'Differential Equations', grade: 'NULL' },
         { name: 'Introduction to Internet', grade: 'NULL' },
         { name: 'Probability and Mathematical Statistics', grade: 'NULL' }
