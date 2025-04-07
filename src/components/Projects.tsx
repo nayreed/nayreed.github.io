@@ -8,7 +8,7 @@ import FortuneWheelIcon from '../assets/slot-machine.svg';
 const Projects = () => {
   const projects = [
     {
-      title: 'Spectrum Analyzer 1.0',
+      title: 'Spectrum Analyzer',
       description: 'Python Data Visualization Project',
       details: 'A graphical tool for analyzing and visualizing spectral data, offering features like background removal, intensity calculation, and interactive plotting.',
       tags: ["Python", "Data Visualization", "Spectral Analysis"],
