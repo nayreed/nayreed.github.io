@@ -36,7 +36,7 @@ const Education = () => {
         { name: 'Introduction to Internet', grade: 'NULL' },
         { name: 'Probability and Mathematical Statistics', grade: 'NULL' }
       ],
-      transcript: "https://opintopolku.fi/koski/opinnot/3613b9119adf487ca02c90a03c00d700" // Updated transcript URL
+      transcript: "https://unioulu-my.sharepoint.com/:b:/g/personal/rnayreed24_student_oulu_fi/ESkH4j5c_KROsDwJynRY9HYBRI5SD76OHsHmjn7a96__xg?e=noK0sb" // Updated transcript URL
     },
     {
       institution: 'Shaheed Bir Bikram Ramiz Uddin Cantonment College',
