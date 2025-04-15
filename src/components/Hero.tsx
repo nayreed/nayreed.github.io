@@ -25,7 +25,7 @@ const Hero = () => {
 
     // Easter egg - Konami code
     let keys: string[] = [];
-    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
     const handleKeyDown = (e: KeyboardEvent) => {
       keys.push(e.key);
@@ -99,7 +99,7 @@ const Hero = () => {
           </div>
 
           <p className={`text-lg md:text-xl text-white/70 max-w-2xl transition-all duration-1000 delay-[1500ms] ${isVisible ? 'opacity-100' : 'opacity-0 translate-y-8'}`}>
-            B.Sc (Technology) student at University of Oulu, passionate about electronics, programming, and digital innovation.<br></br><br></br>
+            BSc (Technology) student at University of Oulu, passionate about electronics, programming, and digital innovation.<br></br><br></br>
             Let's make impactful solutions, shall we?
           </p>
 
