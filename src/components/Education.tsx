@@ -137,7 +137,11 @@ const Education = () => {
               <div className="flex flex-col md:flex-row gap-6 md:gap-8">
                 <div className="flex-shrink-0 flex md:flex-col gap-4">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-                    <University size={20} />
+                    {edu.location === 'Dhaka, Bangladesh' ? (
+                      <School size={20} />
+                    ) : (
+                      <University size={20} />
+                    )}
                   </div>
 
                   <div className="flex items-center text-white/50 text-sm">
