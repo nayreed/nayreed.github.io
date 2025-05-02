@@ -31,12 +31,14 @@ const Education = () => {
         { name: 'Calculus II', grade: '5' },
         { name: 'Digital Techniques 1', grade: 'Passed' },
         { name: 'Professional Communication for Technology', grade: 'Passed' },
-        { name: 'Opctical Systems', grade: 'NULL' },
-        { name: 'Differential Equations', grade: 'NULL' },
-        { name: 'Introduction to Internet', grade: 'NULL' },
+        { name: 'Opctical Systems', grade: '5' },
+        { name: 'Differential Equations', grade: '5' },
+        { name: 'Introduction to Internet', grade: '5' },
+        { name: 'Software Engineering', grade: 'NULL' },
+        { name: 'Entrepreneurship and Emerging Technologies', grade: 'NULL'},
         { name: 'Probability and Mathematical Statistics', grade: 'NULL' }
       ],
-      transcript: "https://unioulu-my.sharepoint.com/:b:/g/personal/rnayreed24_student_oulu_fi/ESkH4j5c_KROsDwJynRY9HYBRI5SD76OHsHmjn7a96__xg?e=noK0sb" // Updated transcript URL
+      transcript: "https://opintopolku.fi/koski/opinnot/3613b9119adf487ca02c90a03c00d700" // Updated transcript URL
     },
     {
       institution: 'Shaheed Bir Bikram Ramiz Uddin Cantonment College',

@@ -32,9 +32,8 @@ const Footer = () => {
               <Github size={18} />
             </a>
 
-            <a className="w-10 h-10 rounded-full bg-white/5 hover:bg-primary/20 border border-white/10 flex items-center justify-center text-white/70 hover:text-primary transition-colors" href="https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=nayreed" target="_blank">Follow on LinkedIn</a>
             <a
-              href="https://www.linkedin.com/in/nayreed/"
+              href="https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=nayreed"
               target="_blank"
               rel="noopener noreferrer"
               className="w-10 h-10 rounded-full bg-white/5 hover:bg-primary/20 border border-white/10 flex items-center justify-center text-white/70 hover:text-primary transition-colors"
