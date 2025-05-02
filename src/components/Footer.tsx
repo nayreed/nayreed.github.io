@@ -31,7 +31,8 @@ const Footer = () => {
             >
               <Github size={18} />
             </a>
-            <a class="libutton" href="https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=nayreed" target="_blank">Follow on LinkedIn</a>
+
+            <a className="w-10 h-10 rounded-full bg-white/5 hover:bg-primary/20 border border-white/10 flex items-center justify-center text-white/70 hover:text-primary transition-colors" href="https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=nayreed" target="_blank">Follow on LinkedIn</a>
             <a
               href="https://www.linkedin.com/in/nayreed/"
               target="_blank"
@@ -83,20 +84,4 @@ export default Footer;
 
 
 
-<style>
-.libutton {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 7px;
-  text-align: center;
-  outline: none;
-  text-decoration: none !important;
-  color: #ffffff !important;
-  width: 200px;
-  height: 32px;
-  border-radius: 16px;
-  background-color: #0A66C2;
-  font-family: "SF Pro Text", Helvetica, sans-serif;
-}
-</style>
+
