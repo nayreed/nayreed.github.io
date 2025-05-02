@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import GlassCard from './ui/GlassCard';
-import { GraduationCap, BookOpen, Calendar, ChevronDown, ChevronUp, Star, Download, HelpCircle, University } from 'lucide-react';
+import { GraduationCap, BookOpen, Calendar, ChevronDown, ChevronUp, Star, Download, HelpCircle, University, School, Gem } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import FinlandIcon from '../assets/finland.svg';
 import BangladeshIcon from '../assets/bangladesh.svg';
@@ -125,7 +125,7 @@ const Education = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-16 text-center">
           <div className="inline-flex items-center py-1 px-3 rounded-full bg-white/5 border border-white/10 text-sm text-white/70 font-medium mb-4 backdrop-blur-sm">
-            <University size={14} className="mr-2 text-primary" />
+            <GraduationCap size={14} className="mr-2 text-primary" />
             <span>Academic Background</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-white">Education & Qualifications</h2>
@@ -137,7 +137,7 @@ const Education = () => {
               <div className="flex flex-col md:flex-row gap-6 md:gap-8">
                 <div className="flex-shrink-0 flex md:flex-col gap-4">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-                    <GraduationCap size={20} />
+                    <University size={20} />
                   </div>
 
                   <div className="flex items-center text-white/50 text-sm">
@@ -156,7 +156,7 @@ const Education = () => {
                             size="sm"
                             className="mt-2 bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
                           >
-                            <Star size={14} className="mr-2" />
+                            <Gem size={14} className="mr-2" />
                             Transcript
                           </Button>
                         </TooltipTrigger>
