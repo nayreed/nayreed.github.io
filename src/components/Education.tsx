@@ -156,12 +156,12 @@ const Education = () => {
                             size="sm"
                             className="mt-2 bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
                           >
-                            <Download size={14} className="mr-2" />
+                            <Star size={14} className="mr-2" />
                             Transcript
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>Download official transcript</p>
+                          <p>View official transcript</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
