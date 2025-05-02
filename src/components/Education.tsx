@@ -159,7 +159,7 @@ const Education = () => {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
-                            onClick={handleDownloadTranscript}
+                            onClick={handleOpenTranscript}
                             variant="outline"
                             size="sm"
                             className="mt-2 bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
@@ -172,15 +172,6 @@ const Education = () => {
                           <p>View official transcript</p>
                         </TooltipContent>
                       </Tooltip>
-                      <Button
-                        onClick={handleOpenTranscript}
-                        variant="outline"
-                        size="sm"
-                        className="mt-2 bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
-                      >
-                        <Gem size={14} className="mr-2" />
-                        Transcript
-                      </Button>
                     </TooltipProvider>
                   )}
                 </div>
