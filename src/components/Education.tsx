@@ -67,6 +67,10 @@ const Education = () => {
     document.body.removeChild(link);
   };
 
+  const handleOpenTranscript = () => {
+    window.open(education[0].transcript, '_blank');
+  };
+
   useEffect(() => {
     let keySequence: string[] = [];
 
@@ -168,6 +172,15 @@ const Education = () => {
                           <p>View official transcript</p>
                         </TooltipContent>
                       </Tooltip>
+                      <Button
+                        onClick={handleOpenTranscript}
+                        variant="outline"
+                        size="sm"
+                        className="mt-2 bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
+                      >
+                        <Gem size={14} className="mr-2" />
+                        Transcript
+                      </Button>
                     </TooltipProvider>
                   )}
                 </div>
