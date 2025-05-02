@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import GlassCard from './ui/GlassCard';
-import { GraduationCap, BookOpen, Calendar, ChevronDown, ChevronUp, Star, Download, HelpCircle } from 'lucide-react';
+import { GraduationCap, BookOpen, Calendar, ChevronDown, ChevronUp, Star, Download, HelpCircle, University } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import FinlandIcon from '../assets/finland.svg';
 import BangladeshIcon from '../assets/bangladesh.svg';
@@ -125,7 +125,7 @@ const Education = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-16 text-center">
           <div className="inline-flex items-center py-1 px-3 rounded-full bg-white/5 border border-white/10 text-sm text-white/70 font-medium mb-4 backdrop-blur-sm">
-            <GraduationCap size={14} className="mr-2 text-primary" />
+            <University size={14} className="mr-2 text-primary" />
             <span>Academic Background</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-white">Education & Qualifications</h2>
