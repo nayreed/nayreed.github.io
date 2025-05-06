@@ -2,7 +2,7 @@ import React from 'react';
 import GlassCard from './ui/GlassCard';
 import { FileText, ExternalLink } from 'lucide-react';
 import BciIcon from '../assets/bci.svg';
-import Thesis from './Thesis'; // Import the Thesis component
+import FlIcon from '../assets/fl.svg'; // Import the FL.svg icon
 
 const Articles = () => {
   return (
@@ -43,7 +43,26 @@ const Articles = () => {
           </GlassCard>
 
           {/* Thesis Section */}
-          <Thesis />
+          <GlassCard className="p-8 col-span-1 md:col-span-2" variant="dark" hoverEffect>
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 mb-4">
+                <img src={FlIcon} alt="Federated Learning Icon" className="w-full h-full" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-4">Exploring Federated Learning for Privacy-Preserving AI</h3>
+              <p className="text-white/70 mb-6 text-center">
+                A detailed thesis exploring the applications of Federated Learning in privacy-preserving artificial intelligence systems.
+              </p>
+              <a
+                href="https://example.com/thesis"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-primary hover:text-primary/80 transition-colors gap-1 text-sm group"
+              >
+                <span>Read Thesis</span>
+                <ExternalLink size={14} className="transition-transform group-hover:translate-x-0.5" />
+              </a>
+            </div>
+          </GlassCard>
         </div>
       </div>
     </section>
