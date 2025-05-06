@@ -60,17 +60,17 @@ const Articles = () => {
                   style={{ strokeWidth: '2', width: '48px', height: '48px' }} // Match BCI icon size and thickness
                 />
               </div>
-              <h3 className="text-xl font-bold text-white mb-4">Exploring Federated Learning for Privacy-Preserving AI</h3>
+              <h3 className="text-xl font-bold text-white mb-4">
+                Brain-Inspired Low-Energy Federated Learning Leveraging Spiking Network
+              </h3>
               <p className="text-white/70 mb-6 text-center">
-                A detailed thesis exploring the applications of Federated Learning in privacy-preserving artificial intelligence systems.
+                This thesis investigates the integration of spiking neural networks into federated learning frameworks, aiming to achieve energy-efficient and privacy-preserving AI systems.
               </p>
               <a
-                href="https://example.com/thesis"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#articles"
                 className="inline-flex items-center text-primary hover:text-primary/80 transition-colors gap-1 text-sm group"
               >
-                <span>Read Thesis</span>
+                <span>Coming Soon</span>
                 <ExternalLink size={14} className="transition-transform group-hover:translate-x-0.5" />
               </a>
             </div>
