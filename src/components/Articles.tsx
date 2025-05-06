@@ -11,6 +11,7 @@ const Articles = () => {
       <div className="absolute inset-0 bg-tech-pattern opacity-10"></div>
 
       <div className="container mx-auto px-6 relative z-10">
+        {/* Articles Section */}
         <div className="mb-16 text-center">
           <div className="inline-flex items-center py-1 px-3 rounded-full bg-white/5 border border-white/10 text-sm text-white/70 font-medium mb-4 backdrop-blur-sm">
             <FileText size={14} className="mr-2 text-primary" />
@@ -41,10 +42,15 @@ const Articles = () => {
               </a>
             </div>
           </GlassCard>
+        </div>
 
-          {/* Thesis Section */}
-          <GlassCard className="p-8 col-span-1 md:col-span-2" variant="dark" hoverEffect>
+        {/* Thesis Section */}
+        <div className="mb-16 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white">Thesis</h2>
+        </div>
+
+        <div className="max-w-5xl mx-auto">
+          <GlassCard className="p-8 col-span-1 md:col-span-2" variant="dark" hoverEffect>
             <div className="flex flex-col items-center">
               <div className="w-12 h-12 mb-4">
                 <img src={FlIcon} alt="Federated Learning Icon" className="w-full h-full" />
