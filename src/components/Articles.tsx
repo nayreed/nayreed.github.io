@@ -44,8 +44,8 @@ const Articles = () => {
 
           {/* Thesis Section */}
           <GlassCard className="p-8 col-span-1 md:col-span-2" variant="dark" hoverEffect>
+          <h2 className="text-3xl md:text-4xl font-bold text-white">Thesis</h2>
             <div className="flex flex-col items-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white">Thesis</h2>
               <div className="w-12 h-12 mb-4">
                 <img src={FlIcon} alt="Federated Learning Icon" className="w-full h-full" />
               </div>
