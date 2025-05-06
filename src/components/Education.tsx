@@ -16,7 +16,7 @@ const Education = () => {
     {
       institution: 'University of Oulu (Oulun Yliopisto)',
       location: 'Oulu, Finland',
-      degree: 'B.Sc (Technology) in Electronics and Communications Engineering',
+      degree: 'BSc (Technology) in Electronics and Communications Engineering',
       period: 'August 2024 - PRESENT',
       featured: [
         { title: 'Artificial Intelligence', description: "Highly interested in AI and Machine Learning", grade: 'NULL' },
