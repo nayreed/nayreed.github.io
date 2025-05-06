@@ -21,7 +21,7 @@ const Articles = () => {
 
         </div>
 
-        <div>
+        <div className="max-w-5xl mx-auto">
           {/* Brain-Computer Interfaces (BCI) Article */}
           <GlassCard className="p-8 col-span-1 md:col-span-2" variant="dark" hoverEffect>
             <div className="flex flex-col items-center">
@@ -46,7 +46,7 @@ const Articles = () => {
         </div>
 
         {/* Thesis Section */}
-        <div>
+        <div className="mt-24 mb-16 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white">Thesis</h2>
 
         </div>
