@@ -102,7 +102,7 @@ const Skills = () => {
             <span>Capabilities</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-white">Skills & Languages</h2>
-          <div className="h-1 w-16 bg-primary mx-auto rounded-full"></div>
+
         </div>
 
         <div className="max-w-5xl mx-auto">
