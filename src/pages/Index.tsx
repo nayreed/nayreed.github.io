@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
@@ -5,7 +6,7 @@ import Experience from '@/components/Experience';
 import Education from '@/components/Education';
 import Skills from '@/components/Skills';
 import Projects from '@/components/Projects';
-import Publications from '@/components/Publications';
+import Articles from '@/components/Articles';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 
@@ -15,7 +16,7 @@ const Index = () => {
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const anchorLink = target.closest('a[href^="#"]');
-
+      
       if (anchorLink) {
         e.preventDefault();
         const targetId = anchorLink.getAttribute('href');
@@ -44,7 +45,7 @@ const Index = () => {
         <Education />
         <Skills />
         <Projects />
-        <Publications />
+        <Articles />
         <Contact />
       </main>
       <Footer />
