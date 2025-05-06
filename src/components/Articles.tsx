@@ -2,6 +2,7 @@ import React from 'react';
 import GlassCard from './ui/GlassCard';
 import { FileText, ExternalLink } from 'lucide-react';
 import BciIcon from '../assets/bci.svg';
+import Thesis from './Thesis'; // Import the Thesis component
 
 const Articles = () => {
   return (
@@ -19,6 +20,7 @@ const Articles = () => {
         </div>
 
         <div className="max-w-5xl mx-auto">
+          {/* Brain-Computer Interfaces (BCI) Article */}
           <GlassCard className="p-8 col-span-1 md:col-span-2" variant="dark" hoverEffect>
             <div className="flex flex-col items-center">
               <div className="w-12 h-12 mb-4">
@@ -39,6 +41,9 @@ const Articles = () => {
               </a>
             </div>
           </GlassCard>
+
+          {/* Thesis Section */}
+          <Thesis />
         </div>
       </div>
     </section>
