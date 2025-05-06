@@ -1,7 +1,7 @@
 import React from 'react';
 import GlassCard from './ui/GlassCard';
 import { ExternalLink } from 'lucide-react';
-import FlIcon from '../assets/FL.svg'; // Import the FL.svg icon
+import FlIcon from '../assets/fl.svg'; // Import the FL.svg icon
 
 const Thesis = () => {
   return (
