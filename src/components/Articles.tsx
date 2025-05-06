@@ -17,7 +17,7 @@ const Articles = () => {
             <FileText size={14} className="mr-2 text-primary" />
             <span>Publications</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">Articles</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-white">Articles</h2>
           <div className="h-1 w-16 bg-primary mx-auto rounded-full"></div>
         </div>
 
@@ -47,7 +47,7 @@ const Articles = () => {
 
         {/* Thesis Section */}
         <div className="mt-24 mb-16 text-center">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">Thesis</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-white">Thesis</h2>
           <div className="h-1 w-16 bg-primary mx-auto rounded-full"></div>
         </div>
 
