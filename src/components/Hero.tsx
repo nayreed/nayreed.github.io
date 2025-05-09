@@ -130,7 +130,7 @@ const Hero = () => {
               data-tooltip="Download my resume"
             >
               <Download size={16} className="mr-2" />
-              Resume PDF
+              Resume
             </a>
           </div>
         </div>
