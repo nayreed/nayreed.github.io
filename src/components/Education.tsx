@@ -16,7 +16,7 @@ const Education = () => {
     {
       institution: 'University of Oulu (Oulun Yliopisto)',
       location: 'Oulu, Finland',
-      degree: 'B.Sc (Technology) in Electronics and Communications Engineering',
+      degree: 'BSc (Technology) in Electronics and Communications Engineering',
       period: 'August 2024 - PRESENT',
       featured: [
         { title: 'Artificial Intelligence', description: "Highly interested in AI and Machine Learning", grade: 'NULL' },
@@ -38,7 +38,7 @@ const Education = () => {
         { name: 'Entrepreneurship and Emerging Technologies', grade: 'NULL'},
         { name: 'Probability and Mathematical Statistics', grade: 'NULL' }
       ],
-      transcript: "https://opintopolku.fi/koski/opinnot/3613b9119adf487ca02c90a03c00d700" // Updated transcript URL
+      transcript: "https://unioulu-my.sharepoint.com/:b:/g/personal/rnayreed24_student_oulu_fi/Eewi43N_9dZFtBVbB_JCudMBwr1lp3Hb9cp-M9-_53BrQg?e=NZg4Ch" // Updated transcript URL
     },
     {
       institution: 'Shaheed Bir Bikram Ramiz Uddin Cantonment College',
@@ -49,7 +49,7 @@ const Education = () => {
   ];
 
   const testScores = {
-    name: 'SAT',
+    name: 'Scholastic Assessment Test (SAT)',
     date: 'December 2023',
     scores: [
       { subject: 'Total', score: '1360' },

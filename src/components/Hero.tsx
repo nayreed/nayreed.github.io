@@ -124,7 +124,7 @@ const Hero = () => {
               View Experience
             </a>
             <a
-              href="https://docs.google.com/document/d/1QKXNlwJ7PO7pA9w7Uz_vcUj7Yi34Gn9QSUJvCP9Ijpk/export?format=pdf"  // File path to your resume
+              href="https://unioulu-my.sharepoint.com/my?id=%2Fpersonal%2Frnayreed24%5Fstudent%5Foulu%5Ffi%2FDocuments%2FFiles%2FResume%2Epdf&parent=%2Fpersonal%2Frnayreed24%5Fstudent%5Foulu%5Ffi%2FDocuments%2FFiles&ga=1"  // File path to your resume
               className="bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 text-white font-medium rounded-md px-6 py-3 transition-all duration-300 flex items-center secret-resume-button"
               download="Rezwan_Ahmad_Nayreed_Resume.pdf"  // This will suggest the filename for the downloaded file
               data-tooltip="Download my resume"
