@@ -25,8 +25,8 @@ const Contact = () => {
     {
       icon: <Mail size={18} />,
       label: 'Academic Email',
-      value: 'rnayreed24@student.oulu.fi',
-      link: 'mailto:rnayreed24@student.oulu.fi'
+      value: 'Rezwan.Nayreed@student.oulu.fi',
+      link: 'mailto:Rezwan.Nayreed@student.oulu.fi'
     },
     {
       icon: <Linkedin size={18} />,

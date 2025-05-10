@@ -42,7 +42,7 @@ const Experience = () => {
         'Designed and developed the company website, improving user experience and increasing traffic by 27% over six months, ensuring it met modern web standards and reflected the brand identity.',
         'Edited video presentations for internal and client-facing purposes, improving clarity and visual appeal, leading to a 22% increase in viewer engagement.',
         'Scheduled and coordinated meetings, managing calendars for a team of 8 people, ensuring 100% on-time communication and no missed deadlines.',
-        'Collaborated with the team on various projects, adapting quickly to new tasks and responsibilities, delivering 100% of projects on time, even under tight deadlines.'
+        'Researched and evaluated approximately 150 prefab house manufacturers, analyzing pricing, quality, and delivery capacity, and mediated early-stage deal discussions with shortlisted candidates to align interests and facilitate decision-making.'
       ]
     }
   ];

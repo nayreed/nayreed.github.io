@@ -45,7 +45,7 @@ const Articles = () => {
         </div>
 
         {/* Thesis Section */}
-        <div className="mt-24 mb-16 text-center">
+        {/*<div className="mt-24 mb-16 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white">Thesis</h2>
         </div>
 
@@ -75,7 +75,7 @@ const Articles = () => {
               </a>
             </div>
           </GlassCard>
-        </div>
+        </div>*/}
       </div>
     </section>
   );
