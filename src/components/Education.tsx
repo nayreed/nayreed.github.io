@@ -20,8 +20,7 @@ const Education = () => {
       period: 'August 2024 - PRESENT',
       featured: [
         { title: 'Artificial Intelligence', description: "Highly interested in AI and Machine Learning", grade: 'NULL' },
-        { title: 'C++ Programming', description: "Proficient in C++ programming language", grade: 'NULL' },
-      ],
+              ],
       courses: [
         { name: 'Calculus I', grade: '5' },
         { name: 'Elementary Programming', grade: '5' },
@@ -34,8 +33,6 @@ const Education = () => {
         { name: 'Opctical Systems', grade: '5' },
         { name: 'Differential Equations', grade: '5' },
         { name: 'Introduction to Internet', grade: '5' },
-        { name: 'Software Engineering', grade: 'NULL' },
-        { name: 'Entrepreneurship and Emerging Technologies', grade: 'NULL'},
         { name: 'Probability and Mathematical Statistics', grade: 'NULL' }
       ],
       transcript: "https://unioulu-my.sharepoint.com/:b:/g/personal/rnayreed24_student_oulu_fi/Eewi43N_9dZFtBVbB_JCudMBwr1lp3Hb9cp-M9-_53BrQg?e=NZg4Ch" // Updated transcript URL
