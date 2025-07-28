@@ -8,6 +8,13 @@ import FortuneWheelIcon from '../assets/slot-machine.svg';
 const Projects = () => {
   const projects = [
     {
+      title: 'Federated Multiarch Machine Learning',
+      description: 'A Flower-based federated learning framework supporting MLP, CNN and Spiking Neural Networks (SNN) under both IID and non‑IID data distributions.',
+      details: 'This repository provides end‑to‑end scripts to: - Train federated models (MLP, CNN, SNN) using FedAvg via the Flower framework  - Compare performance under IID vs. non‑IID data splits  - Run inference on trained models against custom image inputs   - Quickly launch experiments with predefined configs  - Easily extend to new architectures or datasets',
+      tags: ["Federated Learning", "Flower", "Pytorch ", "snntorch", "snn", "Python"],
+      link: 'https://github.com/RA-Nayreed/federated-multiarch-ml'
+    },
+    {
       title: 'Spectrum Analyzer',
       description: 'Python Data Visualization Project',
       details: 'A graphical tool for analyzing and visualizing spectral data, offering features like background removal, intensity calculation, and interactive plotting.',

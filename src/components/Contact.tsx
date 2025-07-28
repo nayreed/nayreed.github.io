@@ -7,7 +7,7 @@ const Contact = () => {
     {
       icon: <MapPin size={18} />,
       label: 'Location',
-      value: 'Kajaanintie 32 B 15/2, Oulu-90130, Finland',
+      value: 'Paavo Havaksen Tie 5, Oulu-90570, Finland',
       link: null
     },
     {
