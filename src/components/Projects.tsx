@@ -4,6 +4,7 @@ import { Code, ExternalLink, Github, Layers } from 'lucide-react';
 import SpectrumAnalyzerIcon from '../assets/spectrum-analyzer.svg';
 import MinesweeperIcon from '../assets/minesweeper.svg';
 import FortuneWheelIcon from '../assets/slot-machine.svg';
+import FederatedIcon from '../assets/nn.svg'; 
 
 const Projects = () => {
   const projects = [
@@ -62,7 +63,9 @@ const Projects = () => {
             >
               <div className="mb-4">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-4">
-                  {project.title === 'Spectrum Analyzer' ? (
+                  {project.title === 'Federated Multiarch Machine Learning' ? (
+                    <img src={FederatedIcon} alt="Federated ML Icon" className="w-6 h-6" />
+                  ) : project.title === 'Spectrum Analyzer' ? (
                     <img src={SpectrumAnalyzerIcon} alt="Spectrum Analyzer Icon" className="w-6 h-6" />
                   ) : project.title === 'Minesweeper' ? (
                     <img src={MinesweeperIcon} alt="Minesweeper Icon" className="w-6 h-6" />
