@@ -64,7 +64,7 @@ const Projects = () => {
               <div className="mb-4">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-4">
                   {project.title === 'Federated Multiarch Machine Learning' ? (
-                    <img src={FederatedIcon} alt="Federated ML Icon" className="w-6 h-6" />
+                    <img src={FederatedIcon} alt="Federated ML Icon" className="w-16 h-16" />
                   ) : project.title === 'Spectrum Analyzer' ? (
                     <img src={SpectrumAnalyzerIcon} alt="Spectrum Analyzer Icon" className="w-6 h-6" />
                   ) : project.title === 'Minesweeper' ? (
