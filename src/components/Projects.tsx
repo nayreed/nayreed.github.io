@@ -11,7 +11,7 @@ const Projects = () => {
     {
       title: 'Federated Multiarch Machine Learning',
       description: 'A Flower-based federated learning framework',
-      details: 'End-to-end scripts to train MLP, CNN, and SNN models with FedAvg (via Flower), evaluate IID vs. non-IID setups.',
+      details: 'End-to-end scripts to train MLP, CNN, and SNN models with several Federated Algorithms leveraging Flower Framework, evaluate IID vs. non-IID setups.',
       tags: ["Federated Learning", "Flower", "PyTorch ", "snnTorch", "snn", "Python"],
       link: 'https://github.com/RA-Nayreed/federated-multiarch-ml'
     },
