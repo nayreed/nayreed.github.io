@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import GlassCard from './ui/GlassCard';
 import { Star, Users, Calendar } from 'lucide-react';
+import Mentor from '../assets/mentorship.svg';
 
 const ExtracurricularActivities = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -133,7 +134,11 @@ const ExtracurricularActivities = () => {
                 <div className="flex flex-col md:flex-row gap-4 md:gap-8">
                   <div className="flex-shrink-0 flex flex-col items-center md:items-start gap-3">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-                      <Users size={18} />
+                      {act.title.includes('Student Tutor') ? (
+                        <Mentor size={18} />
+                      ) : (
+                        <Users size={18} />
+                      )}
                     </div>
                     <div className="hidden md:flex items-center text-white/50 text-sm">
                       <Calendar size={14} className="mr-2 text-primary/70" />
