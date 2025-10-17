@@ -124,7 +124,7 @@ const Hero = () => {
               View Experience
             </a>
             <a
-              href="https://drive.google.com/file/d/1cGh8gQIGihYNu9FxktmIY9g8uGxNrho6/view?usp=sharing"
+              href="https://unioulu-my.sharepoint.com/:b:/g/personal/rnayreed24_student_oulu_fi/EUWmU7Xvq7tKgRx4cv17OuoBzzzJnTo6hbPQAd9IRsazCA?e=g8W2aM"
               className="bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 text-white font-medium rounded-md px-6 py-3 transition-all duration-300 flex items-center secret-resume-button"
               download="Rezwan_Ahmad_Nayreed_Resume.pdf"
               data-tooltip="Download my resume"

@@ -19,7 +19,7 @@ const Skills = () => {
       icon: <img src={ProgrammingSkillsIcon} alt="Programming Skills Icon" className="w-6 h-6" />,
       lucideIcon: <Code size={20} className="text-primary" />,
       skills: [
-        'Python', 'C++', 'MATLAB', 'KiCAD', 'HTML5', 'CSS', 'JavaScript', 'React','TypeScript', 'Node.js', 'GitHub', 'PowerShell', 'WordPress', 'Shopify'
+        'Python', 'C/C++', 'LTspice', 'KiCAD', 'HTML5', 'CSS', 'JavaScript', 'React','TypeScript', 'Node.js', 'GitHub', 'PowerShell', 'WordPress', 'Shopify'
       ]
     },
     {
