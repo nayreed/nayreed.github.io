@@ -137,7 +137,7 @@ const ExtracurricularActivities = () => {
                       {act.title.includes('Student Tutor') ? (
                         <img src={Mentor} alt="Mentorship Icon" className="w-5 h-5" />
                       ) : (
-                        <Users size={18} />
+                        <Users size={24} />
                       )}
                     </div>
                     <div className="hidden md:flex items-center text-white/50 text-sm">
