@@ -2,7 +2,7 @@ import React from 'react';
 import GlassCard from './ui/GlassCard';
 import { Star, Users, Calendar } from 'lucide-react';
 
-const ExtracurricularActivities: React.FC = () => {
+const ExtracurricularActivities = () => {
   const activities = [
     {
       title: 'JunctionX OuluES – 2nd Runner-Up, Nordea Challenge (2025) Demo',
@@ -78,42 +78,42 @@ const ExtracurricularActivities: React.FC = () => {
 
         <div className="max-w-4xl mx-auto space-y-6">
           {activities.map((act, idx) => (
-            <GlassCard key={idx} className="p-6" variant="neon" hoverEffect>
-              <div className="flex flex-col md:flex-row gap-4 md:gap-8">
-                <div className="flex-shrink-0 flex flex-col items-center md:items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-                    <Users size={18} />
+            <div key={idx} className="mb-6">
+              <GlassCard className="p-6" variant="neon" hoverEffect>
+                <div className="flex flex-col md:flex-row gap-4 md:gap-8">
+                  <div className="flex-shrink-0 flex flex-col items-center md:items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+                      <Users size={18} />
+                    </div>
+                    <div className="hidden md:flex items-center text-white/50 text-sm">
+                      <Calendar size={14} className="mr-2 text-primary/70" />
+                      <span>{act.date}</span>
+                    </div>
                   </div>
-                  <div className="hidden md:flex items-center text-white/50 text-sm">
-                    <Calendar size={14} className="mr-2 text-primary/70" />
-                    <span>{act.date}</span>
+
+                  <div className="flex-grow">
+                    <h3 className="text-xl font-bold text-white mb-1">{act.title}</h3>
+                    <p className="text-lg text-primary mb-2">{act.location}</p>
+                    <div className="md:hidden flex items-center text-white/50 text-sm mb-4">
+                      <Calendar size={14} className="mr-2 text-primary/70" />
+                      <span>{act.date}</span>
+                    </div>
+
+                    <p className="text-white/80">{act.description}</p>
+
+                    <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {act.skills.map((s, i) => (
+                        <li key={i} className="text-white/80 text-sm flex items-start gap-2">
+                          <span className="inline-block w-2 h-2 mt-2 rounded-full bg-primary" />
+                          <span>{s}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
-
-                <div className="flex-grow">
-                  <h3 className="text-xl font-bold text-white mb-1">{act.title}</h3>
-                  <p className="text-lg text-primary mb-2">{act.location}</p>
-                  <div className="md:hidden flex items-center text-white/50 text-sm mb-4">
-                    <Calendar size={14} className="mr-2 text-primary/70" />
-                    <span>{act.date}</span>
-                  </div>
-
-                  <p className="text-white/80">{act.description}</p>
-
-                  <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {act.skills.map((s, i) => (
-                      <li key={i} className="text-white/80 text-sm flex items-start gap-2">
-                        <span className="inline-block w-2 h-2 mt-2 rounded-full bg-primary" />
-                        <span>{s}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </GlassCard>
+              </GlassCard>
+            </div>
           ))}
-
-          <p className="text-sm text-white/60 mt-4">References available upon request.</p>
         </div>
       </div>
     </section>
