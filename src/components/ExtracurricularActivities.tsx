@@ -32,7 +32,7 @@ const ExtracurricularActivities = () => {
   }, []);
   const activities = [
     {
-      title: 'JunctionX OuluES – 2nd Runner-Up, Nordea Challenge (2025) Demo',
+      title: 'JunctionX OuluES – 2nd Runner-Up, Nordea Challenge (2025)',
       location: 'University of Oulu',
       date: '18 Sept. - 21 Sept. 2025',
       description:
@@ -61,7 +61,7 @@ const ExtracurricularActivities = () => {
       ]
     },
     {
-      title: 'Hack Oulu 2025 – AI Siege Badge',
+      title: 'Hack Oulu 2025 – AI Siege',
       location: 'University of Oulu',
       date: '11 Apr. - 13 Apr. 2025',
       description:

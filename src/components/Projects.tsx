@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import GlassCard from './ui/GlassCard';
 import { Code, ExternalLink, Github, Layers } from 'lucide-react';
 import SpectrumAnalyzerIcon from '../assets/spectrum-analyzer.svg';
@@ -38,10 +38,58 @@ const Projects = () => {
     }
   ];
 
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      {
+        root: null,
+        threshold: 0.1,
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <section id="projects" className="py-24 relative overflow-hidden">
+    <section id="projects" className="py-24 relative overflow-hidden" ref={sectionRef}>
+      {/* Interactive Easter Egg: Hidden constellation animation that appears on scroll */}
+      <div
+        className={`constellation absolute inset-0 transition-opacity duration-1000 ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+        data-easter-egg="true"
+      >
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div
+            key={i}
+            className="star absolute w-1 h-1 bg-primary rounded-full animate-pulse-glow"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              opacity: Math.random() * 0.7 + 0.3
+            }}
+          ></div>
+        ))}
+      </div>
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"></div>
-      <div className="absolute inset-0 bg-grid opacity-10"></div>
+      <div className="absolute inset-0 bg-grid opacity-20"></div>
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-16 text-center">

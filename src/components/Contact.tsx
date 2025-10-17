@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import GlassCard from './ui/GlassCard';
 import { MapPin, Phone, Mail, Linkedin, ExternalLink, MessageSquare, Github } from 'lucide-react';
 
@@ -42,8 +42,56 @@ const Contact = () => {
     }
   ];
 
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      {
+        root: null,
+        threshold: 0.1,
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <section id="contact" className="py-24 relative overflow-hidden">
+    <section id="contact" className="py-24 relative overflow-hidden" ref={sectionRef}>
+      {/* Interactive Easter Egg: Hidden constellation animation that appears on scroll */}
+      <div
+        className={`constellation absolute inset-0 transition-opacity duration-1000 ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+        data-easter-egg="true"
+      >
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div
+            key={i}
+            className="star absolute w-1 h-1 bg-primary rounded-full animate-pulse-glow"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              opacity: Math.random() * 0.7 + 0.3
+            }}
+          ></div>
+        ))}
+      </div>
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"></div>
       <div className="absolute inset-0 bg-tech-pattern opacity-10"></div>
 
