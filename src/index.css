@@ -120,4 +120,20 @@
   .pill-secondary {
     @apply inline-flex items-center justify-center gap-2 bg-canvas text-ink border border-hairline-strong text-sm font-medium px-5 py-2.5 rounded-full transition-colors hover:bg-soft;
   }
+
+  .animate-shake {
+    animation: shake 0.25s ease-in-out 2;
+  }
+}
+
+/* Rejected-command feedback in the terminal */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* 'oulu' easter egg */
+@keyframes snow-fall {
+  to { transform: translateY(112vh); }
 }

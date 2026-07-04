@@ -2,28 +2,36 @@ import { useCallback, useEffect, useState } from 'react';
 
 type Theme = 'light' | 'dark';
 
-const getInitialTheme = (): Theme => {
-  if (typeof document !== 'undefined' && document.documentElement.classList.contains('dark')) {
-    return 'dark';
+const THEME_EVENT = 'theme-change';
+
+const readTheme = (): Theme =>
+  typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+    ? 'dark'
+    : 'light';
+
+// The <html> class is the source of truth; a custom event keeps every
+// useTheme instance (navbar toggle, terminal command, …) in sync.
+export const setTheme = (next: Theme) => {
+  document.documentElement.classList.toggle('dark', next === 'dark');
+  try {
+    localStorage.setItem('theme', next);
+  } catch {
+    // localStorage unavailable (private mode) — theme still applies for the session
   }
-  return 'light';
+  window.dispatchEvent(new CustomEvent(THEME_EVENT, { detail: next }));
 };
 
 export const useTheme = () => {
-  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const [theme, setThemeState] = useState<Theme>(readTheme);
 
   useEffect(() => {
-    const root = document.documentElement;
-    root.classList.toggle('dark', theme === 'dark');
-    try {
-      localStorage.setItem('theme', theme);
-    } catch {
-      // localStorage unavailable (private mode) — theme still applies for the session
-    }
-  }, [theme]);
+    const sync = () => setThemeState(readTheme());
+    window.addEventListener(THEME_EVENT, sync);
+    return () => window.removeEventListener(THEME_EVENT, sync);
+  }, []);
 
   const toggleTheme = useCallback(() => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    setTheme(readTheme() === 'dark' ? 'light' : 'dark');
   }, []);
 
   return { theme, toggleTheme };
