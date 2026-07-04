@@ -1,170 +1,85 @@
-import React, { useState, useEffect, useRef } from 'react';
-import GlassCard from './ui/GlassCard';
-import { MapPin, Phone, Mail, Linkedin, ExternalLink, MessageSquare, Github } from 'lucide-react';
+import React from 'react';
+import SectionHeader from './SectionHeader';
+import { MapPin, Mail, Linkedin, Github, ArrowUpRight } from 'lucide-react';
+
+const contactInfo = [
+  {
+    icon: <Mail size={16} />,
+    label: 'Email',
+    value: 'nayreedptk@gmail.com',
+    link: 'mailto:nayreedptk@gmail.com',
+  },
+  {
+    icon: <Mail size={16} />,
+    label: 'Academic Email',
+    value: 'RezwanAhmad.Nayreed@student.oulu.fi',
+    link: 'mailto:RezwanAhmad.Nayreed@student.oulu.fi',
+  },
+  {
+    icon: <Linkedin size={16} />,
+    label: 'LinkedIn',
+    value: 'linkedin.com/in/nayreed',
+    link: 'https://www.linkedin.com/in/nayreed/',
+  },
+  {
+    icon: <Github size={16} />,
+    label: 'GitHub',
+    value: 'github.com/RA-Nayreed',
+    link: 'https://www.github.com/RA-Nayreed',
+  },
+  {
+    icon: <MapPin size={16} />,
+    label: 'Location',
+    value: 'Oulu, Finland',
+    link: null,
+  },
+];
 
 const Contact = () => {
-  const contactInfo = [
-    {
-      icon: <MapPin size={18} />,
-      label: 'Location',
-      value: 'Paavo Havaksen Tie 5, Oulu-90570, Finland',
-      link: null
-    },
-    {
-      icon: <Phone size={18} />,
-      label: 'Phone',
-      value: '+358 40 878 5598',
-      link: 'tel:+358408785598'
-    },
-    {
-      icon: <Mail size={18} />,
-      label: 'Email',
-      value: 'nayreedptk@gmail.com',
-      link: 'mailto:nayreedptk@gmail.com'
-    },
-    {
-      icon: <Mail size={18} />,
-      label: 'Academic Email',
-      value: 'Rezwan.Nayreed@student.oulu.fi',
-      link: 'mailto:Rezwan.Nayreed@student.oulu.fi'
-    },
-    {
-      icon: <Linkedin size={18} />,
-      label: 'LinkedIn',
-      value: 'linkedin.com/in/nayreed',
-      link: 'https://www.linkedin.com/in/nayreed/'
-    },
-    {
-      icon: <Github size={18} />,
-      label: 'GitHub',
-      value: 'github.com/RA-Nayreed',
-      link: 'https://www.github.com/RA-Nayreed'
-    }
-  ];
-
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        }
-      },
-      {
-        root: null,
-        threshold: 0.1,
-      }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-    };
-  }, []);
-
   return (
-    <section id="contact" className="py-24 relative overflow-hidden" ref={sectionRef}>
-      {/* Interactive Easter Egg: Hidden constellation animation that appears on scroll */}
-      <div
-        className={`constellation absolute inset-0 transition-opacity duration-1000 ${
-          isVisible ? 'opacity-100' : 'opacity-0'
-        }`}
-        data-easter-egg="true"
-      >
-        {Array.from({ length: 50 }).map((_, i) => (
-          <div
-            key={i}
-            className="star absolute w-1 h-1 bg-primary rounded-full animate-pulse-glow"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              opacity: Math.random() * 0.7 + 0.3
-            }}
-          ></div>
-        ))}
-      </div>
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"></div>
-      <div className="absolute inset-0 bg-tech-pattern opacity-10"></div>
+    <section id="contact" className="py-16 md:py-24">
+      <div className="max-w-3xl mx-auto px-6">
+        <SectionHeader
+          eyebrow="07 — Contact"
+          title="Get in Touch"
+          description="Feel free to reach out for collaboration opportunities or inquiries."
+        />
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="mb-16 text-center">
-          <div className="inline-flex items-center py-1 px-3 rounded-full bg-white/5 border border-white/10 text-sm text-white/70 font-medium mb-4 backdrop-blur-sm">
-            <MessageSquare size={14} className="mr-2 text-primary" />
-            <span>Get in Touch</span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white">Contact Information</h2>
-        </div>
-
-        <div className="max-w-3xl mx-auto">
-          <GlassCard className="p-8 border border-white/10" variant="neon" hoverEffect>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {contactInfo.map((item, index) => (
-                <div key={index} className="flex items-start gap-4 group">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                    {item.icon}
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-white/50 mb-1">{item.label}</p>
-                    {item.link ? (
-                      <a
-                        href={item.link}
-                        className="text-white group-hover:text-primary transition-colors flex items-center"
-                        target={item.link.startsWith('http') ? '_blank' : undefined}
-                        rel={item.link.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      >
-                        {item.value}
-                        {item.link.startsWith('http') && (
-                          <ExternalLink size={12} className="ml-1 opacity-50" />
-                        )}
-                      </a>
-                    ) : (
-                      <p className="text-white">{item.value}</p>
-                    )}
-                  </div>
+        <div className="card-hairline p-8 md:p-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+            {contactInfo.map((item) => (
+              <div key={item.label} className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
+                  {item.icon}
                 </div>
-              ))}
-            </div>
-
-      <div className="constellation absolute inset-0 opacity-0 transition-opacity duration-1000" data-easter-egg="true">
-        {Array.from({ length: 50 }).map((_, i) => (
-          <div
-            key={i}
-            className="star absolute w-1 h-1 bg-primary rounded-full animate-pulse-glow"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              opacity: Math.random() * 0.7 + 0.3
-            }}
-          ></div>
-        ))}
-      </div>
-
-            <div className="mt-10 pt-6 border-t border-white/10">
-              <div className="flex items-center justify-center">
-                <a
-                  href="mailto:nayreedptk@gmail.com"
-                  className="relative group bg-white/5 hover:bg-primary/20 text-white font-medium rounded-md px-6 py-3 transition-all duration-300 flex items-center border border-white/10 hover:border-primary/30"
-                >
-                  <Mail size={16} className="mr-2" />
-                  Send Mail
-                </a>
+                <div className="min-w-0">
+                  <p className="text-xs text-mute mb-1">{item.label}</p>
+                  {item.link ? (
+                    <a
+                      href={item.link}
+                      className="group text-sm text-ink font-medium hover:text-fade transition-colors inline-flex items-center gap-1 break-all"
+                      target={item.link.startsWith('http') ? '_blank' : undefined}
+                      rel={item.link.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    >
+                      {item.value}
+                      {item.link.startsWith('http') && (
+                        <ArrowUpRight size={12} className="text-mute shrink-0" />
+                      )}
+                    </a>
+                  ) : (
+                    <p className="text-sm text-ink font-medium">{item.value}</p>
+                  )}
+                </div>
               </div>
-              <p className="text-center text-white/50 mt-4 text-sm">
-                Feel free to reach out for collaboration opportunities or inquiries.
-              </p>
-            </div>
-          </GlassCard>
+            ))}
+          </div>
+
+          <div className="mt-10 pt-8 border-t border-hairline flex justify-center">
+            <a href="mailto:nayreedptk@gmail.com" className="pill-primary">
+              <Mail size={15} />
+              Send Mail
+            </a>
+          </div>
         </div>
       </div>
     </section>

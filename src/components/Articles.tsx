@@ -1,81 +1,39 @@
 import React from 'react';
-import GlassCard from './ui/GlassCard';
-import { FileText, ExternalLink } from 'lucide-react';
-import BciIcon from '../assets/bci.svg';
-import FlIcon from '../assets/fl.svg'; // Import the FL.svg icon
+import SectionHeader from './SectionHeader';
+import { FileText, ArrowUpRight } from 'lucide-react';
 
 const Articles = () => {
   return (
-    <section id="articles" className="py-24 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"></div>
-      <div className="absolute inset-0 bg-tech-pattern opacity-10"></div>
+    <section id="articles" className="py-16 md:py-24">
+      <div className="max-w-3xl mx-auto px-6">
+        <SectionHeader eyebrow="06 — Writing" title="Articles" />
 
-      <div className="container mx-auto px-6 relative z-10">
-        {/* Articles Section */}
-        <div className="mb-16 text-center">
-          <div className="inline-flex items-center py-1 px-3 rounded-full bg-white/5 border border-white/10 text-sm text-white/70 font-medium mb-4 backdrop-blur-sm">
-            <FileText size={14} className="mr-2 text-primary" />
-            <span>Publications</span>
+        <a
+          href="https://www.linkedin.com/pulse/brain-computer-interfaces-bci-rezwan-ahmad-nayreed-m5iqc/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group card-hairline p-7 md:p-8 flex items-start gap-5 transition-colors hover:border-hairline-strong"
+        >
+          <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
+            <FileText size={18} />
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white">Articles</h2>
-        </div>
-
-        <div className="max-w-5xl mx-auto">
-          {/* Brain-Computer Interfaces (BCI) Article */}
-          <GlassCard className="p-8 col-span-1 md:col-span-2" variant="dark" hoverEffect>
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 mb-4">
-                <img src={BciIcon} alt="BCI Icon" className="w-full h-full" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-4">Brain-Computer Interfaces (BCI)</h3>
-              <p className="text-white/70 mb-6 text-center">
-                An article discussing the advancements and applications of Brain-Computer Interfaces (BCI).
-              </p>
-              <a
-                href="https://www.linkedin.com/pulse/brain-computer-interfaces-bci-rezwan-ahmad-nayreed-m5iqc/?trackingId=Ivpoy1Yy%2FM7cOh4BO%2B1n7A%3D%3D"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-primary hover:text-primary/80 transition-colors gap-1 text-sm group"
-              >
-                <span>Read on LinkedIn</span>
-                <ExternalLink size={14} className="transition-transform group-hover:translate-x-0.5" />
-              </a>
-            </div>
-          </GlassCard>
-        </div>
-
-        {/* Thesis Section */}
-        {/*<div className="mt-24 mb-16 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">Thesis</h2>
-        </div>
-
-        <div className="max-w-5xl mx-auto">
-          <GlassCard className="p-8 col-span-1 md:col-span-2" variant="dark" hoverEffect>
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 mb-4">
-                <img
-                  src={FlIcon}
-                  alt="Federated Learning Icon"
-                  className="w-full h-full"
-                  style={{ strokeWidth: '2', width: '48px', height: '48px' }} // Match BCI icon size and thickness
-                />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-4">
-                Brain-Inspired Low-Energy Federated Learning Leveraging Spiking Network
-              </h3>
-              <p className="text-white/70 mb-6 text-center">
-                This thesis investigates the integration of spiking neural networks into federated learning frameworks, aiming to achieve energy-efficient and privacy-preserving AI systems.
-              </p>
-              <a
-                href="#articles"
-                className="inline-flex items-center text-primary hover:text-primary/80 transition-colors gap-1 text-sm group"
-              >
-                <span>Coming Soon</span>
-                <ExternalLink size={14} className="transition-transform group-hover:translate-x-0.5" />
-              </a>
-            </div>
-          </GlassCard>
-        </div>*/}
+          <div className="flex-grow">
+            <h3 className="font-display text-lg font-bold text-ink">
+              Brain-Computer Interfaces (BCI)
+            </h3>
+            <p className="text-fade text-[15px] leading-relaxed mt-2">
+              An article discussing the advancements and applications of Brain-Computer
+              Interfaces (BCI).
+            </p>
+            <span className="inline-flex items-center gap-1 text-sm font-medium text-ink mt-4">
+              Read on LinkedIn
+              <ArrowUpRight
+                size={14}
+                className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
+            </span>
+          </div>
+        </a>
       </div>
     </section>
   );
