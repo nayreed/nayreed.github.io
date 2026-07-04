@@ -5,48 +5,48 @@
 
 @layer base {
   :root {
-    /* Design tokens — light (paper-white canvas, ink on white) */
-    --canvas: #ffffff;
-    --soft: #fafafa;
-    --ink: #0a0a0a;
-    --charcoal: #525252;
-    --fade: #737373;
-    --mute: #a3a3a3;
-    --hairline: #e5e5e5;
-    --hairline-strong: #d4d4d4;
-    --pill: #0a0a0a;
-    --on-pill: #ffffff;
-    /* The single inverted "look here" surface */
-    --invert: #171717;
-    --invert-ink: #ffffff;
-    --invert-fade: rgba(255, 255, 255, 0.7);
-    --invert-hairline: rgba(255, 255, 255, 0.16);
+    /* Design tokens: light (eggshell canvas, warm ink) */
+    --canvas: #f7f3ea;
+    --soft: #efeadd;
+    --ink: #1c1917;
+    --charcoal: #57534e;
+    --fade: #78716c;
+    --mute: #a8a29e;
+    --hairline: #e5dfd2;
+    --hairline-strong: #d3ccbc;
+    --pill: #1c1917;
+    --on-pill: #f7f3ea;
+    /* Inverted "look here" surface */
+    --invert: #1c1917;
+    --invert-ink: #f7f3ea;
+    --invert-fade: rgba(247, 243, 234, 0.7);
+    --invert-hairline: rgba(247, 243, 234, 0.16);
 
     /* shadcn/ui variables mapped onto the same system */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 4%;
-    --primary: 0 0% 4%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 98%;
-    --secondary-foreground: 0 0% 4%;
-    --muted: 0 0% 98%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 4%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 4%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 4%;
+    --background: 42 45% 94%;
+    --foreground: 20 10% 10%;
+    --primary: 20 10% 10%;
+    --primary-foreground: 42 45% 94%;
+    --secondary: 43 34% 90%;
+    --secondary-foreground: 20 10% 10%;
+    --muted: 43 34% 90%;
+    --muted-foreground: 25 5% 45%;
+    --accent: 43 34% 88%;
+    --accent-foreground: 20 10% 10%;
+    --card: 42 45% 94%;
+    --card-foreground: 20 10% 10%;
+    --popover: 42 45% 94%;
+    --popover-foreground: 20 10% 10%;
     --destructive: 0 63% 31%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 90%;
-    --input: 0 0% 83%;
-    --ring: 0 0% 4%;
+    --destructive-foreground: 42 45% 94%;
+    --border: 41 28% 86%;
+    --input: 40 20% 78%;
+    --ring: 20 10% 10%;
     --radius: 0.75rem;
   }
 
   .dark {
-    /* Design tokens — dark (near-black canvas, paper ink) */
+    /* Design tokens: dark (near-black canvas, paper ink) */
     --canvas: #0a0a0a;
     --soft: #161616;
     --ink: #fafafa;
@@ -101,7 +101,7 @@
 }
 
 @layer utilities {
-  /* Hairline-bordered flat card — the only card treatment besides inversion */
+  /* Hairline-bordered flat card, the only card treatment besides inversion */
   .card-hairline {
     @apply bg-canvas border border-hairline rounded-xl;
   }
@@ -120,20 +120,4 @@
   .pill-secondary {
     @apply inline-flex items-center justify-center gap-2 bg-canvas text-ink border border-hairline-strong text-sm font-medium px-5 py-2.5 rounded-full transition-colors hover:bg-soft;
   }
-
-  .animate-shake {
-    animation: shake 0.25s ease-in-out 2;
-  }
-}
-
-/* Rejected-command feedback in the terminal */
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-3px); }
-  75% { transform: translateX(3px); }
-}
-
-/* 'oulu' easter egg */
-@keyframes snow-fall {
-  to { transform: translateY(112vh); }
 }

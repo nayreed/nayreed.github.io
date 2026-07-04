@@ -4,25 +4,25 @@ import { Mail, Linkedin, Github, ArrowUpRight } from 'lucide-react';
 
 const contactInfo = [
   {
-    icon: <Mail size={16} />,
+    icon: <Mail size={14} />,
     label: 'Academic Email',
     value: 'RezwanAhmad.Nayreed@student.oulu.fi',
     link: 'mailto:RezwanAhmad.Nayreed@student.oulu.fi',
   },
   {
-    icon: <Mail size={16} />,
+    icon: <Mail size={14} />,
     label: 'Email',
     value: 'nayreedptk@gmail.com',
     link: 'mailto:nayreedptk@gmail.com',
   },
   {
-    icon: <Linkedin size={16} />,
+    icon: <Linkedin size={14} />,
     label: 'LinkedIn',
     value: 'linkedin.com/in/nayreed',
     link: 'https://www.linkedin.com/in/nayreed/',
   },
   {
-    icon: <Github size={16} />,
+    icon: <Github size={14} />,
     label: 'GitHub',
     value: 'github.com/RA-Nayreed',
     link: 'https://www.github.com/RA-Nayreed',
@@ -39,18 +39,16 @@ const Contact = () => {
         />
 
         <div className="card-hairline p-6 sm:p-8 md:p-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-7">
             {contactInfo.map((item) => (
               <div key={item.label} className="min-w-0">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-9 h-9 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
-                    {item.icon}
-                  </div>
-                  <p className="text-xs text-mute">{item.label}</p>
+                <div className="flex items-center gap-2 text-mute mb-1.5">
+                  {item.icon}
+                  <span className="text-xs uppercase tracking-wider">{item.label}</span>
                 </div>
                 <a
                   href={item.link}
-                  className="text-[13px] min-[400px]:text-sm text-ink font-medium hover:text-fade transition-colors inline-flex items-center gap-1 break-all"
+                  className="text-sm text-ink font-medium hover:text-fade transition-colors inline-flex items-center gap-1 break-all"
                   target={item.link.startsWith('http') ? '_blank' : undefined}
                   rel={item.link.startsWith('http') ? 'noopener noreferrer' : undefined}
                 >
