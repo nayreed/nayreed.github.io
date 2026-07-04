@@ -1,6 +1,8 @@
 import React from 'react';
 import SectionHeader from './SectionHeader';
-import { Calendar, MapPin, FileText, GraduationCap, School, BookOpen } from 'lucide-react';
+import { Calendar, FileText, GraduationCap, School, BookOpen } from 'lucide-react';
+import finlandMarker from '@/assets/finland.svg?url';
+import bangladeshMarker from '@/assets/bangladesh.svg?url';
 
 const TRANSCRIPT_URL = 'https://a3s.fi/swift/v1/nayreed/opintosuoritusote.pdf';
 
@@ -41,6 +43,26 @@ const satScores = [
 
 const completedCredits = 132;
 const requiredCredits = 180;
+const progressPercent = (completedCredits / requiredCredits) * 100;
+
+interface EducationMetaProps {
+  date: string;
+  location: string;
+  marker: string;
+}
+
+const EducationMeta = ({ date, location, marker }: EducationMetaProps) => (
+  <div className="flex flex-col gap-2 md:items-end shrink-0">
+    <span className="inline-flex items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
+      <Calendar size={12} />
+      {date}
+    </span>
+    <span className="inline-flex items-center justify-center md:justify-end gap-2 text-xs text-mute text-center md:text-right">
+      <img src={marker} alt="" aria-hidden="true" className="w-3.5 h-3.5 object-contain shrink-0" />
+      {location}
+    </span>
+  </div>
+);
 
 const Education = () => {
   return (
@@ -65,19 +87,9 @@ const Education = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col gap-2 md:items-end shrink-0">
-                <span className="inline-flex items-center gap-2 font-mono text-xs text-charcoal border border-hairline rounded-full px-3 py-1.5">
-                  <Calendar size={12} />
-                  Aug 2024 – Present
-                </span>
-                <span className="inline-flex items-center gap-2 text-xs text-mute">
-                  <MapPin size={12} />
-                  Oulu, Finland
-                </span>
-              </div>
+              <EducationMeta date="Aug 2024 - Present" location="Oulu, Finland" marker={finlandMarker} />
             </div>
 
-            {/* Credit progress from the official transcript */}
             <div className="mt-8">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-fade">Degree progress</span>
@@ -87,13 +99,12 @@ const Education = () => {
               </div>
               <div className="w-full h-1.5 bg-soft border border-hairline rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-ink rounded-full"
-                  style={{ width: `${(completedCredits / requiredCredits) * 100}%` }}
-                ></div>
+                  className="h-full progress-fill rounded-full"
+                  style={{ '--progress-width': `${progressPercent}%` } as React.CSSProperties}
+                />
               </div>
             </div>
 
-            {/* Coursework */}
             <div className="mt-8 space-y-6">
               {courseworkGroups.map((group) => (
                 <div key={group.label}>
@@ -112,7 +123,7 @@ const Education = () => {
               ))}
             </div>
 
-            <div className="mt-8 pt-6 border-t border-hairline">
+            <div className="mt-8">
               <a
                 href={TRANSCRIPT_URL}
                 target="_blank"
@@ -136,13 +147,9 @@ const Education = () => {
                   <h3 className="font-display text-xl font-bold text-ink">
                     Scholastic Assessment Test (SAT)
                   </h3>
-                  <p className="text-mute text-sm mt-1">Dhaka, Bangladesh</p>
                 </div>
               </div>
-              <span className="inline-flex items-center gap-2 font-mono text-xs text-charcoal border border-hairline rounded-full px-3 py-1.5 shrink-0">
-                <Calendar size={12} />
-                Dec 2023
-              </span>
+              <EducationMeta date="Dec 2023" location="Dhaka, Bangladesh" marker={bangladeshMarker} />
             </div>
             <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
               {satScores.map((item) => (
@@ -158,29 +165,28 @@ const Education = () => {
           </div>
 
           {/* HSC */}
-          <div className="card-hairline p-6 sm:p-8">
+          <div className="card-hairline p-4 sm:p-8">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-              <div className="flex items-start gap-4">
-                <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
-                  <School size={18} />
+              <div className="min-w-0">
+                <div className="flex items-start gap-4">
+                  <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
+                    <School size={18} />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-xl font-bold text-ink">
+                      Shaheed Bir Bikram Ramiz Uddin Cantonment College
+                    </h3>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-display text-xl font-bold text-ink">
-                    Shaheed Bir Bikram Ramiz Uddin Cantonment College
-                  </h3>
-                  <p className="text-fade mt-1">
-                    Higher Secondary Certificate (HSC), Science · GPA 4.75
-                  </p>
-                  <p className="text-mute text-sm mt-1 flex items-center gap-2">
-                    <MapPin size={12} />
-                    Dhaka, Bangladesh
-                  </p>
-                </div>
+                <p className="text-fade mt-3 sm:ml-[60px] whitespace-nowrap text-[10px] min-[420px]:text-xs sm:text-base">
+                  Higher Secondary Certificate (HSC), Science · GPA 4.75
+                </p>
               </div>
-              <span className="inline-flex items-center gap-2 font-mono text-xs text-charcoal border border-hairline rounded-full px-3 py-1.5 shrink-0">
-                <Calendar size={12} />
-                Feb 2022 – Nov 2023
-              </span>
+              <EducationMeta
+                date="Feb 2022 - Nov 2023"
+                location="Dhaka, Bangladesh"
+                marker={bangladeshMarker}
+              />
             </div>
           </div>
         </div>

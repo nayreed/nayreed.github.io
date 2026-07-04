@@ -70,7 +70,7 @@ const Projects = () => {
                 ))}
               </div>
 
-              <div className="mt-5 pt-4 border-t border-hairline">
+              <div className="mt-5">
                 <span className="inline-flex items-center gap-1.5 font-mono text-xs text-mute group-hover:text-ink transition-colors">
                   <Github size={13} />
                   {project.repo}

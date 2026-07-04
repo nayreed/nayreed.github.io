@@ -116,7 +116,7 @@ const ExtracurricularActivities = () => {
                     {act.location}
                   </p>
                 </div>
-                <span className="inline-flex items-center gap-2 font-mono text-xs text-charcoal border border-hairline rounded-full px-3 py-1.5 shrink-0">
+                <span className="inline-flex items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5 shrink-0">
                   <Calendar size={12} />
                   {act.date}
                 </span>

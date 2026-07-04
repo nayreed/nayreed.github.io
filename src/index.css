@@ -49,39 +49,39 @@
     /* Design tokens: dark (near-black canvas, paper ink) */
     --canvas: #0a0a0a;
     --soft: #161616;
-    --ink: #fafafa;
-    --charcoal: #d4d4d4;
+    --ink: #f7f3ea;
+    --charcoal: #e4ded1;
     --fade: #a3a3a3;
     --mute: #737373;
     --hairline: #262626;
     --hairline-strong: #3f3f3f;
-    --pill: #fafafa;
+    --pill: #f7f3ea;
     --on-pill: #0a0a0a;
     /* Inversion flips to paper in dark mode */
-    --invert: #fafafa;
+    --invert: #f7f3ea;
     --invert-ink: #0a0a0a;
     --invert-fade: rgba(10, 10, 10, 0.65);
     --invert-hairline: rgba(10, 10, 10, 0.14);
 
     --background: 0 0% 4%;
-    --foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
+    --foreground: 42 45% 94%;
+    --primary: 42 45% 94%;
     --primary-foreground: 0 0% 4%;
     --secondary: 0 0% 9%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary-foreground: 42 45% 94%;
     --muted: 0 0% 9%;
     --muted-foreground: 0 0% 64%;
     --accent: 0 0% 12%;
-    --accent-foreground: 0 0% 98%;
+    --accent-foreground: 42 45% 94%;
     --card: 0 0% 4%;
-    --card-foreground: 0 0% 98%;
+    --card-foreground: 42 45% 94%;
     --popover: 0 0% 4%;
-    --popover-foreground: 0 0% 98%;
+    --popover-foreground: 42 45% 94%;
     --destructive: 0 63% 31%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 42 45% 94%;
     --border: 0 0% 15%;
     --input: 0 0% 25%;
-    --ring: 0 0% 98%;
+    --ring: 42 45% 94%;
   }
 }
 
@@ -108,7 +108,40 @@
 
   /* Small mono command-tag chip */
   .chip {
-    @apply inline-flex items-center bg-soft border border-hairline text-charcoal font-mono text-xs px-3 py-1.5 rounded-full;
+    @apply inline-flex items-center justify-center text-center bg-soft border border-hairline text-charcoal font-mono text-xs leading-tight px-3 py-1.5 rounded-full;
+  }
+
+  .progress-fill {
+    width: var(--progress-width);
+    background: linear-gradient(90deg, var(--ink) 0%, var(--charcoal) 50%, var(--ink) 100%);
+    background-size: 200% 100%;
+    animation:
+      progress-grow 900ms ease-out both,
+      progress-sheen 1.8s ease-in-out infinite;
+  }
+
+  @keyframes progress-grow {
+    from {
+      width: 0;
+    }
+    to {
+      width: var(--progress-width);
+    }
+  }
+
+  @keyframes progress-sheen {
+    0% {
+      background-position: 200% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress-fill {
+      animation: none;
+    }
   }
 
   /* Primary pill button */

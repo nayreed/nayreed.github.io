@@ -2,7 +2,7 @@ import React from 'react';
 import { ArrowDown, Mail, FolderGit2, FileDown } from 'lucide-react';
 import Terminal from './Terminal';
 
-const RESUME_URL = 'https://unioulu-my.sharepoint.com/:b:/g/personal/rnayreed24_student_oulu_fi/EUWmU7Xvq7tKgRx4cv17OuoBzzzJnTo6hbPQAd9IRsazCA?e=g8W2aM';
+const RESUME_URL = 'https://a3s.fi/swift/v1/nayreed/Nayreeds-Resume.pdf';
 
 const Hero = () => {
   return (

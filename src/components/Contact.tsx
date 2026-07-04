@@ -38,17 +38,17 @@ const Contact = () => {
           description="Feel free to reach out for collaboration opportunities or inquiries."
         />
 
-        <div className="card-hairline p-6 sm:p-8 md:p-10">
+        <div className="card-hairline p-6 sm:p-8 md:p-10 text-center">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-7">
             {contactInfo.map((item) => (
-              <div key={item.label} className="min-w-0">
-                <div className="flex items-center gap-2 text-mute mb-1.5">
+              <div key={item.label} className="min-w-0 flex flex-col items-center">
+                <div className="flex items-center justify-center gap-2 text-mute mb-1.5">
                   {item.icon}
                   <span className="text-xs uppercase tracking-wider">{item.label}</span>
                 </div>
                 <a
                   href={item.link}
-                  className="text-sm text-ink font-medium hover:text-fade transition-colors inline-flex items-center gap-1 break-all"
+                  className="text-sm text-ink font-medium hover:text-fade transition-colors inline-flex items-center justify-center gap-1 break-all text-center"
                   target={item.link.startsWith('http') ? '_blank' : undefined}
                   rel={item.link.startsWith('http') ? 'noopener noreferrer' : undefined}
                 >
@@ -61,7 +61,7 @@ const Contact = () => {
             ))}
           </div>
 
-          <div className="mt-8 md:mt-10 pt-6 md:pt-8 border-t border-hairline flex justify-center">
+          <div className="mt-8 md:mt-10 flex justify-center">
             <a href="mailto:RezwanAhmad.Nayreed@student.oulu.fi" className="pill-primary">
               <Mail size={15} />
               Send Mail

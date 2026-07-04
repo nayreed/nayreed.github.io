@@ -37,7 +37,7 @@ const Experience = () => {
                 </div>
               </div>
               <div className="flex flex-row md:flex-col flex-wrap gap-2 md:items-end shrink-0">
-                <span className="inline-flex items-center gap-2 font-mono text-xs text-charcoal border border-hairline rounded-full px-3 py-1.5">
+                <span className="inline-flex items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
                   <Calendar size={12} />
                   {exp.period}
                 </span>
@@ -48,7 +48,7 @@ const Experience = () => {
               </div>
             </div>
 
-            <ul className="space-y-3 border-t border-hairline pt-6 mt-6">
+            <ul className="space-y-3 mt-6">
               {exp.achievements.map((achievement) => (
                 <li key={achievement} className="flex gap-3">
                   <Check size={16} className="mt-1 shrink-0 text-ink" />
