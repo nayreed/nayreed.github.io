@@ -37,7 +37,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-canvas text-ink antialiased">
+    <div className="min-h-screen bg-canvas text-ink antialiased overflow-x-clip">
       <Navbar />
       {/* Sections ordered by importance */}
       <main>

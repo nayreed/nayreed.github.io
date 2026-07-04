@@ -1,6 +1,6 @@
 import React from 'react';
 import SectionHeader from './SectionHeader';
-import { MapPin, Calendar, Check } from 'lucide-react';
+import { MapPin, Calendar, Check, Briefcase } from 'lucide-react';
 
 const experiences = [
   {
@@ -21,34 +21,38 @@ const experiences = [
 const Experience = () => {
   return (
     <section id="experience" className="py-16 md:py-24">
-      <div className="max-w-3xl mx-auto px-6">
-        <SectionHeader eyebrow="01 — Experience" title="Professional Experience" />
+      <div className="max-w-3xl mx-auto px-5 sm:px-6">
+        <SectionHeader title="Professional Experience" />
 
         {experiences.map((exp) => (
-          /* The one inverted surface on the page — reserved for the current role */
-          <div key={exp.title} className="bg-invert text-invert-ink rounded-xl p-8 md:p-10">
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
-              <div>
-                <h3 className="font-display text-2xl font-bold">{exp.title}</h3>
-                <p className="text-invert-fade mt-1">{exp.company}</p>
+          <div key={exp.title} className="card-hairline p-6 sm:p-8 md:p-10">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
+                  <Briefcase size={18} />
+                </div>
+                <div>
+                  <h3 className="font-display text-xl font-bold text-ink">{exp.title}</h3>
+                  <p className="text-fade mt-1">{exp.company}</p>
+                </div>
               </div>
-              <div className="flex flex-col gap-2 md:items-end shrink-0">
-                <span className="inline-flex items-center gap-2 font-mono text-xs border border-invert-hairline rounded-full px-3 py-1.5">
+              <div className="flex flex-row md:flex-col flex-wrap gap-2 md:items-end shrink-0">
+                <span className="inline-flex items-center gap-2 font-mono text-xs text-charcoal border border-hairline rounded-full px-3 py-1.5">
                   <Calendar size={12} />
                   {exp.period}
                 </span>
-                <span className="inline-flex items-center gap-2 text-xs text-invert-fade">
+                <span className="inline-flex items-center gap-2 text-xs text-mute">
                   <MapPin size={12} />
                   {exp.location}
                 </span>
               </div>
             </div>
 
-            <ul className="space-y-3 border-t border-invert-hairline pt-6">
+            <ul className="space-y-3 border-t border-hairline pt-6 mt-6">
               {exp.achievements.map((achievement) => (
                 <li key={achievement} className="flex gap-3">
-                  <Check size={16} className="mt-1 shrink-0" />
-                  <p className="text-invert-fade text-[15px] leading-relaxed">{achievement}</p>
+                  <Check size={16} className="mt-1 shrink-0 text-ink" />
+                  <p className="text-fade text-[15px] leading-relaxed">{achievement}</p>
                 </li>
               ))}
             </ul>

@@ -28,8 +28,8 @@ const skillCategories = [
 const Skills = () => {
   return (
     <section id="skills" className="py-16 md:py-24">
-      <div className="max-w-3xl mx-auto px-6">
-        <SectionHeader eyebrow="04 — Skills" title="Skills" />
+      <div className="max-w-3xl mx-auto px-5 sm:px-6">
+        <SectionHeader title="Skills" />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {skillCategories.map((category) => (

@@ -100,15 +100,12 @@ const activities = [
 const ExtracurricularActivities = () => {
   return (
     <section id="activities" className="py-16 md:py-24">
-      <div className="max-w-3xl mx-auto px-6">
-        <SectionHeader
-          eyebrow="05 — Activities"
-          title="Professional Development & Activities"
-        />
+      <div className="max-w-3xl mx-auto px-5 sm:px-6">
+        <SectionHeader title="Professional Development & Activities" />
 
         <div className="space-y-5">
           {activities.map((act) => (
-            <div key={act.title} className="card-hairline p-7 md:p-8">
+            <div key={act.title} className="card-hairline p-6 sm:p-7 md:p-8">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                 <div>
                   <h3 className="font-display text-lg font-bold text-ink leading-snug">
