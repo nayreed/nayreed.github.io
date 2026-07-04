@@ -7,7 +7,7 @@ const experiences = [
     title: 'Research Assistant',
     company: 'Centre for Applied Computing, University of Oulu',
     location: 'Oulu, Finland',
-    period: 'January 2026 - June 2026',
+    period: 'Jan. 2026 - Jun. 2026',
     achievements: [
       'Researched, co-developed, and contributed to manuscript writing for journal resubmission work on intelligent edge orchestration.',
       'Implemented and upgraded deep reinforcement learning agents for learning-based resource-management experiments in edge-computing simulation environments.',
