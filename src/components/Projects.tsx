@@ -4,7 +4,6 @@ import { ArrowUpRight, Github } from 'lucide-react';
 
 const projects = [
   {
-    index: '01',
     title: 'Edge Intelligence Simulator (EISim)',
     description: 'Learning-based edge-resource management research platform',
     details:
@@ -13,7 +12,6 @@ const projects = [
     link: 'https://github.com/RA-Nayreed/EISim',
   },
   {
-    index: '02',
     title: 'Federated Multiarch Machine Learning',
     description: 'Flower-based federated learning framework',
     details:
@@ -22,7 +20,6 @@ const projects = [
     link: 'https://github.com/RA-Nayreed/FMML',
   },
   {
-    index: '03',
     title: 'Spectrum Analyzer',
     description: 'Graphical spectral-data analysis tool',
     details:
@@ -35,10 +32,10 @@ const projects = [
 const Projects = () => {
   return (
     <section id="projects" className="py-16 md:py-24">
-      <div className="max-w-5xl mx-auto px-6">
-        <SectionHeader eyebrow="02 — Projects" title="Projects" />
+      <div className="max-w-5xl mx-auto px-5 sm:px-6">
+        <SectionHeader title="Projects" />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {projects.map((project) => (
             <a
               key={project.title}
@@ -48,8 +45,11 @@ const Projects = () => {
               className="group card-hairline p-6 md:p-7 flex flex-col transition-colors hover:border-hairline-strong"
             >
               <div className="flex items-center justify-between mb-5">
-                <span className="font-mono text-xs text-mute">{project.index}</span>
                 <Github size={16} className="text-mute group-hover:text-ink transition-colors" />
+                <ArrowUpRight
+                  size={16}
+                  className="text-mute group-hover:text-ink transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
               </div>
 
               <h3 className="font-display text-lg font-bold text-ink leading-snug">
@@ -69,10 +69,6 @@ const Projects = () => {
 
               <span className="inline-flex items-center gap-1 text-sm font-medium text-ink mt-6">
                 View on GitHub
-                <ArrowUpRight
-                  size={14}
-                  className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                />
               </span>
             </a>
           ))}

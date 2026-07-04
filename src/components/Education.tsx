@@ -45,12 +45,12 @@ const requiredCredits = 180;
 const Education = () => {
   return (
     <section id="education" className="py-16 md:py-24">
-      <div className="max-w-3xl mx-auto px-6">
-        <SectionHeader eyebrow="03 — Education" title="Education" />
+      <div className="max-w-3xl mx-auto px-5 sm:px-6">
+        <SectionHeader title="Education" />
 
         <div className="space-y-5">
           {/* University of Oulu */}
-          <div className="card-hairline p-8 md:p-10">
+          <div className="card-hairline p-6 sm:p-8 md:p-10">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
               <div className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
@@ -126,7 +126,7 @@ const Education = () => {
           </div>
 
           {/* SAT */}
-          <div className="card-hairline p-8">
+          <div className="card-hairline p-6 sm:p-8">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
               <div className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
@@ -144,11 +144,11 @@ const Education = () => {
                 Dec 2023
               </span>
             </div>
-            <div className="mt-6 grid grid-cols-3 gap-3">
+            <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
               {satScores.map((item) => (
                 <div
                   key={item.subject}
-                  className="bg-soft border border-hairline rounded-xl px-4 py-3 text-center"
+                  className="bg-soft border border-hairline rounded-xl px-2 sm:px-4 py-3 text-center"
                 >
                   <p className="font-display text-2xl font-bold text-ink">{item.score}</p>
                   <p className="text-xs text-mute mt-1">{item.subject}</p>
@@ -158,7 +158,7 @@ const Education = () => {
           </div>
 
           {/* HSC */}
-          <div className="card-hairline p-8">
+          <div className="card-hairline p-6 sm:p-8">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
               <div className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">

@@ -5,14 +5,14 @@ import { FileText, ArrowUpRight } from 'lucide-react';
 const Articles = () => {
   return (
     <section id="articles" className="py-16 md:py-24">
-      <div className="max-w-3xl mx-auto px-6">
-        <SectionHeader eyebrow="06 — Writing" title="Articles" />
+      <div className="max-w-3xl mx-auto px-5 sm:px-6">
+        <SectionHeader title="Articles" />
 
         <a
           href="https://www.linkedin.com/pulse/brain-computer-interfaces-bci-rezwan-ahmad-nayreed-m5iqc/"
           target="_blank"
           rel="noopener noreferrer"
-          className="group card-hairline p-7 md:p-8 flex items-start gap-5 transition-colors hover:border-hairline-strong"
+          className="group card-hairline p-6 sm:p-7 md:p-8 flex flex-col sm:flex-row items-start gap-5 transition-colors hover:border-hairline-strong"
         >
           <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
             <FileText size={18} />
