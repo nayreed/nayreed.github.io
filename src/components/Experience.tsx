@@ -5,9 +5,9 @@ import { MapPin, Calendar, Check, Briefcase } from 'lucide-react';
 const experiences = [
   {
     title: 'Research Assistant',
-    company: 'Centre of Applied Computing · University of Oulu',
+    company: 'Centre of Applied Computing - University of Oulu',
     location: 'Oulu, Finland',
-    period: 'Jan 2026 – Jun 2026',
+    period: 'January 2026 - June 2026',
     achievements: [
       'Researched, co-developed, and contributed to manuscript writing for journal resubmission work on intelligent edge orchestration.',
       'Implemented and upgraded deep reinforcement learning agents for learning-based resource-management experiments in edge-computing simulation environments.',
@@ -27,22 +27,22 @@ const Experience = () => {
         {experiences.map((exp) => (
           <div key={exp.title} className="card-hairline p-6 sm:p-8 md:p-10">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-4 min-w-0">
                 <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
                   <Briefcase size={18} />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <h3 className="font-display text-xl font-bold text-ink">{exp.title}</h3>
                   <p className="text-fade mt-1">{exp.company}</p>
                 </div>
               </div>
               <div className="flex flex-row md:flex-col flex-wrap gap-2 md:items-end shrink-0">
-                <span className="inline-flex items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
-                  <Calendar size={12} />
+                <span className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
+                  <Calendar size={12} className="shrink-0" />
                   {exp.period}
                 </span>
                 <span className="inline-flex items-center gap-2 text-xs text-mute">
-                  <MapPin size={12} />
+                  <MapPin size={12} className="shrink-0" />
                   {exp.location}
                 </span>
               </div>

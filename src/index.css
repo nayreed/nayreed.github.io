@@ -108,7 +108,7 @@
 
   /* Small mono command-tag chip */
   .chip {
-    @apply inline-flex items-center justify-center text-center bg-soft border border-hairline text-charcoal font-mono text-xs leading-tight px-3 py-1.5 rounded-full;
+    @apply inline-flex max-w-full items-center justify-center text-center whitespace-normal break-words bg-soft border border-hairline text-charcoal font-mono text-xs leading-tight px-3 py-1.5 rounded-full;
   }
 
   .progress-fill {
@@ -146,11 +146,11 @@
 
   /* Primary pill button */
   .pill-primary {
-    @apply inline-flex items-center justify-center gap-2 bg-pill text-on-pill text-sm font-medium px-5 py-2.5 rounded-full transition-opacity hover:opacity-85;
+    @apply inline-flex max-w-full items-center justify-center gap-2 text-center bg-pill text-on-pill text-sm font-medium px-5 py-2.5 rounded-full transition-opacity hover:opacity-85;
   }
 
   /* Secondary (outline) pill button */
   .pill-secondary {
-    @apply inline-flex items-center justify-center gap-2 bg-canvas text-ink border border-hairline-strong text-sm font-medium px-5 py-2.5 rounded-full transition-colors hover:bg-soft;
+    @apply inline-flex max-w-full items-center justify-center gap-2 text-center bg-canvas text-ink border border-hairline-strong text-sm font-medium px-5 py-2.5 rounded-full transition-colors hover:bg-soft;
   }
 }

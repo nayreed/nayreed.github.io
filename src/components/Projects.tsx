@@ -71,9 +71,9 @@ const Projects = () => {
               </div>
 
               <div className="mt-5">
-                <span className="inline-flex items-center gap-1.5 font-mono text-xs text-mute group-hover:text-ink transition-colors">
+                <span className="inline-flex max-w-full items-center gap-1.5 font-mono text-xs text-mute group-hover:text-ink transition-colors">
                   <Github size={13} />
-                  {project.repo}
+                  <span className="min-w-0 break-all">{project.repo}</span>
                 </span>
               </div>
             </a>

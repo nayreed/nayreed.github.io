@@ -6,7 +6,7 @@ const activities = [
   {
     title: 'CSC Summer School in High-Performance Computing (2026)',
     location: 'Hotelli Nuuksio, Espoo, Finland',
-    date: 'Jun 23 – Jul 2, 2026',
+    date: 'June 23 - July 2',
     description:
       "Selected for CSC's intensive summer school, with participation sponsored by Eviden during the launch period of Roihu, CSC's new national supercomputer. Worked on hands-on parallel programming and scientific application scaling across MPI, OpenMP, GPU, and multi-GPU workflows, including job execution, debugging, and performance monitoring on real supercomputing systems.",
     skills: [
@@ -24,9 +24,9 @@ const activities = [
     },
   },
   {
-    title: 'JunctionX OuluES – 2nd Runner-Up, Nordea Challenge (2025)',
+    title: 'JunctionX OuluES - 2nd Runner-Up, Nordea Challenge (2025)',
     location: 'University of Oulu',
-    date: 'Sep 18 – Sep 21, 2025',
+    date: 'September 18 - September 21',
     description:
       'Developed Aisti, a sensory data platform that turns dry data into visual and auditory signals, enabling intuitive anomaly detection using ML and sonification in a multi-modal pipeline.',
     skills: [
@@ -43,9 +43,9 @@ const activities = [
     },
   },
   {
-    title: 'Operations Associate – AIESEC',
+    title: 'Operations Associate - AIESEC',
     location: 'Oulu, Finland',
-    date: 'Mar 2025 – Mar 2026',
+    date: 'March - March',
     description:
       "Active member of the operations team, supporting the planning and execution of AIESEC's youth leadership and student exchange initiatives.",
     skills: [
@@ -58,9 +58,9 @@ const activities = [
     link: null,
   },
   {
-    title: 'Hack Oulu 2025 – AI Siege',
+    title: 'Hack Oulu 2025 - AI Siege',
     location: 'University of Oulu',
-    date: 'Apr 11 – Apr 13, 2025',
+    date: 'April 11 - April 13',
     description:
       'Competed in AI security battles, taking on both attacker and defender roles in adversarial chatbot scenarios.',
     skills: [
@@ -77,9 +77,9 @@ const activities = [
     },
   },
   {
-    title: 'MSc Student Tutor – Orientation and Support Role',
+    title: 'MSc Student Tutor - Orientation and Support Role',
     location: 'University of Oulu',
-    date: 'May 2025 – Nov 2025',
+    date: 'May - November',
     description:
       "Appointed as a student tutor to guide incoming Master's students in Electronics, supporting their academic and cultural integration.",
     skills: [
@@ -107,17 +107,17 @@ const ExtracurricularActivities = () => {
           {activities.map((act) => (
             <div key={act.title} className="card-hairline p-6 sm:p-7 md:p-8">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
-                <div>
+                <div className="min-w-0">
                   <h3 className="font-display text-lg font-bold text-ink leading-snug">
                     {act.title}
                   </h3>
                   <p className="text-mute text-sm mt-1 flex items-center gap-2">
-                    <MapPin size={12} />
-                    {act.location}
+                    <MapPin size={12} className="shrink-0" />
+                    <span>{act.location}</span>
                   </p>
                 </div>
-                <span className="inline-flex items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5 shrink-0">
-                  <Calendar size={12} />
+                <span className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5 shrink-0">
+                  <Calendar size={12} className="shrink-0" />
                   {act.date}
                 </span>
               </div>

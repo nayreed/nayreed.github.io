@@ -22,7 +22,7 @@ const COMMANDS = [
         {researchInterests.map((interest, i) => (
           <span key={interest}>
             {interest}
-            {i < researchInterests.length - 1 && <span className="text-mute"> · </span>}
+            {i < researchInterests.length - 1 && <span className="text-mute"> &middot; </span>}
           </span>
         ))}
       </p>
@@ -34,7 +34,7 @@ const START_DELAY = 700;
 const CHAR_DELAY = 45;
 const ENTER_DELAY = 400; // pause between finishing a command and its output appearing
 
-const Caret = () => <span className="text-ink animate-caret-blink">▋</span>;
+const Caret = () => <span className="text-ink animate-caret-blink">|</span>;
 
 const Terminal = () => {
   const [state, setState] = useState({ step: 0, chars: 0 });

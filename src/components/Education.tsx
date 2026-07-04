@@ -53,8 +53,8 @@ interface EducationMetaProps {
 
 const EducationMeta = ({ date, location, marker }: EducationMetaProps) => (
   <div className="flex flex-col gap-2 md:items-end shrink-0">
-    <span className="inline-flex items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
-      <Calendar size={12} />
+    <span className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
+      <Calendar size={12} className="shrink-0" />
       {date}
     </span>
     <span className="inline-flex items-center justify-center md:justify-end gap-2 text-xs text-mute text-center md:text-right">
@@ -87,7 +87,7 @@ const Education = () => {
                   </p>
                 </div>
               </div>
-              <EducationMeta date="Aug 2024 - Present" location="Oulu, Finland" marker={finlandMarker} />
+              <EducationMeta date="August 2024 - Present" location="Oulu, Finland" marker={finlandMarker} />
             </div>
 
             <div className="mt-8">
@@ -114,8 +114,8 @@ const Education = () => {
                   <div className="flex flex-wrap gap-1.5">
                     {group.courses.map((course) => (
                       <span key={course.name} className="chip">
-                        {course.name}
-                        <span className="ml-2 text-ink font-medium">{course.grade}</span>
+                        <span className="min-w-0 break-words">{course.name}</span>
+                        <span className="ml-2 shrink-0 text-ink font-medium">{course.grade}</span>
                       </span>
                     ))}
                   </div>
@@ -149,7 +149,7 @@ const Education = () => {
                   </h3>
                 </div>
               </div>
-              <EducationMeta date="Dec 2023" location="Dhaka, Bangladesh" marker={bangladeshMarker} />
+              <EducationMeta date="December 2023" location="Dhaka, Bangladesh" marker={bangladeshMarker} />
             </div>
             <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
               {satScores.map((item) => (
@@ -178,12 +178,12 @@ const Education = () => {
                     </h3>
                   </div>
                 </div>
-                <p className="text-fade mt-3 sm:ml-[60px] whitespace-nowrap text-[10px] min-[420px]:text-xs sm:text-base">
-                  Higher Secondary Certificate (HSC), Science · GPA 4.75
+                <p className="text-fade mt-3 sm:ml-[60px] whitespace-nowrap text-[9px] min-[360px]:text-[10px] min-[420px]:text-xs sm:text-base">
+                  Higher Secondary Certificate (HSC), Science &middot; GPA 4.75
                 </p>
               </div>
               <EducationMeta
-                date="Feb 2022 - Nov 2023"
+                date="February 2022 - November 2023"
                 location="Dhaka, Bangladesh"
                 marker={bangladeshMarker}
               />
