@@ -5,35 +5,83 @@
 
 @layer base {
   :root {
-    --background: 215 25% 27%;
-    --foreground: 213 31% 91%;
+    /* Design tokens — light (paper-white canvas, ink on white) */
+    --canvas: #ffffff;
+    --soft: #fafafa;
+    --ink: #0a0a0a;
+    --charcoal: #525252;
+    --fade: #737373;
+    --mute: #a3a3a3;
+    --hairline: #e5e5e5;
+    --hairline-strong: #d4d4d4;
+    --pill: #0a0a0a;
+    --on-pill: #ffffff;
+    /* The single inverted "look here" surface */
+    --invert: #171717;
+    --invert-ink: #ffffff;
+    --invert-fade: rgba(255, 255, 255, 0.7);
+    --invert-hairline: rgba(255, 255, 255, 0.16);
 
-    --primary: 221 83% 53%;
+    /* shadcn/ui variables mapped onto the same system */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 4%;
+    --primary: 0 0% 4%;
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 215 25% 27%;
-    --muted-foreground: 215 20% 65%;
-
-    --accent: 220 100% 50%;
-    --accent-foreground: 0 0% 100%;
-
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
-
-    --popover: 224 71% 4%;
-    --popover-foreground: 215 20.2% 65.1%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217 33% 17%;
-    --input: 215 20% 65%;
-    --ring: 221 83% 53%;
-
+    --secondary: 0 0% 98%;
+    --secondary-foreground: 0 0% 4%;
+    --muted: 0 0% 98%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 4%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 90%;
+    --input: 0 0% 83%;
+    --ring: 0 0% 4%;
     --radius: 0.75rem;
+  }
+
+  .dark {
+    /* Design tokens — dark (near-black canvas, paper ink) */
+    --canvas: #0a0a0a;
+    --soft: #161616;
+    --ink: #fafafa;
+    --charcoal: #d4d4d4;
+    --fade: #a3a3a3;
+    --mute: #737373;
+    --hairline: #262626;
+    --hairline-strong: #3f3f3f;
+    --pill: #fafafa;
+    --on-pill: #0a0a0a;
+    /* Inversion flips to paper in dark mode */
+    --invert: #fafafa;
+    --invert-ink: #0a0a0a;
+    --invert-fade: rgba(10, 10, 10, 0.65);
+    --invert-hairline: rgba(10, 10, 10, 0.14);
+
+    --background: 0 0% 4%;
+    --foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 4%;
+    --secondary: 0 0% 9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 9%;
+    --muted-foreground: 0 0% 64%;
+    --accent: 0 0% 12%;
+    --accent-foreground: 0 0% 98%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 15%;
+    --input: 0 0% 25%;
+    --ring: 0 0% 98%;
   }
 }
 
@@ -47,130 +95,29 @@
   }
 
   body {
-    @apply bg-black text-foreground font-sans selection:bg-primary/20;
-    cursor: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSI5IiBzdHJva2U9IiMzQjgyRjYiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg=="), auto;
-  }
-  
-  a, button, [role="button"] {
-    cursor: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIxMCIgZmlsbD0iIzNCODJGNiIgZmlsbC1vcGFjaXR5PSIwLjMiLz48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSI5IiBzdHJva2U9IiMzQjgyRjYiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg=="), pointer;
+    @apply bg-canvas text-ink font-sans antialiased selection:bg-ink selection:text-canvas;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-lg;
+  /* Hairline-bordered flat card — the only card treatment besides inversion */
+  .card-hairline {
+    @apply bg-canvas border border-hairline rounded-xl;
   }
 
-  .neo-glass {
-    @apply bg-black/50 backdrop-blur-xl border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.3)];
+  /* Small mono command-tag chip */
+  .chip {
+    @apply inline-flex items-center bg-soft border border-hairline text-charcoal font-mono text-xs px-3 py-1.5 rounded-full;
   }
 
-  .bg-grid {
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.01) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
-    background-size: 24px 24px;
+  /* Primary pill button */
+  .pill-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-pill text-on-pill text-sm font-medium px-5 py-2.5 rounded-full transition-opacity hover:opacity-85;
   }
 
-  .timeline-line::before {
-    content: '';
-    @apply absolute top-0 left-[9px] w-[2px] h-full bg-primary/20;
-  }
-
-  .timeline-dot::before {
-    content: '';
-    @apply absolute top-1 left-0 w-5 h-5 rounded-full bg-primary;
-  }
-
-  .mask-linear-fade {
-    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-  }
-  
-  .bg-tech-pattern {
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  }
-  
-  .text-gradient {
-    @apply bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent;
-  }
-  
-  .glow {
-    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
-  }
-  
-  .animate-floating {
-    animation: floating 6s ease-in-out infinite;
-  }
-  
-  @keyframes floating {
-    0% { transform: translateY(0) translateX(0); }
-    50% { transform: translateY(-20px) translateX(10px); }
-    100% { transform: translateY(0) translateX(0); }
-  }
-  
-  .animated-border {
-    position: relative;
-    background: linear-gradient(#000, #000) padding-box,
-                linear-gradient(90deg, rgba(59, 130, 246, 0.8), rgba(239, 68, 68, 0.8)) border-box;
-    border: 1px solid transparent;
-    animation: border-rotate 4s linear infinite;
-  }
-  
-  @keyframes border-rotate {
-    0% { border-image-source: linear-gradient(0deg, rgba(59, 130, 246, 0.3), rgba(239, 68, 68, 0.3)); }
-    50% { border-image-source: linear-gradient(180deg, rgba(59, 130, 246, 0.3), rgba(239, 68, 68, 0.3)); }
-    100% { border-image-source: linear-gradient(360deg, rgba(59, 130, 246, 0.3), rgba(239, 68, 68, 0.3)); }
-  }
-  
-  /* New futuristic animations and effects */
-  .star {
-    animation: star-twinkle 3s infinite ease-in-out;
-  }
-  
-  @keyframes star-twinkle {
-    0%, 100% { opacity: 0.7; }
-    50% { opacity: 0.2; }
-  }
-  
-  .typing-effect::after {
-    content: '|';
-    animation: blink 1s infinite step-end;
-  }
-  
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  .ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(59, 130, 246, 0.4);
-    transform: scale(0);
-    animation: ripple-effect 0.6s linear;
-  }
-  
-  @keyframes ripple-effect {
-    to {
-      transform: scale(4);
-      opacity: 0;
-    }
-  }
-  
-  .scan-line {
-    position: absolute;
-    height: 3px;
-    width: 100%;
-    background: rgba(59, 130, 246, 0.2);
-    z-index: 10;
-    animation: scan 5s linear infinite;
-  }
-  
-  @keyframes scan {
-    0% {
-      top: 0%;
-    }
-    100% {
-      top: 100%;
-    }
+  /* Secondary (outline) pill button */
+  .pill-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-canvas text-ink border border-hairline-strong text-sm font-medium px-5 py-2.5 rounded-full transition-colors hover:bg-soft;
   }
 }

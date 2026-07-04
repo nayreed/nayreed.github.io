@@ -1,172 +1,154 @@
-import React, { useState, useEffect, useRef } from 'react';
-import GlassCard from './ui/GlassCard';
-import { Star, Users, Calendar } from 'lucide-react';
-import Mentor from '../assets/mentorship.svg';
+import React from 'react';
+import SectionHeader from './SectionHeader';
+import { Calendar, MapPin, ArrowUpRight } from 'lucide-react';
+
+const activities = [
+  {
+    title: 'CSC Summer School in High-Performance Computing (2026)',
+    location: 'Hotelli Nuuksio, Espoo, Finland',
+    date: 'Jun 23 – Jul 2, 2026',
+    description:
+      "Selected for CSC's intensive summer school, with participation sponsored by Eviden during the launch period of Roihu, CSC's new national supercomputer. Worked on hands-on parallel programming and scientific application scaling across MPI, OpenMP, GPU, and multi-GPU workflows, including job execution, debugging, and performance monitoring on real supercomputing systems.",
+    skills: [
+      'Parallel Programming',
+      'MPI',
+      'OpenMP',
+      'GPU Computing',
+      'Multi-GPU Programming',
+      'Performance Analysis',
+      'Scientific Computing',
+    ],
+    link: {
+      label: 'Certificate',
+      url: 'https://a3s.fi/swift/v1/nayreed/the-csc-summer-school-in-high-performance-computing.pdf',
+    },
+  },
+  {
+    title: 'JunctionX OuluES – 2nd Runner-Up, Nordea Challenge (2025)',
+    location: 'University of Oulu',
+    date: 'Sep 18 – Sep 21, 2025',
+    description:
+      'Developed Aisti, a sensory data platform that turns dry data into visual and auditory signals, enabling intuitive anomaly detection using ML and sonification in a multi-modal pipeline.',
+    skills: [
+      'Machine Learning',
+      'Data Sonification',
+      'LLM Integration',
+      'Interactive Dashboards',
+      'Problem-Solving',
+      'Team Collaboration',
+    ],
+    link: {
+      label: 'Demo',
+      url: 'https://youtu.be/TPLN8XH-00U',
+    },
+  },
+  {
+    title: 'Operations Associate – AIESEC',
+    location: 'Oulu, Finland',
+    date: 'Mar 2025 – Mar 2026',
+    description:
+      "Active member of the operations team, supporting the planning and execution of AIESEC's youth leadership and student exchange initiatives.",
+    skills: [
+      'Teamwork',
+      'Event Coordination',
+      'Operations Administration',
+      'Communication',
+      'Cultural Engagement',
+    ],
+    link: null,
+  },
+  {
+    title: 'Hack Oulu 2025 – AI Siege',
+    location: 'University of Oulu',
+    date: 'Apr 11 – Apr 13, 2025',
+    description:
+      'Competed in AI security battles, taking on both attacker and defender roles in adversarial chatbot scenarios.',
+    skills: [
+      'Strategic Critical Thinking',
+      'Advanced Prompt Engineering',
+      'Social Engineering Awareness',
+      'Cybersecurity Mindset',
+      'Innovation',
+      'Technical Proficiency',
+    ],
+    link: {
+      label: 'Badge',
+      url: 'https://openbadgepassport.com/app/badge/info/918042',
+    },
+  },
+  {
+    title: 'MSc Student Tutor – Orientation and Support Role',
+    location: 'University of Oulu',
+    date: 'May 2025 – Nov 2025',
+    description:
+      "Appointed as a student tutor to guide incoming Master's students in Electronics, supporting their academic and cultural integration.",
+    skills: [
+      'Leadership',
+      'Cross-Cultural Communication',
+      'Mentorship',
+      'Organizational Skills',
+      'Peer Support',
+      'Problem-Solving',
+    ],
+    link: {
+      label: 'Badge',
+      url: 'https://openbadgepassport.com/app/badge/info/1102937',
+    },
+  },
+];
 
 const ExtracurricularActivities = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        }
-      },
-      {
-        root: null,
-        threshold: 0.1,
-      }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-    };
-  }, []);
-  const activities = [
-    {
-      title: 'JunctionX OuluES – 2nd Runner-Up, Nordea Challenge (2025)',
-      location: 'University of Oulu',
-      date: '18 Sept. - 21 Sept. 2025',
-      description:
-        'Developed Aisti, a sensory data platform that turns dry data into visual and auditory signals, enabling intuitive anomaly detection using ML, and sonification in a multi-modal pipeline.',
-      skills: [
-        'Machine learning',
-        'Data sonification',
-        'LLM integration',
-        'Interactive dashboards',
-        'Problem-solving',
-        'Team collaboration'
-      ]
-    },
-    {
-      title: 'Operations Associate – AIESEC',
-      location: 'Oulu, Finland',
-      date: 'Mar. 2025 – Present',
-      description:
-        'Active member of the operations team, supporting the planning and execution of AIESEC’s youth leadership and student exchange initiatives.',
-      skills: [
-        'Teamwork',
-        'Event coordination',
-        'Operations administration',
-        'Communication',
-        'Cultural engagement'
-      ]
-    },
-    {
-      title: 'Hack Oulu 2025 – AI Siege',
-      location: 'University of Oulu',
-      date: '11 Apr. - 13 Apr. 2025',
-      description:
-        'Participated in AI security battles acting as both attacker and defender in adversarial chatbot scenarios.',
-      skills: [
-        'Strategic critical thinking',
-        'Advanced prompt engineering',
-        'Social engineering awareness',
-        'Cybersecurity mindset',
-        'Innovation',
-        'Technical proficiency'
-      ]
-    },
-    {
-      title: "MSc Student Tutor – Orientation and Support Role",
-      location: 'University of Oulu',
-      date: 'May 2025 - Present',
-      description:
-        'Appointed as a student tutor to guide incoming Master’s students in Electronics, supporting their academic and cultural integration.',
-      skills: [
-        'Leadership',
-        'Cross-cultural communication',
-        'Mentorship',
-        'Organizational skills',
-        'Peer support',
-        'Problem-solving'
-      ]
-    }
-  ];
-
   return (
-    <section id="extracurricular" className="py-24 relative overflow-hidden" ref={sectionRef}>
-      {/* Interactive Easter Egg: Hidden constellation animation that appears on scroll */}
-      <div
-        className={`constellation absolute inset-0 transition-opacity duration-1000 ${
-          isVisible ? 'opacity-100' : 'opacity-0'
-        }`}
-        data-easter-egg="true"
-      >
-        {Array.from({ length: 50 }).map((_, i) => (
-          <div
-            key={i}
-            className="star absolute w-1 h-1 bg-primary rounded-full animate-pulse-glow"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              opacity: Math.random() * 0.7 + 0.3
-            }}
-          ></div>
-        ))}
-      </div>
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"></div>
-      <div className="absolute inset-0 bg-tech-pattern opacity-10"></div>
+    <section id="activities" className="py-16 md:py-24">
+      <div className="max-w-3xl mx-auto px-6">
+        <SectionHeader
+          eyebrow="05 — Activities"
+          title="Professional Development & Activities"
+        />
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="mb-12 text-center">
-          <div className="inline-flex items-center py-1 px-3 rounded-full bg-white/5 border border-white/10 text-sm text-white/70 font-medium mb-4 backdrop-blur-sm">
-            <Star size={14} className="mr-2 text-primary" />
-            <span>Extracurricular</span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white">Extracurricular Activities</h2>
-        </div>
-
-        <div className="max-w-4xl mx-auto space-y-6">
-          {activities.map((act, idx) => (
-            <div key={idx} className="mb-6">
-              <GlassCard className="p-6" variant="neon" hoverEffect>
-                <div className="flex flex-col md:flex-row gap-4 md:gap-8">
-                  <div className="flex-shrink-0 flex flex-col items-center md:items-start gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-                      {act.title.includes('Student Tutor') ? (
-                        <img src={Mentor} alt="Mentorship Icon" className="w-5 h-5" />
-                      ) : (
-                        <Users size={24} />
-                      )}
-                    </div>
-                    <div className="hidden md:flex items-center text-white/50 text-sm">
-                      <Calendar size={14} className="mr-2 text-primary/70" />
-                      <span>{act.date}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex-grow">
-                    <h3 className="text-xl font-bold text-white mb-1">{act.title}</h3>
-                    <p className="text-lg text-primary mb-2">{act.location}</p>
-                    <div className="md:hidden flex items-center text-white/50 text-sm mb-4">
-                      <Calendar size={14} className="mr-2 text-primary/70" />
-                      <span>{act.date}</span>
-                    </div>
-
-                    <p className="text-white/80">{act.description}</p>
-
-                    <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {act.skills.map((s, i) => (
-                        <li key={i} className="text-white/80 text-sm flex items-start gap-2">
-                          <span className="inline-block w-2 h-2 mt-2 rounded-full bg-primary" />
-                          <span>{s}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+        <div className="space-y-5">
+          {activities.map((act) => (
+            <div key={act.title} className="card-hairline p-7 md:p-8">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                <div>
+                  <h3 className="font-display text-lg font-bold text-ink leading-snug">
+                    {act.title}
+                  </h3>
+                  <p className="text-mute text-sm mt-1 flex items-center gap-2">
+                    <MapPin size={12} />
+                    {act.location}
+                  </p>
                 </div>
-              </GlassCard>
+                <span className="inline-flex items-center gap-2 font-mono text-xs text-charcoal border border-hairline rounded-full px-3 py-1.5 shrink-0">
+                  <Calendar size={12} />
+                  {act.date}
+                </span>
+              </div>
+
+              <p className="text-fade text-[15px] leading-relaxed mt-4">{act.description}</p>
+
+              <div className="flex flex-wrap gap-1.5 mt-5">
+                {act.skills.map((skill) => (
+                  <span key={skill} className="chip !px-2.5 !py-1">
+                    {skill}
+                  </span>
+                ))}
+              </div>
+
+              {act.link && (
+                <a
+                  href={act.link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-1 text-sm font-medium text-ink mt-5 underline underline-offset-4 decoration-hairline-strong hover:decoration-ink transition-colors"
+                >
+                  {act.link.label}
+                  <ArrowUpRight
+                    size={14}
+                    className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  />
+                </a>
+              )}
             </div>
           ))}
         </div>

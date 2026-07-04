@@ -1,132 +1,59 @@
-import React, { useState, useEffect, useRef } from 'react';
-import GlassCard from './ui/GlassCard';
-import { Briefcase, Calendar } from 'lucide-react';
-import UsaIcon from '../assets/usa.svg';
+import React from 'react';
+import SectionHeader from './SectionHeader';
+import { MapPin, Calendar, Check } from 'lucide-react';
+
+const experiences = [
+  {
+    title: 'Research Assistant',
+    company: 'Centre of Applied Computing · University of Oulu',
+    location: 'Oulu, Finland',
+    period: 'Jan 2026 – Jun 2026',
+    achievements: [
+      'Researched, co-developed, and contributed to manuscript writing for journal resubmission work on intelligent edge orchestration.',
+      'Implemented and upgraded deep reinforcement learning agents for learning-based resource-management experiments in edge-computing simulation environments.',
+      'Designed stress-testing, out-of-distribution evaluation, and domain-randomization workflows to analyze agent robustness under varying simulation conditions.',
+      'Developed a prototype desktop software application, integrating scenario configuration, simulator setup generation, experiment execution, and result inspection.',
+      'Contributed to an agentic expansion, exploring diagnosis, strategy, adjudication, and recovery workflows for learning-agent behavior analysis.',
+    ],
+  },
+];
 
 const Experience = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target); // Stop observing after it becomes visible
-        }
-      },
-      {
-        root: null, // Use the viewport as the root
-        threshold: 0.1, // Trigger when 10% of the section is visible
-      }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-    };
-  }, []);
-
-  const experiences = [
-    {
-      title: 'Independent Contractor',
-      company: 'BGF Consulting, LLC',
-      location: 'Florida, United States',
-      period: 'March 2020 - December 2023',
-      achievements: [
-        'Designed and developed the company website, improving user experience and increasing traffic by 27% over six months, ensuring it met modern web standards and reflected the brand identity.',
-        'Edited video presentations for internal and client-facing purposes, improving clarity and visual appeal, leading to a 22% increase in viewer engagement.',
-        'Scheduled and coordinated meetings, managing calendars for a team of 8 people, ensuring 100% on-time communication and no missed deadlines.',
-        'Researched and evaluated approximately 150 prefab house manufacturers, analyzing pricing, quality, and delivery capacity, and mediated early-stage deal discussions with shortlisted candidates to align interests and facilitate decision-making.'
-      ]
-    }
-  ];
-
   return (
-    <section id="experience" className="py-24 relative overflow-hidden" ref={sectionRef}>
-      {/* Interactive Easter Egg: Hidden constellation animation that appears on scroll */}
-      <div
-        className={`constellation absolute inset-0 transition-opacity duration-1000 ${
-          isVisible ? 'opacity-100' : 'opacity-0'
-        }`}
-        data-easter-egg="true"
-      >
-        {Array.from({ length: 50 }).map((_, i) => (
-          <div
-            key={i}
-            className="star absolute w-1 h-1 bg-primary rounded-full animate-pulse-glow"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              opacity: Math.random() * 0.7 + 0.3
-            }}
-          ></div>
-        ))}
-      </div>
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black"></div>
-      <div className="absolute inset-0 bg-tech-pattern opacity-10"></div>
+    <section id="experience" className="py-16 md:py-24">
+      <div className="max-w-3xl mx-auto px-6">
+        <SectionHeader eyebrow="01 — Experience" title="Professional Experience" />
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="mb-16 text-center">
-          <div className="inline-flex items-center py-1 px-3 rounded-full bg-white/5 border border-white/10 text-sm text-white/70 font-medium mb-4 backdrop-blur-sm">
-            <Briefcase size={14} className="mr-2 text-primary" />
-            <span>Career Path</span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white">Professional Experience</h2>
-
-        </div>
-
-        <div className="max-w-4xl mx-auto">
-          {experiences.map((exp, index) => (
-            <div key={index} className="mb-8">
-              <GlassCard className="p-8 border-l-4 border-l-primary" variant="neon" hoverEffect>
-                <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-                  <div className="flex-shrink-0 flex md:flex-col items-center md:items-start gap-4 md:gap-6">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-                      <Briefcase size={20} />
-                    </div>
-
-                    <div className="flex items-center text-white/50 text-sm">
-                      <Calendar size={14} className="mr-2 text-primary/70" />
-                      <span>{exp.period}</span>
-                    </div>
-
-                    <div className="hidden md:flex items-center text-white/50 text-sm">
-                      <img src={UsaIcon} alt="USA Icon" className="w-6 h-6 mr-2" />
-                      <span>{exp.location}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex-grow">
-                    <h3 className="text-xl font-bold text-white mb-1">{exp.title}</h3>
-                    <p className="text-lg text-primary mb-2">{exp.company}</p>
-                    <div className="md:hidden flex items-center text-white/50 text-sm mb-4">
-                      <img src={UsaIcon} alt="USA Icon" className="w-6 h-6 mr-2" />
-                      <span>{exp.location}</span>
-                    </div>
-
-                    <ul className="space-y-3 mt-4">
-                      {exp.achievements.map((achievement, i) => (
-                        <li key={i} className="flex gap-3 group">
-                          <span className="h-6 w-6 rounded-full bg-primary/10 border border-primary/30 flex-shrink-0 flex items-center justify-center text-primary mt-0.5 group-hover:bg-primary/20 transition-colors">
-                            {i + 1}
-                          </span>
-                          <p className="text-white/80 group-hover:text-white transition-colors">{achievement}</p>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </GlassCard>
+        {experiences.map((exp) => (
+          /* The one inverted surface on the page — reserved for the current role */
+          <div key={exp.title} className="bg-invert text-invert-ink rounded-xl p-8 md:p-10">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+              <div>
+                <h3 className="font-display text-2xl font-bold">{exp.title}</h3>
+                <p className="text-invert-fade mt-1">{exp.company}</p>
+              </div>
+              <div className="flex flex-col gap-2 md:items-end shrink-0">
+                <span className="inline-flex items-center gap-2 font-mono text-xs border border-invert-hairline rounded-full px-3 py-1.5">
+                  <Calendar size={12} />
+                  {exp.period}
+                </span>
+                <span className="inline-flex items-center gap-2 text-xs text-invert-fade">
+                  <MapPin size={12} />
+                  {exp.location}
+                </span>
+              </div>
             </div>
-          ))}
-        </div>
+
+            <ul className="space-y-3 border-t border-invert-hairline pt-6">
+              {exp.achievements.map((achievement) => (
+                <li key={achievement} className="flex gap-3">
+                  <Check size={16} className="mt-1 shrink-0" />
+                  <p className="text-invert-fade text-[15px] leading-relaxed">{achievement}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
     </section>
   );
