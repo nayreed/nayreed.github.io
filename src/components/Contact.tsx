@@ -41,24 +41,24 @@ const Contact = () => {
         <div className="card-hairline p-6 sm:p-8 md:p-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             {contactInfo.map((item) => (
-              <div key={item.label} className="flex items-start gap-4 min-w-0">
-                <div className="w-10 h-10 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
-                  {item.icon}
+              <div key={item.label} className="min-w-0">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-9 h-9 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
+                    {item.icon}
+                  </div>
+                  <p className="text-xs text-mute">{item.label}</p>
                 </div>
-                <div className="min-w-0">
-                  <p className="text-xs text-mute mb-1">{item.label}</p>
-                  <a
-                    href={item.link}
-                    className="text-sm text-ink font-medium hover:text-fade transition-colors inline-flex items-center gap-1 break-all"
-                    target={item.link.startsWith('http') ? '_blank' : undefined}
-                    rel={item.link.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  >
-                    {item.value}
-                    {item.link.startsWith('http') && (
-                      <ArrowUpRight size={12} className="text-mute shrink-0" />
-                    )}
-                  </a>
-                </div>
+                <a
+                  href={item.link}
+                  className="text-[13px] min-[400px]:text-sm text-ink font-medium hover:text-fade transition-colors inline-flex items-center gap-1 break-all"
+                  target={item.link.startsWith('http') ? '_blank' : undefined}
+                  rel={item.link.startsWith('http') ? 'noopener noreferrer' : undefined}
+                >
+                  {item.value}
+                  {item.link.startsWith('http') && (
+                    <ArrowUpRight size={12} className="text-mute shrink-0" />
+                  )}
+                </a>
               </div>
             ))}
           </div>
