@@ -39,13 +39,15 @@ const Projects = () => {
         <SectionHeader title="Projects" />
 
         <div className="space-y-5">
-          {projects.map((project) => (
+          {projects.map((project, index) => (
             <a
               key={project.title}
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
               className="group card-hairline block p-6 sm:p-8 transition-colors hover:border-hairline-strong"
+              data-reveal="scale"
+              style={{ '--reveal-delay': `${index * 90}ms` } as React.CSSProperties}
             >
               <div className="flex items-start justify-between gap-4">
                 <div>

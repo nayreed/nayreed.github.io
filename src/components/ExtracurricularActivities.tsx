@@ -45,7 +45,7 @@ const activities = [
   {
     title: 'Operations Associate - AIESEC',
     location: 'Oulu, Finland',
-    date: 'March 2025 - March 2026',
+    date: 'March - March',
     description:
       "Active member of the operations team, supporting the planning and execution of AIESEC's youth leadership and student exchange initiatives.",
     skills: [
@@ -79,7 +79,7 @@ const activities = [
   {
     title: 'MSc Student Tutor - Orientation and Support Role',
     location: 'University of Oulu',
-    date: 'May 2025 - November 2025',
+    date: 'May - November',
     description:
       "Appointed as a student tutor to guide incoming Master's students in Electronics, supporting their academic and cultural integration.",
     skills: [
@@ -104,8 +104,13 @@ const ExtracurricularActivities = () => {
         <SectionHeader title="Professional Development & Activities" />
 
         <div className="space-y-5">
-          {activities.map((act) => (
-            <div key={act.title} className="card-hairline p-6 sm:p-7 md:p-8">
+          {activities.map((act, index) => (
+            <div
+              key={act.title}
+              className="card-hairline p-6 sm:p-7 md:p-8"
+              data-reveal="scale"
+              style={{ '--reveal-delay': `${index * 70}ms` } as React.CSSProperties}
+            >
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                 <div className="min-w-0">
                   <h3 className="font-display text-lg font-bold text-ink leading-snug">

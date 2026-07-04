@@ -32,8 +32,13 @@ const Skills = () => {
         <SectionHeader title="Skills" />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {skillCategories.map((category) => (
-            <div key={category.title} className="card-hairline p-6 md:p-7">
+          {skillCategories.map((category, index) => (
+            <div
+              key={category.title}
+              className="card-hairline p-6 md:p-7"
+              data-reveal="scale"
+              style={{ '--reveal-delay': `${index * 70}ms` } as React.CSSProperties}
+            >
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-9 h-9 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink">
                   {category.icon}

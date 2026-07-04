@@ -25,7 +25,7 @@ const Experience = () => {
         <SectionHeader title="Professional Experience" />
 
         {experiences.map((exp) => (
-          <div key={exp.title} className="card-hairline p-6 sm:p-8 md:p-10">
+          <div key={exp.title} className="card-hairline p-6 sm:p-8 md:p-10" data-reveal="scale">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
               <div className="flex items-start gap-4 min-w-0">
                 <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">

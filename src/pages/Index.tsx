@@ -36,6 +36,41 @@ const Index = () => {
     return () => document.removeEventListener('click', handleAnchorClick);
   }, []);
 
+  useEffect(() => {
+    const animatedElements = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-reveal], [data-progress]')
+    );
+
+    const showElement = (element: HTMLElement) => {
+      element.classList.add('is-visible');
+    };
+
+    if (
+      !('IntersectionObserver' in window) ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      animatedElements.forEach(showElement);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          showElement(entry.target as HTMLElement);
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        rootMargin: '0px 0px -8% 0px',
+        threshold: 0.16,
+      }
+    );
+
+    animatedElements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="min-h-screen bg-canvas text-ink antialiased overflow-x-clip">
       <Navbar />

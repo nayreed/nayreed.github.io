@@ -72,7 +72,7 @@ const Education = () => {
 
         <div className="space-y-5">
           {/* University of Oulu */}
-          <div className="card-hairline p-6 sm:p-8 md:p-10">
+          <div className="card-hairline p-6 sm:p-8 md:p-10" data-reveal="scale">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
               <div className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
@@ -100,6 +100,7 @@ const Education = () => {
               <div className="w-full h-1.5 bg-soft border border-hairline rounded-full overflow-hidden">
                 <div
                   className="h-full progress-fill rounded-full"
+                  data-progress
                   style={{ '--progress-width': `${progressPercent}%` } as React.CSSProperties}
                 />
               </div>
@@ -137,7 +138,11 @@ const Education = () => {
           </div>
 
           {/* SAT */}
-          <div className="card-hairline p-6 sm:p-8">
+          <div
+            className="card-hairline p-6 sm:p-8"
+            data-reveal="scale"
+            style={{ '--reveal-delay': '90ms' } as React.CSSProperties}
+          >
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
               <div className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
@@ -165,7 +170,11 @@ const Education = () => {
           </div>
 
           {/* HSC */}
-          <div className="card-hairline p-4 sm:p-8">
+          <div
+            className="card-hairline p-4 sm:p-8"
+            data-reveal="scale"
+            style={{ '--reveal-delay': '180ms' } as React.CSSProperties}
+          >
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
               <div className="min-w-0">
                 <div className="flex items-start gap-4">

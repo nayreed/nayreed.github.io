@@ -38,7 +38,7 @@ const Contact = () => {
           description="Feel free to reach out for collaboration opportunities or inquiries."
         />
 
-        <div className="card-hairline p-6 sm:p-8 md:p-10 text-center">
+        <div className="card-hairline p-6 sm:p-8 md:p-10 text-center" data-reveal="scale">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-7">
             {contactInfo.map((item) => (
               <div key={item.label} className="min-w-0 flex flex-col items-center">

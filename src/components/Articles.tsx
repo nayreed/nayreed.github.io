@@ -13,6 +13,7 @@ const Articles = () => {
           target="_blank"
           rel="noopener noreferrer"
           className="group card-hairline p-6 sm:p-7 md:p-8 flex flex-col sm:flex-row items-start gap-5 transition-colors hover:border-hairline-strong"
+          data-reveal="scale"
         >
           <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
             <FileText size={18} />
