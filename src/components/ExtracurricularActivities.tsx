@@ -45,7 +45,7 @@ const activities = [
   {
     title: 'Operations Associate - AIESEC',
     location: 'Oulu, Finland',
-    date: 'March - March',
+    date: 'March 2025 - March 2026',
     description:
       "Active member of the operations team, supporting the planning and execution of AIESEC's youth leadership and student exchange initiatives.",
     skills: [
@@ -79,7 +79,7 @@ const activities = [
   {
     title: 'MSc Student Tutor - Orientation and Support Role',
     location: 'University of Oulu',
-    date: 'May - November',
+    date: 'May 2025 - November 2025',
     description:
       "Appointed as a student tutor to guide incoming Master's students in Electronics, supporting their academic and cultural integration.",
     skills: [
