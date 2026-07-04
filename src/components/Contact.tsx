@@ -60,13 +60,6 @@ const Contact = () => {
               </div>
             ))}
           </div>
-
-          <div className="mt-8 md:mt-10 flex justify-center">
-            <a href="mailto:RezwanAhmad.Nayreed@student.oulu.fi" className="pill-primary">
-              <Mail size={15} />
-              Send Mail
-            </a>
-          </div>
         </div>
       </div>
     </section>

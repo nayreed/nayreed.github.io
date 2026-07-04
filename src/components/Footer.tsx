@@ -12,7 +12,15 @@ const Footer = () => {
             <span className="text-mute">~/</span>nayreed
           </a>
 
-          <div className="flex gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <a
+              href="mailto:RezwanAhmad.Nayreed@student.oulu.fi"
+              className="pill-primary !h-9 !px-4 !py-0"
+              aria-label="Send Mail"
+            >
+              <Mail size={15} />
+              Send Mail
+            </a>
             <a
               href="https://github.com/RA-Nayreed"
               target="_blank"
@@ -30,13 +38,6 @@ const Footer = () => {
               aria-label="LinkedIn"
             >
               <Linkedin size={15} />
-            </a>
-            <a
-              href="mailto:RezwanAhmad.Nayreed@student.oulu.fi"
-              className="w-9 h-9 rounded-full border border-hairline flex items-center justify-center text-fade hover:text-ink hover:bg-soft transition-colors"
-              aria-label="Email"
-            >
-              <Mail size={15} />
             </a>
           </div>
         </div>

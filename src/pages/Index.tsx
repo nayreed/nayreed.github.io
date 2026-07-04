@@ -56,9 +56,12 @@ const Index = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          showElement(entry.target as HTMLElement);
-          observer.unobserve(entry.target);
+          const element = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            showElement(element);
+            return;
+          }
+          element.classList.remove('is-visible');
         });
       },
       {
