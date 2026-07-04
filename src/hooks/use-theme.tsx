@@ -10,13 +10,15 @@ const readTheme = (): Theme =>
     : 'light';
 
 // The <html> class is the source of truth; a custom event keeps every
-// useTheme instance (navbar toggle, terminal command, …) in sync.
+// useTheme instance in sync.
 export const setTheme = (next: Theme) => {
   document.documentElement.classList.toggle('dark', next === 'dark');
+  const favicon = document.querySelector<HTMLLinkElement>('link#favicon');
+  if (favicon) favicon.href = next === 'dark' ? '/alien-dark.svg' : '/alien-light.svg';
   try {
     localStorage.setItem('theme', next);
   } catch {
-    // localStorage unavailable (private mode) — theme still applies for the session
+    // localStorage unavailable (private mode); theme still applies for the session
   }
   window.dispatchEvent(new CustomEvent(THEME_EVENT, { detail: next }));
 };

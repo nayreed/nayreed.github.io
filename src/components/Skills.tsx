@@ -6,22 +6,22 @@ const skillCategories = [
   {
     title: 'Programming',
     icon: <Code2 size={18} />,
-    skills: ['Java', 'Python', 'C/C++', 'JavaScript/TypeScript'],
+    skills: ['C/C++', 'Java', 'JavaScript/TypeScript', 'Python'],
   },
   {
     title: 'Systems & Tools',
     icon: <TerminalSquare size={18} />,
-    skills: ['Linux', 'Bash', 'Git', 'SLURM', 'MPI/OpenMP', 'GPU Computing'],
+    skills: ['Bash', 'Git', 'GPU Computing', 'Linux', 'MPI/OpenMP', 'SLURM'],
   },
   {
     title: 'Engineering',
     icon: <CircuitBoard size={18} />,
-    skills: ['MATLAB/Simulink', 'LTSpice', 'KiCad'],
+    skills: ['KiCad', 'LTSpice', 'MATLAB/Simulink'],
   },
   {
     title: 'Professional',
     icon: <PenLine size={18} />,
-    skills: ['Research Writing', 'Technical Documentation', 'Result Analysis'],
+    skills: ['Research Writing', 'Result Analysis', 'Technical Documentation'],
   },
 ];
 

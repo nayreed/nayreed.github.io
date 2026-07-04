@@ -10,13 +10,13 @@ const Hero = () => {
       id="home"
       className="relative min-h-screen flex flex-col justify-center pt-24 pb-24"
     >
-      <div className="w-full max-w-3xl mx-auto px-5 sm:px-6 text-center">
-        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-ink leading-[1.1] animate-fade-in-up">
+      <div className="w-full max-w-4xl mx-auto px-5 sm:px-6 text-center">
+        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-ink leading-[1.1] animate-fade-in-up">
           Rezwan Ahmad Nayreed
         </h1>
 
         <div
-          className="flex flex-wrap justify-center gap-3 mt-10 animate-fade-in-up"
+          className="flex flex-wrap justify-center gap-3 mt-12 animate-fade-in-up"
           style={{ animationDelay: '0.15s' }}
         >
           <a href="#contact" className="pill-primary">
@@ -33,7 +33,10 @@ const Hero = () => {
           </a>
         </div>
 
-        <div className="mt-12 md:mt-14 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+        <div
+          className="max-w-3xl mx-auto mt-14 md:mt-16 animate-fade-in-up"
+          style={{ animationDelay: '0.3s' }}
+        >
           <Terminal />
         </div>
       </div>

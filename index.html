@@ -4,16 +4,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rezwan Ahmad Nayreed</title>
-    <meta name="description" content="Portfolio of Rezwan Ahmad Nayreed — Electronics and Communications Engineering student and research assistant at the University of Oulu." />
+    <title>nayreed</title>
+    <meta name="description" content="Portfolio of Rezwan Ahmad Nayreed, Electronics and Communications Engineering student and research assistant at the University of Oulu." />
     <meta name="author" content="Rezwan Ahmad Nayreed" />
+    <link id="favicon" rel="icon" type="image/svg+xml" href="/alien.svg" />
     <script>
-      // Apply the saved (or system) theme before first paint to avoid a flash.
+      // Apply the saved (or system) theme and matching favicon before first paint.
       (function () {
         try {
           var stored = localStorage.getItem("theme");
           var dark = stored === "dark" || (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
           if (dark) document.documentElement.classList.add("dark");
+          var favicon = document.getElementById("favicon");
+          if (favicon) favicon.href = dark ? "/alien-dark.svg" : "/alien-light.svg";
         } catch (e) {}
       })();
     </script>
