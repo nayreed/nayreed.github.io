@@ -1,6 +1,7 @@
 import React from 'react';
 import SectionHeader from './SectionHeader';
 import { MapPin, Calendar, Check, Briefcase } from 'lucide-react';
+import finlandMarker from '@/assets/finland.svg?url';
 
 const experiences = [
   {
@@ -40,7 +41,11 @@ const Experience = () => {
               </div>
               <div className="flex flex-col gap-2 md:items-end shrink-0">
                 <span className="inline-flex items-center justify-center md:justify-end gap-2 text-xs text-mute text-center md:text-right">
-                  <MapPin size={12} className="shrink-0" />
+                  {exp.location.includes('Oulu, Finland') || exp.location.includes('Espoo, Finland') ? (
+                    <img src={finlandMarker} alt="" aria-hidden="true" className="w-3.5 h-3.5 object-contain shrink-0" />
+                  ) : (
+                    <MapPin size={12} className="shrink-0" />
+                  )}
                   {exp.location}
                 </span>
                 <span className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">

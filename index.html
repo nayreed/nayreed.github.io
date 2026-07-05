@@ -14,9 +14,6 @@
       // the tab icon matched to the browser chrome color scheme.
       (function () {
         try {
-          var stored = localStorage.getItem("theme");
-          var dark = stored === "dark" || (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
-          if (dark) document.documentElement.classList.add("dark");
           var favicon = document.getElementById("favicon");
           var browserTheme = window.matchMedia("(prefers-color-scheme: dark)");
           var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -44,6 +41,18 @@
             "/alien-dark-7.svg"
           ];
 
+          var readStoredTheme = function () {
+            var stored = localStorage.getItem("theme");
+            return stored === "dark" || stored === "light" ? stored : null;
+          };
+
+          var applySiteTheme = function () {
+            var stored = readStoredTheme();
+            var dark = stored === "dark" || (!stored && browserTheme.matches);
+            document.documentElement.classList.toggle("dark", dark);
+            window.dispatchEvent(new CustomEvent("theme-change", { detail: dark ? "dark" : "light" }));
+          };
+
           var syncFavicon = function () {
             if (!favicon) return;
             var frames = browserTheme.matches ? darkFrames : lightFrames;
@@ -62,11 +71,16 @@
               faviconTimer = window.setInterval(syncFavicon, 220);
             }
           };
+          applySiteTheme();
           startFavicon();
+          var handleBrowserThemeChange = function () {
+            applySiteTheme();
+            startFavicon();
+          };
           if (browserTheme.addEventListener) {
-            browserTheme.addEventListener("change", startFavicon);
+            browserTheme.addEventListener("change", handleBrowserThemeChange);
           } else if (browserTheme.addListener) {
-            browserTheme.addListener(startFavicon);
+            browserTheme.addListener(handleBrowserThemeChange);
           }
           if (reducedMotion.addEventListener) {
             reducedMotion.addEventListener("change", startFavicon);

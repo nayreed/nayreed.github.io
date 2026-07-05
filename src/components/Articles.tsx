@@ -12,13 +12,13 @@ const Articles = () => {
           href="https://www.linkedin.com/pulse/brain-computer-interfaces-bci-rezwan-ahmad-nayreed-m5iqc/"
           target="_blank"
           rel="noopener noreferrer"
-          className="group card-hairline p-6 sm:p-7 md:p-8 flex flex-col sm:flex-row items-start gap-5 transition-colors hover:border-hairline-strong"
+          className="group card-hairline p-6 sm:p-7 md:p-8 flex items-start gap-3 sm:gap-5 transition-colors hover:border-hairline-strong"
           data-reveal="scale"
         >
-          <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
             <FileText size={18} />
           </div>
-          <div className="flex-grow">
+          <div className="min-w-0 flex-grow">
             <h3 className="font-display text-lg font-bold text-ink">
               Brain-Computer Interfaces (BCI)
             </h3>
