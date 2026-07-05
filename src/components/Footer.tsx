@@ -9,8 +9,14 @@ const Footer = () => {
     <footer className="border-t border-hairline py-10">
       <div className="max-w-5xl mx-auto px-5 sm:px-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-          <a href="#home" className="font-mono text-sm text-ink hover:text-fade transition-colors">
-            <span className="text-mute">~/</span>nayreed
+          <a href="#home" className="text-ink transition-opacity hover:opacity-70" aria-label="Back to home">
+            <span
+              className="footer-signature"
+              style={{
+                WebkitMaskImage: `url(${signatureUrl})`,
+                maskImage: `url(${signatureUrl})`,
+              }}
+            />
           </a>
 
           <div className="flex flex-wrap items-center justify-center gap-2">
@@ -43,17 +49,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-8 flex justify-center text-ink" aria-hidden="true">
-          <span
-            className="footer-signature"
-            style={{
-              WebkitMaskImage: `url(${signatureUrl})`,
-              maskImage: `url(${signatureUrl})`,
-            }}
-          />
-        </div>
-
-        <p className="text-center text-xs text-mute mt-5">
+        <p className="text-center text-xs text-mute mt-8">
           &copy; {currentYear} Rezwan Ahmad Nayreed. All rights reserved.
         </p>
       </div>

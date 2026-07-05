@@ -5,13 +5,26 @@ import { useTheme } from '@/hooks/use-theme';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 24);
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const bottomDistance =
+        document.documentElement.scrollHeight - (scrollTop + window.innerHeight);
+
+      setIsScrolled(scrollTop > 24);
+      setIsAtBottom(bottomDistance < 96);
+    };
+
     handleScroll();
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
   }, []);
 
   return (
@@ -23,17 +36,24 @@ const Navbar = () => {
           : 'bg-transparent border-b border-transparent'
       )}
     >
-      <div className="max-w-5xl mx-auto flex items-center justify-between h-14 px-5 sm:px-6">
-        <a href="#home" className="font-mono text-sm text-ink hover:text-fade transition-colors">
+      <div className="relative max-w-5xl mx-auto h-14 px-5 sm:px-6">
+        <a
+          href="#home"
+          className="navbar-title font-mono text-sm text-ink hover:text-fade transition-colors"
+          data-bottom={isAtBottom ? 'true' : 'false'}
+        >
           <span className="text-mute">~/</span>nayreed
         </a>
 
         <button
           onClick={toggleTheme}
-          className="w-9 h-9 rounded-full border border-hairline flex items-center justify-center text-fade hover:text-ink hover:bg-soft transition-colors"
+          className="navbar-theme-toggle w-9 h-9 rounded-full border border-hairline flex items-center justify-center text-fade hover:text-ink hover:bg-soft transition-colors"
+          data-bottom={isAtBottom ? 'true' : 'false'}
           aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
         >
-          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          <span className="navbar-theme-toggle__icon">
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          </span>
         </button>
       </div>
     </header>

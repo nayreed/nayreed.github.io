@@ -211,6 +211,13 @@
       width: var(--progress-width);
       animation: none;
     }
+
+    .navbar-title,
+    .navbar-theme-toggle,
+    .navbar-theme-toggle__icon {
+      animation: none !important;
+      transition: none !important;
+    }
   }
 
   /* Primary pill button */
@@ -221,6 +228,59 @@
   /* Secondary (outline) pill button */
   .pill-secondary {
     @apply inline-flex max-w-full items-center justify-center gap-2 text-center bg-canvas text-ink border border-hairline-strong text-sm font-medium px-5 py-2.5 rounded-full transition-colors hover:bg-soft;
+  }
+
+  .navbar-title {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    opacity: 1;
+    transform: translateY(-50%);
+    transition:
+      opacity 240ms ease,
+      transform 300ms ease;
+  }
+
+  .navbar-title[data-bottom='true'] {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(calc(-50% - 0.35rem));
+  }
+
+  .navbar-theme-toggle {
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    transition:
+      right 360ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+      color 160ms ease,
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .navbar-theme-toggle[data-bottom='true'] {
+    right: 50%;
+    transform: translate(50%, -50%);
+  }
+
+  .navbar-theme-toggle__icon {
+    display: inline-flex;
+  }
+
+  .navbar-theme-toggle[data-bottom='true'] .navbar-theme-toggle__icon {
+    animation: navbar-theme-wheel 620ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @media (min-width: 640px) {
+    .navbar-title {
+      left: 1.5rem;
+    }
+
+    .navbar-theme-toggle {
+      right: 1.5rem;
+    }
   }
 
   .footer-signature {
@@ -235,6 +295,18 @@
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-size: contain;
+  }
+
+  @keyframes navbar-theme-wheel {
+    0% {
+      transform: rotate(-360deg) scale(0.85);
+    }
+    64% {
+      transform: rotate(18deg) scale(1.08);
+    }
+    100% {
+      transform: rotate(0deg) scale(1);
+    }
   }
 
   .alien-mascot {
