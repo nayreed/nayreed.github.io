@@ -23,6 +23,10 @@ const activities = [
       label: 'Certificate',
       url: 'https://a3s.fi/swift/v1/nayreed/the-csc-summer-school-in-high-performance-computing.pdf',
     },
+    postLink: {
+      label: 'Post',
+      url: 'https://www.linkedin.com/posts/nayreed_hpc-supercomputer-csc-ugcPost-7478776876115873793-8nIv/',
+    },
   },
   {
     title: 'JunctionX OuluES - 2nd Runner-Up, Nordea Challenge (2025)',
@@ -175,19 +179,37 @@ const ExtracurricularActivities = () => {
                 ))}
               </div>
 
-              {act.link && (
-                <a
-                  href={act.link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-1 text-sm font-medium text-ink mt-5 underline underline-offset-4 decoration-hairline-strong hover:decoration-ink transition-colors"
-                >
-                  {act.link.label}
-                  <ArrowUpRight
-                    size={14}
-                    className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                  />
-                </a>
+              {(act.link || act.postLink) && (
+                <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+                  {act.link && (
+                    <a
+                      href={act.link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex items-center gap-1 text-sm font-medium text-ink underline underline-offset-4 decoration-hairline-strong hover:decoration-ink transition-colors"
+                    >
+                      {act.link.label}
+                      <ArrowUpRight
+                        size={14}
+                        className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      />
+                    </a>
+                  )}
+                  {act.postLink && (
+                    <a
+                      href={act.postLink.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex items-center gap-1 text-sm font-medium text-ink underline underline-offset-4 decoration-hairline-strong hover:decoration-ink transition-colors"
+                    >
+                      {act.postLink.label}
+                      <ArrowUpRight
+                        size={14}
+                        className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      />
+                    </a>
+                  )}
+                </div>
               )}
             </div>
           ))}
