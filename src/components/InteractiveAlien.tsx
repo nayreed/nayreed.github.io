@@ -12,6 +12,12 @@ const comboMessages = [
 ];
 const selectionMessage = 'Copying for what exactly?';
 const selectionMinLength = 15;
+const shortcutMessages = {
+  devtools: 'Ehh, DevTools took a wrong turn.',
+  inspect: 'Ehh, Inspect is hiding behind the stars.',
+  console: 'Ehh, the console is on airplane mode.',
+  source: 'Ehh, View Source is in another galaxy.',
+} as const;
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -20,6 +26,21 @@ const normalizeLook = (distance: number, range: number) =>
   clamp(Math.atan(distance / range) / (Math.PI / 2), -1, 1);
 
 const countSelectionCharacters = (text: string) => text.replace(/\s/g, '').length;
+
+const getShortcutMessage = (event: KeyboardEvent) => {
+  const key = event.key.toLowerCase();
+  const ctrlOrMeta = event.ctrlKey || event.metaKey;
+  const macDevtoolsModifier = event.metaKey && event.altKey;
+  const devtoolsModifier = (ctrlOrMeta && event.shiftKey) || macDevtoolsModifier;
+
+  if (event.key === 'F12') return shortcutMessages.devtools;
+  if (devtoolsModifier && key === 'i') return shortcutMessages.inspect;
+  if (devtoolsModifier && key === 'c') return shortcutMessages.inspect;
+  if (devtoolsModifier && key === 'j') return shortcutMessages.console;
+  if ((ctrlOrMeta || macDevtoolsModifier) && key === 'u') return shortcutMessages.source;
+
+  return null;
+};
 
 const InteractiveAlien = () => {
   const [moodIndex, setMoodIndex] = useState(0);
@@ -126,10 +147,22 @@ const InteractiveAlien = () => {
       }, 180);
     };
 
+    const handleShortcutKeyDown = (event: KeyboardEvent) => {
+      const shortcutMessage = getShortcutMessage(event);
+      if (!shortcutMessage) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      setSparkKey((current) => current + 1);
+      wake('charged');
+      showBubbleMessage(shortcutMessage);
+    };
+
     window.addEventListener('pointerdown', handleGlobalPointerDown, { passive: true });
     window.addEventListener('pointermove', handlePointerMove, { passive: true });
     window.addEventListener('touchstart', handleTouch, { passive: true });
     window.addEventListener('touchmove', handleTouch, { passive: true });
+    window.addEventListener('keydown', handleShortcutKeyDown, { capture: true });
     document.addEventListener('selectionchange', handleSelectionChange);
 
     return () => {
@@ -137,6 +170,7 @@ const InteractiveAlien = () => {
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('touchstart', handleTouch);
       window.removeEventListener('touchmove', handleTouch);
+      window.removeEventListener('keydown', handleShortcutKeyDown, { capture: true });
       document.removeEventListener('selectionchange', handleSelectionChange);
       if (comboTimerRef.current) {
         window.clearTimeout(comboTimerRef.current);
