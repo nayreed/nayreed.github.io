@@ -13,10 +13,10 @@ const comboMessages = [
 const selectionMessage = 'Copying for what exactly?';
 const selectionMinLength = 15;
 const shortcutMessages = {
-  devtools: 'Ehh, DevTools took a wrong turn.',
-  inspect: 'Ehh, Inspect is hiding behind the stars.',
-  console: 'Ehh, the console is on airplane mode.',
-  source: 'Ehh, View Source is in another galaxy.',
+  devtools: 'Nice try. DevTools took a wrong turn.',
+  inspect: 'Inspect mode? Not on this planet.',
+  console: 'Console is currently orbiting Jupiter.',
+  source: 'View Source is in another galaxy.',
 } as const;
 
 const clamp = (value: number, min: number, max: number) =>
