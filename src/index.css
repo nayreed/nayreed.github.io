@@ -286,15 +286,15 @@
   .signature-wordmark {
     display: block;
     width: 4.65rem;
-    height: 1.05rem;
+    height: 2.35rem;
     background: currentColor;
     opacity: 0.9;
     mask-position: center;
     mask-repeat: no-repeat;
-    mask-size: 100% auto;
+    mask-size: contain;
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: 100% auto;
+    -webkit-mask-size: contain;
   }
 
   @keyframes navbar-theme-wheel {
