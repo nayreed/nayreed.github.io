@@ -22,6 +22,7 @@
           var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
           var faviconFrame = 0;
           var faviconTimer;
+          var faviconVersion = "?v=hands-1";
           var lightFrames = [
             "/alien-light-0.svg",
             "/alien-light-1.svg",
@@ -47,10 +48,10 @@
             if (!favicon) return;
             var frames = browserTheme.matches ? darkFrames : lightFrames;
             if (reducedMotion.matches) {
-              favicon.href = frames[0];
+              favicon.href = frames[0] + faviconVersion;
               return;
             }
-            favicon.href = frames[faviconFrame++ % frames.length];
+            favicon.href = frames[faviconFrame++ % frames.length] + faviconVersion;
           };
 
           var startFavicon = function () {
@@ -58,7 +59,7 @@
             faviconFrame = 0;
             syncFavicon();
             if (!reducedMotion.matches) {
-              faviconTimer = window.setInterval(syncFavicon, 520);
+              faviconTimer = window.setInterval(syncFavicon, 220);
             }
           };
           startFavicon();

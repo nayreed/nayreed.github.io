@@ -1,5 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <path fill="#fafaf9" d="M415.915,219.208v-96.039H344.69V58.435h-33.391v64.735H200.701V58.435h-33.391v64.735H96.085v96.039H0v111.663h33.391 V252.6h62.693v94.967h71.226v72.607h-30.788v33.391h64.179V347.568h110.598v105.997h64.179v-33.391h-30.788v-72.606h71.226 v-94.967h62.692v78.271H512V219.208H415.915z M382.525,314.177h-0.001H129.476V156.561h253.049V314.177z"/>
-  <rect fill="#fafaf9" x="166.077" y="214.606" width="35.873" height="35.873"/>
-  <rect fill="#fafaf9" x="310.061" y="214.606" width="35.873" height="35.873"/>
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <g transform="translate(0 1)">
+    <g transform="rotate(-10 96.085 252.6)">
+      <path fill="#fafaf9" d="M96.085 219.208H0v111.663h33.391V252.6h62.693z"/>
+    </g>
+    <g transform="rotate(-10 415.915 252.6)">
+      <path fill="#fafaf9" d="M415.915 219.208H512v111.663h-33.392V252.6h-62.692z"/>
+    </g>
+    <g transform="translate(0 2)">
+      <path fill="#fafaf9" d="M167.31 347.568h33.391v105.997h-64.179v-33.391h30.788z"/>
+    </g>
+    <g transform="translate(0 -2)">
+      <path fill="#fafaf9" d="M311.299 347.568h33.391v72.606h30.788v33.391h-64.179z"/>
+    </g>
+    <g transform="rotate(3 184.006 123.17)">
+      <rect fill="#fafaf9" x="167.31" y="58.435" width="33.391" height="64.735"/>
+    </g>
+    <g transform="rotate(-3 327.995 123.17)">
+      <rect fill="#fafaf9" x="311.299" y="58.435" width="33.391" height="64.735"/>
+    </g>
+    <path fill="#fafaf9" fill-rule="evenodd" d="M96.085 123.169h319.83v224.399H96.085z M129.476 156.561h253.049v157.616H129.476z"/>
+    <rect fill="#fafaf9" x="166.077" y="222" width="35.873" height="20"/>
+    <rect fill="#fafaf9" x="310.061" y="222" width="35.873" height="20"/>
+  </g>
 </svg>
