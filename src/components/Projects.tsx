@@ -4,10 +4,10 @@ import { ArrowUpRight, Github } from 'lucide-react';
 
 const projects = [
   {
-    title: 'Edge Intelligence Simulator (EISim)',
+    title: 'Edge Intelligence Simulator',
     description: 'Deep-RL research platform for edge-resource management',
     details:
-      'Extended the EISim simulator with TD3 and MADDPG agents, upgraded DDPG variants, and flexible homogeneous/heterogeneous experiment setups. Built stress-test, out-of-distribution, and domain-randomization evaluation pipelines, plus a Linux desktop app that takes an experiment from scenario configuration to result inspection.',
+      'Extended the EISim simulator with TD3 and MADDPG agents, upgraded DDPG and TD3 variants. Built stress-test, out-of-distribution, and domain-randomization evaluation pipelines, plus a Linux desktop app that takes an experiment from scenario configuration to result inspection.',
     tags: ['Java', 'Maven', 'Deeplearning4j/ND4J', 'React', 'TypeScript', 'Python'],
     repo: 'RA-Nayreed/EISim',
     link: 'https://github.com/RA-Nayreed/EISim',
