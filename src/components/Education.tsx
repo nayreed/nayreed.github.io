@@ -53,13 +53,13 @@ interface EducationMetaProps {
 
 const EducationMeta = ({ date, location, marker }: EducationMetaProps) => (
   <div className="flex flex-col gap-2 md:items-end shrink-0">
-    <span className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
-      <Calendar size={12} className="shrink-0" />
-      {date}
-    </span>
     <span className="inline-flex items-center justify-center md:justify-end gap-2 text-xs text-mute text-center md:text-right">
       <img src={marker} alt="" aria-hidden="true" className="w-3.5 h-3.5 object-contain shrink-0" />
       {location}
+    </span>
+    <span className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
+      <Calendar size={12} className="shrink-0" />
+      {date}
     </span>
   </div>
 );

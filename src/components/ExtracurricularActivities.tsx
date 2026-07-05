@@ -118,13 +118,13 @@ const ExtracurricularActivities = () => {
                   </h3>
                 </div>
                 <div className="flex flex-col gap-2 md:items-end shrink-0">
-                  <span className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
-                    <Calendar size={12} className="shrink-0" />
-                    {act.date}
-                  </span>
                   <span className="inline-flex items-center justify-center md:justify-end gap-2 text-xs text-mute text-center md:text-right">
                     <MapPin size={12} className="shrink-0" />
                     {act.location}
+                  </span>
+                  <span className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
+                    <Calendar size={12} className="shrink-0" />
+                    {act.date}
                   </span>
                 </div>
               </div>

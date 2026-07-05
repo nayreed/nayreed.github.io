@@ -32,20 +32,20 @@ const Experience = () => {
                   <Briefcase size={18} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="font-display text-[9px] min-[380px]:text-[10px] min-[460px]:text-xs sm:text-xl font-bold text-ink leading-snug whitespace-nowrap">
+                  <h3 className="font-display text-[9px] min-[380px]:text-[10px] min-[460px]:text-xs sm:text-xl font-bold text-ink leading-snug whitespace-nowrap overflow-hidden text-ellipsis">
                     {exp.company}
                   </h3>
                   <p className="text-fade mt-1">{exp.title}</p>
                 </div>
               </div>
-              <div className="flex flex-row md:flex-col flex-wrap gap-2 md:items-end shrink-0">
+              <div className="flex flex-col gap-2 md:items-end shrink-0">
+                <span className="inline-flex items-center justify-center md:justify-end gap-2 text-xs text-mute text-center md:text-right">
+                  <MapPin size={12} className="shrink-0" />
+                  {exp.location}
+                </span>
                 <span className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
                   <Calendar size={12} className="shrink-0" />
                   {exp.period}
-                </span>
-                <span className="inline-flex items-center gap-2 text-xs text-mute">
-                  <MapPin size={12} className="shrink-0" />
-                  {exp.location}
                 </span>
               </div>
             </div>
