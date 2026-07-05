@@ -32,7 +32,7 @@ const Experience = () => {
                   <Briefcase size={18} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="font-display text-[9px] min-[380px]:text-[10px] min-[460px]:text-xs sm:text-xl font-bold text-ink leading-snug whitespace-nowrap overflow-hidden text-ellipsis">
+                  <h3 className="font-display text-base sm:text-xl font-bold text-ink leading-snug">
                     {exp.company}
                   </h3>
                   <p className="text-fade mt-1">{exp.title}</p>
