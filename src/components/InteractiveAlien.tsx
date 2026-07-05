@@ -5,9 +5,9 @@ type Mood = (typeof moods)[number];
 type PetMood = Mood | 'charged' | 'sleepy';
 
 const comboMessages = [
-  'Nayreed is a good boy.',
-  'Certified space booper.',
-  'Portfolio guardian online.',
+  'Nayreed is a good boy',
+  'Certified space booper',
+  'Portfolio guardian online',
 ];
 
 const clamp = (value: number, min: number, max: number) =>
