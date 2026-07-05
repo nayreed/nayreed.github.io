@@ -2,7 +2,6 @@ import React from 'react';
 import SectionHeader from './SectionHeader';
 import { Calendar, MapPin, ArrowUpRight } from 'lucide-react';
 import finlandMarker from '@/assets/finland.svg?url';
-import universityOfOuluMarker from '@/assets/university-of-oulu.svg?url';
 
 const activities = [
   {
@@ -102,10 +101,31 @@ const activities = [
 const isFinlandLocation = (location: string) =>
   location.includes('Oulu, Finland') || location.includes('Espoo, Finland');
 
-const universityOfOuluMarkerStyle = {
-  WebkitMask: `url(${universityOfOuluMarker}) center / contain no-repeat`,
-  mask: `url(${universityOfOuluMarker}) center / contain no-repeat`,
-} as React.CSSProperties;
+const UniversityOfOuluMarker = () => (
+  <svg
+    viewBox="0 0 512 512"
+    aria-hidden="true"
+    className="inline-block h-3 w-3 shrink-0 text-ink"
+  >
+    <g fill="currentColor" transform="matrix(0.307205 0 0 -0.307205 -71.6618 802.8115)">
+      <g transform="translate(1605.8906 2424.1777)">
+        <path d="M0 0-65.521 65.518-71.501 59.537-347.547-216.51-282.029-282.033Z" />
+      </g>
+      <g transform="translate(809.311 2142.1455)">
+        <path d="M0 0 65.521 65.522-216.51 347.551-282.027 282.029-276.043 276.049Z" />
+      </g>
+      <g transform="translate(1110.9893 2613.2764)">
+        <path d="M0 0H-92.656V-8.459-398.842H0Z" />
+      </g>
+      <g transform="translate(1269.3086 1042.1436)">
+        <path
+          fillRule="evenodd"
+          d="M0 0H-405.437L-450.079 401.051H-511.405-608.806-694.184V799H-559.159V572.176H-492.812-270.23V799H-135.207V572.176H-69.59 87.375 153.713V799H288.747V401.051H221.235 105.962 44.643ZM130.107 305.545H221.235 384.25V894.504H58.209V846.754 667.679H-39.701V894.504H-365.736V667.679H-463.652V894.504H-789.687V305.545H-608.806-535.542L-490.901-95.507H85.463Z"
+        />
+      </g>
+    </g>
+  </svg>
+);
 
 const ExtracurricularActivities = () => {
   return (
@@ -130,11 +150,7 @@ const ExtracurricularActivities = () => {
                 <div className="flex flex-col gap-2 md:items-end shrink-0">
                   <span className="inline-flex items-baseline justify-center md:justify-end gap-2 text-xs text-mute text-center md:text-right">
                     {act.location === 'University of Oulu' ? (
-                      <span
-                        aria-hidden="true"
-                        className="inline-block h-3 w-3 shrink-0 bg-ink"
-                        style={universityOfOuluMarkerStyle}
-                      />
+                      <UniversityOfOuluMarker />
                     ) : isFinlandLocation(act.location) ? (
                       <img src={finlandMarker} alt="" aria-hidden="true" className="w-3.5 h-3.5 object-contain shrink-0 self-center" />
                     ) : (
