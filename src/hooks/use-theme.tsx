@@ -13,8 +13,6 @@ const readTheme = (): Theme =>
 // useTheme instance in sync.
 export const setTheme = (next: Theme) => {
   document.documentElement.classList.toggle('dark', next === 'dark');
-  const favicon = document.querySelector<HTMLLinkElement>('link#favicon');
-  if (favicon) favicon.href = next === 'dark' ? '/alien-dark.svg' : '/alien-light.svg';
   try {
     localStorage.setItem('theme', next);
   } catch {

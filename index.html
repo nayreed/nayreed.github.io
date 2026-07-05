@@ -7,16 +7,27 @@
     <title>nayreed</title>
     <meta name="description" content="Portfolio of Rezwan Ahmad Nayreed, Electronics and Communications Engineering student and research assistant at the University of Oulu." />
     <meta name="author" content="Rezwan Ahmad Nayreed" />
+    <meta name="color-scheme" content="light dark" />
     <link id="favicon" rel="icon" type="image/svg+xml" href="/alien.svg" />
     <script>
-      // Apply the saved (or system) theme and matching favicon before first paint.
+      // Apply the saved (or system) site theme before first paint, then keep
+      // the tab icon matched to the browser chrome color scheme.
       (function () {
         try {
           var stored = localStorage.getItem("theme");
           var dark = stored === "dark" || (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
           if (dark) document.documentElement.classList.add("dark");
           var favicon = document.getElementById("favicon");
-          if (favicon) favicon.href = dark ? "/alien-dark.svg" : "/alien-light.svg";
+          var browserTheme = window.matchMedia("(prefers-color-scheme: dark)");
+          var syncFavicon = function () {
+            if (favicon) favicon.href = browserTheme.matches ? "/alien-dark.svg" : "/alien-light.svg";
+          };
+          syncFavicon();
+          if (browserTheme.addEventListener) {
+            browserTheme.addEventListener("change", syncFavicon);
+          } else if (browserTheme.addListener) {
+            browserTheme.addListener(syncFavicon);
+          }
         } catch (e) {}
       })();
     </script>

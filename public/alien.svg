@@ -1,11 +1,350 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Animated Nayreed alien mascot">
+  <defs>
+    <clipPath id="face-window">
+      <rect x="126" y="170" width="260" height="142" rx="24"/>
+    </clipPath>
+  </defs>
   <style>
-    path, rect { fill: #1c1917; }
+    :root {
+      --ink: #1c1917;
+      --panel: #ffffff;
+      --eye: #2563eb;
+      --pupil: #fafaf9;
+      --signal: #0f766e;
+      --accent: #f97316;
+      --shadow: #1c1917;
+    }
+
     @media (prefers-color-scheme: dark) {
-      path, rect { fill: #fafaf9; }
+      :root {
+        --ink: #fafaf9;
+        --panel: #0f172a;
+        --eye: #60a5fa;
+        --pupil: #0f172a;
+        --signal: #5eead4;
+        --accent: #fbbf24;
+        --shadow: #fafaf9;
+      }
+    }
+
+    .ground-shadow {
+      animation: shadow-squish 4.8s ease-in-out infinite;
+      fill: var(--shadow);
+      opacity: .16;
+      transform-box: view-box;
+      transform-origin: 256px 438px;
+    }
+
+    .mascot {
+      animation: mascot-float 4.8s ease-in-out infinite;
+      transform-box: view-box;
+      transform-origin: 256px 256px;
+    }
+
+    .body,
+    .antenna-stem {
+      fill: var(--ink);
+    }
+
+    .antenna-stem {
+      stroke: var(--ink);
+      stroke-linecap: round;
+      stroke-width: 18;
+    }
+
+    .body-shell {
+      animation: body-breathe 2.8s ease-in-out infinite;
+      transform-box: view-box;
+      transform-origin: 256px 250px;
+    }
+
+    .left-arm {
+      animation: left-wave 1.7s ease-in-out infinite;
+      transform-box: view-box;
+      transform-origin: 116px 246px;
+    }
+
+    .right-arm {
+      animation: right-wave 1.7s ease-in-out infinite;
+      transform-box: view-box;
+      transform-origin: 396px 246px;
+    }
+
+    .left-leg {
+      animation: left-step 1.2s cubic-bezier(.45, 0, .55, 1) infinite;
+      transform-box: view-box;
+      transform-origin: 180px 330px;
+    }
+
+    .right-leg {
+      animation: right-step 1.2s cubic-bezier(.45, 0, .55, 1) infinite;
+      transform-box: view-box;
+      transform-origin: 332px 330px;
+    }
+
+    .left-antenna {
+      animation: antenna-left 2.4s ease-in-out infinite;
+      transform-box: view-box;
+      transform-origin: 190px 154px;
+    }
+
+    .right-antenna {
+      animation: antenna-right 2.4s ease-in-out infinite;
+      transform-box: view-box;
+      transform-origin: 322px 154px;
+    }
+
+    .panel {
+      fill: var(--panel);
+      opacity: .16;
+    }
+
+    .trace {
+      animation: trace-run 2.2s linear infinite;
+      fill: none;
+      stroke: var(--signal);
+      stroke-dasharray: 18 20;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 7;
+    }
+
+    .scan {
+      animation: scan-pass 3.1s linear infinite;
+      fill: var(--eye);
+      opacity: .18;
+      transform-box: view-box;
+    }
+
+    .eye-track {
+      animation: eye-look 6.4s steps(1, end) infinite;
+      transform-box: view-box;
+    }
+
+    .eye {
+      animation: blink 5.6s steps(1, end) infinite, eye-glow 2.2s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .right-eye {
+      animation-delay: .08s, .2s;
+    }
+
+    .eye-screen {
+      fill: var(--eye);
+    }
+
+    .pupil {
+      fill: var(--pupil);
+      opacity: .92;
+    }
+
+    .glint {
+      fill: #ffffff;
+      opacity: .78;
+    }
+
+    .mouth {
+      animation: mouth-talk 2.8s ease-in-out infinite;
+      fill: none;
+      stroke: var(--accent);
+      stroke-dasharray: 16 16;
+      stroke-linecap: round;
+      stroke-width: 12;
+      transform-box: view-box;
+      transform-origin: 256px 282px;
+    }
+
+    .signal-core {
+      animation: signal-dot 1.8s ease-in-out infinite;
+      fill: var(--signal);
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .signal-wave {
+      animation: signal-wave 1.8s ease-out infinite;
+      fill: none;
+      opacity: .5;
+      stroke: var(--signal);
+      stroke-width: 8;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .right-antenna .signal-core,
+    .right-antenna .signal-wave {
+      animation-delay: .45s;
+    }
+
+    .spark {
+      animation: sparkle 2.7s ease-in-out infinite;
+      fill: var(--accent);
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .spark-two {
+      animation-delay: 1.1s;
+      fill: var(--signal);
+    }
+
+    @keyframes mascot-float {
+      0%, 100% { transform: translateY(0) rotate(-1deg); }
+      50% { transform: translateY(9px) rotate(1deg); }
+    }
+
+    @keyframes shadow-squish {
+      0%, 100% { opacity: .11; transform: scaleX(.88); }
+      50% { opacity: .2; transform: scaleX(1.14); }
+    }
+
+    @keyframes body-breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.025); }
+    }
+
+    @keyframes left-wave {
+      0%, 100% { transform: rotate(-9deg) translateY(5px); }
+      50% { transform: rotate(13deg) translateY(-10px); }
+    }
+
+    @keyframes right-wave {
+      0%, 100% { transform: rotate(9deg) translateY(-8px); }
+      50% { transform: rotate(-13deg) translateY(7px); }
+    }
+
+    @keyframes left-step {
+      0%, 100% { transform: translateY(0) rotate(-1deg); }
+      50% { transform: translateY(-12px) rotate(4deg); }
+    }
+
+    @keyframes right-step {
+      0%, 100% { transform: translateY(-12px) rotate(-4deg); }
+      50% { transform: translateY(0) rotate(1deg); }
+    }
+
+    @keyframes antenna-left {
+      0%, 100% { transform: rotate(-4deg); }
+      50% { transform: rotate(9deg); }
+    }
+
+    @keyframes antenna-right {
+      0%, 100% { transform: rotate(4deg); }
+      50% { transform: rotate(-9deg); }
+    }
+
+    @keyframes eye-look {
+      0%, 18%, 100% { transform: translateX(0); }
+      28%, 42% { transform: translateX(-9px); }
+      58%, 72% { transform: translateX(9px); }
+      82% { transform: translateY(5px); }
+    }
+
+    @keyframes blink {
+      0%, 86%, 100% { transform: scaleY(1); }
+      90%, 93% { transform: scaleY(.14); }
+    }
+
+    @keyframes eye-glow {
+      0%, 100% { opacity: .82; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes mouth-talk {
+      0%, 100% { stroke-dashoffset: 0; transform: scaleX(.88) scaleY(.9); }
+      45% { stroke-dashoffset: -28; transform: scaleX(1.08) scaleY(1.15); }
+    }
+
+    @keyframes trace-run {
+      to { stroke-dashoffset: -76; }
+    }
+
+    @keyframes scan-pass {
+      0% { opacity: 0; transform: translateY(-130px); }
+      12%, 72% { opacity: .2; }
+      100% { opacity: 0; transform: translateY(160px); }
+    }
+
+    @keyframes signal-dot {
+      0%, 100% { transform: scale(.82); }
+      50% { transform: scale(1.18); }
+    }
+
+    @keyframes signal-wave {
+      0% { opacity: .55; transform: scale(.5); }
+      100% { opacity: 0; transform: scale(1.7); }
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: .15; transform: scale(.45) rotate(0deg); }
+      45% { opacity: 1; transform: scale(1.15) rotate(90deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+      }
     }
   </style>
-  <path d="M415.915,219.208v-96.039H344.69V58.435h-33.391v64.735H200.701V58.435h-33.391v64.735H96.085v96.039H0v111.663h33.391 V252.6h62.693v94.967h71.226v72.607h-30.788v33.391h64.179V347.568h110.598v105.997h64.179v-33.391h-30.788v-72.606h71.226 v-94.967h62.692v78.271H512V219.208H415.915z M382.525,314.177h-0.001H129.476V156.561h253.049V314.177z"/>
-  <rect x="166.077" y="214.606" width="35.873" height="35.873"/>
-  <rect x="310.061" y="214.606" width="35.873" height="35.873"/>
+
+  <ellipse class="ground-shadow" cx="256" cy="438" rx="86" ry="14"/>
+
+  <g class="mascot">
+    <g class="left-antenna">
+      <path class="antenna-stem" d="M190 158 174 82"/>
+      <circle class="signal-wave" cx="174" cy="82" r="26"/>
+      <circle class="signal-core" cx="174" cy="82" r="14"/>
+    </g>
+    <g class="right-antenna">
+      <path class="antenna-stem" d="M322 158 338 82"/>
+      <circle class="signal-wave" cx="338" cy="82" r="26"/>
+      <circle class="signal-core" cx="338" cy="82" r="14"/>
+    </g>
+
+    <g class="left-arm">
+      <path class="body" d="M116 224H70c-25 0-42 18-42 43v45h42v-39h46z"/>
+      <circle class="body" cx="50" cy="316" r="23"/>
+    </g>
+    <g class="right-arm">
+      <path class="body" d="M396 224h46c25 0 42 18 42 43v45h-42v-39h-46z"/>
+      <circle class="body" cx="462" cy="316" r="23"/>
+    </g>
+
+    <g class="left-leg">
+      <rect class="body" x="154" y="322" width="46" height="84" rx="15"/>
+      <rect class="body" x="128" y="392" width="86" height="42" rx="16"/>
+    </g>
+    <g class="right-leg">
+      <rect class="body" x="312" y="322" width="46" height="84" rx="15"/>
+      <rect class="body" x="298" y="392" width="86" height="42" rx="16"/>
+    </g>
+
+    <g class="body-shell">
+      <rect class="body" x="96" y="146" width="320" height="204" rx="38"/>
+      <g clip-path="url(#face-window)">
+        <rect class="panel" x="126" y="170" width="260" height="142" rx="24"/>
+        <path class="trace" d="M148 205h44v26h40m48 0h42v-26h42M168 285h58m118 0h-58"/>
+        <rect class="scan" x="126" y="170" width="260" height="18" rx="9"/>
+      </g>
+    </g>
+
+    <g class="eye-track">
+      <g class="eye left-eye">
+        <rect class="eye-screen" x="160" y="207" width="56" height="54" rx="16"/>
+        <circle class="pupil" cx="184" cy="233" r="8"/>
+        <circle class="glint" cx="199" cy="222" r="5"/>
+      </g>
+      <g class="eye right-eye">
+        <rect class="eye-screen" x="296" y="207" width="56" height="54" rx="16"/>
+        <circle class="pupil" cx="320" cy="233" r="8"/>
+        <circle class="glint" cx="335" cy="222" r="5"/>
+      </g>
+    </g>
+
+    <path class="mouth" d="M220 282q36 26 72 0"/>
+    <path class="spark spark-one" d="M68 174h12v-12h12v12h12v12H92v12H80v-12H68z"/>
+    <path class="spark spark-two" d="M408 158h10v-10h10v10h10v10h-10v10h-10v-10h-10z"/>
+  </g>
 </svg>
