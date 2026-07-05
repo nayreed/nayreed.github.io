@@ -7,6 +7,7 @@ type PetMood = Mood | 'charged' | 'sleepy';
 const comboMessages = [
   'Nayreed is a good boy',
   'Certified space booper',
+  "What a nice portfolio, isn't it?",
   'Portfolio guardian online',
 ];
 const selectionMessage = 'Copying for what exactly?';
@@ -17,6 +18,8 @@ const clamp = (value: number, min: number, max: number) =>
 
 const normalizeLook = (distance: number, range: number) =>
   clamp(Math.atan(distance / range) / (Math.PI / 2), -1, 1);
+
+const countSelectionCharacters = (text: string) => text.replace(/\s/g, '').length;
 
 const InteractiveAlien = () => {
   const [moodIndex, setMoodIndex] = useState(0);
@@ -40,6 +43,7 @@ const InteractiveAlien = () => {
   const clickStreakRef = useRef(0);
   const clickStreakTimerRef = useRef<number | null>(null);
   const selectionTimerRef = useRef<number | null>(null);
+  const lastSelectionTextRef = useRef('');
   const idleTimerRef = useRef<number | null>(null);
 
   const mood: PetMood = overrideMood ?? moods[moodIndex];
@@ -111,7 +115,12 @@ const InteractiveAlien = () => {
       }
       selectionTimerRef.current = window.setTimeout(() => {
         const selectedText = window.getSelection()?.toString().trim() ?? '';
-        if (selectedText.length <= selectionMinLength) return;
+        if (countSelectionCharacters(selectedText) <= selectionMinLength) {
+          lastSelectionTextRef.current = '';
+          return;
+        }
+        if (selectedText === lastSelectionTextRef.current) return;
+        lastSelectionTextRef.current = selectedText;
         wake('curious');
         showBubbleMessage(selectionMessage);
       }, 180);
