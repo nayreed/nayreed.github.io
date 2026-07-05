@@ -88,10 +88,26 @@ const InteractiveAlien = () => {
       updateLook(event.clientX, event.clientY);
     };
 
+    const handleGlobalPointerDown = (event: PointerEvent) => {
+      updateLook(event.clientX, event.clientY);
+    };
+
+    const handleTouch = (event: TouchEvent) => {
+      const touch = event.touches[0] ?? event.changedTouches[0];
+      if (!touch) return;
+      updateLook(touch.clientX, touch.clientY);
+    };
+
+    window.addEventListener('pointerdown', handleGlobalPointerDown, { passive: true });
     window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    window.addEventListener('touchstart', handleTouch, { passive: true });
+    window.addEventListener('touchmove', handleTouch, { passive: true });
 
     return () => {
+      window.removeEventListener('pointerdown', handleGlobalPointerDown);
       window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('touchstart', handleTouch);
+      window.removeEventListener('touchmove', handleTouch);
       if (comboTimerRef.current) {
         window.clearTimeout(comboTimerRef.current);
       }
