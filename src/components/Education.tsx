@@ -10,14 +10,12 @@ const courseworkGroups = [
   {
     label: 'Core',
     courses: [
-      { name: 'Calculus I', grade: '5' },
-      { name: 'Calculus II', grade: '5' },
+      { name: 'Calculus I - II', grade: '5' },
       { name: 'Matrix Algebra', grade: '5' },
       { name: 'Probability & Mathematical Statistics', grade: '5' },
       { name: 'Differential Equations', grade: '5' },
       { name: 'Introduction to Computer Systems', grade: '4' },
-      { name: 'Circuit Theory 1', grade: '5' },
-      { name: 'Circuit Theory 2', grade: '5' },
+      { name: 'Circuit Theory I - II', grade: '5' },
     ],
   },
   {
