@@ -8,7 +8,7 @@
     <meta name="description" content="Portfolio of Rezwan Ahmad Nayreed, Electronics and Communications Engineering student and research assistant at the University of Oulu." />
     <meta name="author" content="Rezwan Ahmad Nayreed" />
     <meta name="color-scheme" content="light dark" />
-    <link id="favicon" rel="icon" type="image/svg+xml" href="/alien.svg" />
+    <link id="favicon" rel="icon" type="image/svg+xml" href="/alien-light-0.svg" />
     <script>
       // Apply the saved (or system) site theme before first paint, then keep
       // the tab icon matched to the browser chrome color scheme.
@@ -19,14 +19,58 @@
           if (dark) document.documentElement.classList.add("dark");
           var favicon = document.getElementById("favicon");
           var browserTheme = window.matchMedia("(prefers-color-scheme: dark)");
+          var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+          var faviconFrame = 0;
+          var faviconTimer;
+          var lightFrames = [
+            "/alien-light-0.svg",
+            "/alien-light-1.svg",
+            "/alien-light-2.svg",
+            "/alien-light-3.svg",
+            "/alien-light-4.svg",
+            "/alien-light-5.svg",
+            "/alien-light-6.svg",
+            "/alien-light-7.svg"
+          ];
+          var darkFrames = [
+            "/alien-dark-0.svg",
+            "/alien-dark-1.svg",
+            "/alien-dark-2.svg",
+            "/alien-dark-3.svg",
+            "/alien-dark-4.svg",
+            "/alien-dark-5.svg",
+            "/alien-dark-6.svg",
+            "/alien-dark-7.svg"
+          ];
+
           var syncFavicon = function () {
-            if (favicon) favicon.href = browserTheme.matches ? "/alien-dark.svg" : "/alien-light.svg";
+            if (!favicon) return;
+            var frames = browserTheme.matches ? darkFrames : lightFrames;
+            if (reducedMotion.matches) {
+              favicon.href = frames[0];
+              return;
+            }
+            favicon.href = frames[faviconFrame++ % frames.length];
           };
-          syncFavicon();
+
+          var startFavicon = function () {
+            if (faviconTimer) window.clearInterval(faviconTimer);
+            faviconFrame = 0;
+            syncFavicon();
+            if (!reducedMotion.matches) {
+              faviconTimer = window.setInterval(syncFavicon, 520);
+            }
+          };
+          startFavicon();
           if (browserTheme.addEventListener) {
-            browserTheme.addEventListener("change", syncFavicon);
+            browserTheme.addEventListener("change", startFavicon);
           } else if (browserTheme.addListener) {
-            browserTheme.addListener(syncFavicon);
+            browserTheme.addListener(startFavicon);
+          }
+          if (reducedMotion.addEventListener) {
+            reducedMotion.addEventListener("change", startFavicon);
+          } else if (reducedMotion.addListener) {
+            reducedMotion.addListener(startFavicon);
           }
         } catch (e) {}
       })();
