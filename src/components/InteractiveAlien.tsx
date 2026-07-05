@@ -13,6 +13,9 @@ const comboMessages = [
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
+const normalizeLook = (distance: number, range: number) =>
+  clamp(Math.atan(distance / range) / (Math.PI / 2), -1, 1);
+
 const InteractiveAlien = () => {
   const [moodIndex, setMoodIndex] = useState(0);
   const [overrideMood, setOverrideMood] = useState<PetMood | null>(null);
@@ -72,8 +75,10 @@ const InteractiveAlien = () => {
       const bounds = target.getBoundingClientRect();
       const centerX = bounds.left + bounds.width / 2;
       const centerY = bounds.top + bounds.height / 2;
-      const x = clamp((clientX - centerX) / (bounds.width * 1.05), -1, 1);
-      const y = clamp((clientY - centerY) / (bounds.height * 1.05), -1, 1);
+      const rangeX = Math.max(window.innerWidth * 0.34, bounds.width * 5);
+      const rangeY = Math.max(window.innerHeight * 0.34, bounds.height * 5);
+      const x = normalizeLook(clientX - centerX, rangeX);
+      const y = normalizeLook(clientY - centerY, rangeY);
 
       target.style.setProperty('--look-x', x.toFixed(3));
       target.style.setProperty('--look-y', y.toFixed(3));
@@ -190,7 +195,7 @@ const InteractiveAlien = () => {
     <button
       ref={buttonRef}
       type="button"
-      aria-label={comboMessage || 'Interact with the alien mascot'}
+      aria-label={comboMessage || (mood === 'sleepy' ? 'Alien mascot is napping' : 'Interact with the alien mascot')}
       className="alien-mascot fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] right-4 z-40 h-16 w-16 sm:bottom-[calc(env(safe-area-inset-bottom)+1.75rem)] sm:right-7 sm:h-[72px] sm:w-[72px]"
       data-mood={mood}
       data-dragging={isDragging}
@@ -210,6 +215,9 @@ const InteractiveAlien = () => {
     >
       <span className="alien-mascot__secret" aria-live="polite" data-visible={Boolean(comboMessage)}>
         {comboMessage}
+      </span>
+      <span className="alien-mascot__nap" aria-hidden="true">
+        zzzzz
       </span>
       <span className="alien-mascot__halo" aria-hidden="true" />
       <svg
@@ -234,16 +242,12 @@ const InteractiveAlien = () => {
           </g>
 
           <g className="alien-mascot__left-arm">
-            <path className="alien-mascot__left-shoulder" d="M14 50h12v13H14z" />
-            <g className="alien-mascot__left-hand">
-              <path d="M16 50H5v32h8V62h3z" />
-            </g>
+            <path className="alien-mascot__arm-line" d="M27 55 C18 55 11 62 11 73 C11 79 13 84 15 87" />
+            <path className="alien-mascot__palm" d="M9 83c2-2 8-2 10 0l-1 6h-8z" />
           </g>
           <g className="alien-mascot__right-arm">
-            <path className="alien-mascot__right-shoulder" d="M102 50h12v13h-12z" />
-            <g className="alien-mascot__right-hand">
-              <path d="M112 50h11v32h-8V62h-3z" />
-            </g>
+            <path className="alien-mascot__arm-line" d="M101 55 C110 55 117 62 117 73 C117 79 115 84 113 87" />
+            <path className="alien-mascot__palm" d="M109 83c2-2 8-2 10 0l-1 6h-8z" />
           </g>
 
           <g className="alien-mascot__left-leg">

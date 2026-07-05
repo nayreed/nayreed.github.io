@@ -307,6 +307,26 @@
     transform: translateY(0);
   }
 
+  .alien-mascot__nap {
+    position: absolute;
+    right: 5px;
+    bottom: calc(100% + 7px);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0;
+    pointer-events: none;
+    text-shadow:
+      0 1px 0 var(--canvas),
+      0 -1px 0 var(--canvas),
+      1px 0 0 var(--canvas),
+      -1px 0 0 var(--canvas);
+    transform: translate(5px, 8px) rotate(-8deg) scale(0.9);
+    white-space: nowrap;
+  }
+
   .alien-mascot:hover .alien-mascot__halo,
   .alien-mascot:focus-visible .alien-mascot__halo {
     opacity: 0.1;
@@ -344,8 +364,6 @@
 
   .alien-mascot__left-arm,
   .alien-mascot__right-arm,
-  .alien-mascot__left-hand,
-  .alien-mascot__right-hand,
   .alien-mascot__left-antenna,
   .alien-mascot__right-antenna,
   .alien-mascot__left-leg,
@@ -354,19 +372,23 @@
   }
 
   .alien-mascot__left-arm {
-    transform-origin: 25px 56px;
+    transform-origin: 27px 55px;
   }
 
   .alien-mascot__right-arm {
-    transform-origin: 103px 56px;
+    transform-origin: 101px 55px;
   }
 
-  .alien-mascot__left-hand {
-    transform-origin: 16px 56px;
+  .alien-mascot__arm-line {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 8;
   }
 
-  .alien-mascot__right-hand {
-    transform-origin: 112px 56px;
+  .alien-mascot__palm {
+    fill: currentColor;
   }
 
   .alien-mascot__left-antenna {
@@ -425,16 +447,16 @@
     transition: transform 160ms ease;
   }
 
-  .alien-mascot:hover .alien-mascot__left-hand,
-  .alien-mascot:focus-visible .alien-mascot__left-hand,
-  .alien-mascot[data-mood='charged'] .alien-mascot__left-hand {
-    animation: alien-left-wave 760ms ease-in-out infinite;
+  .alien-mascot:hover .alien-mascot__left-arm,
+  .alien-mascot:focus-visible .alien-mascot__left-arm,
+  .alien-mascot[data-mood='charged'] .alien-mascot__left-arm {
+    animation: alien-left-wave 980ms cubic-bezier(0.45, 0, 0.2, 1) infinite;
   }
 
-  .alien-mascot:hover .alien-mascot__right-hand,
-  .alien-mascot:focus-visible .alien-mascot__right-hand,
-  .alien-mascot[data-mood='charged'] .alien-mascot__right-hand {
-    animation: alien-right-wave 760ms ease-in-out infinite;
+  .alien-mascot:hover .alien-mascot__right-arm,
+  .alien-mascot:focus-visible .alien-mascot__right-arm,
+  .alien-mascot[data-mood='charged'] .alien-mascot__right-arm {
+    animation: alien-right-wave 980ms cubic-bezier(0.45, 0, 0.2, 1) infinite;
   }
 
   .alien-mascot[data-mood='happy'] .alien-mascot__body,
@@ -471,6 +493,16 @@
     animation: alien-sleep 5s ease-in-out infinite;
   }
 
+  .alien-mascot[data-mood='sleepy'] .alien-mascot__left-arm {
+    animation: none;
+    transform: rotate(-8deg) translateY(2px);
+  }
+
+  .alien-mascot[data-mood='sleepy'] .alien-mascot__right-arm {
+    animation: none;
+    transform: rotate(8deg) translateY(2px);
+  }
+
   .alien-mascot[data-mood='sleepy'] .alien-mascot__eye {
     animation: none;
     transform: scaleY(0.16);
@@ -478,6 +510,10 @@
 
   .alien-mascot[data-mood='sleepy'] .alien-mascot__mouth {
     transform: scaleX(0.58);
+  }
+
+  .alien-mascot[data-mood='sleepy'] .alien-mascot__nap {
+    animation: alien-nap 2.2s ease-in-out infinite;
   }
 
   @keyframes alien-float {
@@ -511,19 +547,25 @@
 
   @keyframes alien-left-wave {
     0%, 100% {
-      transform: rotate(-8deg);
+      transform: rotate(-3deg);
     }
-    50% {
-      transform: rotate(24deg);
+    28% {
+      transform: rotate(9deg) translateY(-1px);
+    }
+    62% {
+      transform: rotate(-6deg) translateY(1px);
     }
   }
 
   @keyframes alien-right-wave {
     0%, 100% {
-      transform: rotate(8deg);
+      transform: rotate(3deg);
     }
-    50% {
-      transform: rotate(-24deg);
+    28% {
+      transform: rotate(-9deg) translateY(-1px);
+    }
+    62% {
+      transform: rotate(6deg) translateY(1px);
     }
   }
 
@@ -604,6 +646,20 @@
     }
     50% {
       transform: translateY(5px) rotate(1deg);
+    }
+  }
+
+  @keyframes alien-nap {
+    0%, 100% {
+      opacity: 0;
+      transform: translate(5px, 8px) rotate(-8deg) scale(0.9);
+    }
+    28% {
+      opacity: 0.86;
+    }
+    72% {
+      opacity: 0.12;
+      transform: translate(-10px, -14px) rotate(-2deg) scale(1.08);
     }
   }
 
