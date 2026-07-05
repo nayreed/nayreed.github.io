@@ -4,13 +4,11 @@ const moods = ['idle', 'happy', 'curious'] as const;
 type Mood = (typeof moods)[number];
 type PetMood = Mood | 'charged' | 'sleepy';
 
-const moodMessages: Record<PetMood, string> = {
-  idle: 'hi',
-  happy: 'boop',
-  curious: 'hmm',
-  charged: 'zap',
-  sleepy: 'zzz',
-};
+const comboMessages = [
+  'Nayreed is a good boy.',
+  'Certified space booper.',
+  'Portfolio guardian online.',
+];
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -18,12 +16,11 @@ const clamp = (value: number, min: number, max: number) =>
 const InteractiveAlien = () => {
   const [moodIndex, setMoodIndex] = useState(0);
   const [overrideMood, setOverrideMood] = useState<PetMood | null>(null);
-  const [look, setLook] = useState({ x: 0, y: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [message, setMessage] = useState('hi');
-  const [energy, setEnergy] = useState(1);
+  const [comboMessage, setComboMessage] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [sparkKey, setSparkKey] = useState(0);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const dragRef = useRef<{
     pointerId: number;
     startX: number;
@@ -33,42 +30,68 @@ const InteractiveAlien = () => {
     moved: boolean;
   } | null>(null);
   const wasDraggedRef = useRef(false);
-  const messageTimerRef = useRef<number | null>(null);
+  const comboTimerRef = useRef<number | null>(null);
+  const comboIndexRef = useRef(0);
+  const clickStreakRef = useRef(0);
+  const clickStreakTimerRef = useRef<number | null>(null);
   const idleTimerRef = useRef<number | null>(null);
 
   const mood: PetMood = overrideMood ?? moods[moodIndex];
 
-  const showMessage = useCallback((next: string) => {
-    setMessage(next);
-    if (messageTimerRef.current) {
-      window.clearTimeout(messageTimerRef.current);
+  const showComboMessage = useCallback(() => {
+    const nextMessage = comboMessages[comboIndexRef.current % comboMessages.length];
+    comboIndexRef.current += 1;
+    setComboMessage(nextMessage);
+    if (comboTimerRef.current) {
+      window.clearTimeout(comboTimerRef.current);
     }
-    messageTimerRef.current = window.setTimeout(() => {
-      setMessage('');
+    comboTimerRef.current = window.setTimeout(() => {
+      setComboMessage('');
     }, 2400);
   }, []);
 
-  const wake = useCallback((nextMood?: PetMood, nextMessage?: string) => {
+  const wake = useCallback((nextMood?: PetMood) => {
     if (idleTimerRef.current) {
       window.clearTimeout(idleTimerRef.current);
     }
     if (nextMood) {
       setOverrideMood(nextMood);
     }
-    if (nextMessage) {
-      showMessage(nextMessage);
-    }
     idleTimerRef.current = window.setTimeout(() => {
       setOverrideMood('sleepy');
-      showMessage(moodMessages.sleepy);
     }, 14000);
-  }, [showMessage]);
+  }, []);
 
   useEffect(() => {
-    wake(undefined, moodMessages.idle);
+    wake();
+
+    const updateLook = (clientX: number, clientY: number) => {
+      const target = buttonRef.current;
+      if (!target) return;
+
+      const bounds = target.getBoundingClientRect();
+      const centerX = bounds.left + bounds.width / 2;
+      const centerY = bounds.top + bounds.height / 2;
+      const x = clamp((clientX - centerX) / (bounds.width * 1.05), -1, 1);
+      const y = clamp((clientY - centerY) / (bounds.height * 1.05), -1, 1);
+
+      target.style.setProperty('--look-x', x.toFixed(3));
+      target.style.setProperty('--look-y', y.toFixed(3));
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      updateLook(event.clientX, event.clientY);
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+
     return () => {
-      if (messageTimerRef.current) {
-        window.clearTimeout(messageTimerRef.current);
+      window.removeEventListener('pointermove', handlePointerMove);
+      if (comboTimerRef.current) {
+        window.clearTimeout(comboTimerRef.current);
+      }
+      if (clickStreakTimerRef.current) {
+        window.clearTimeout(clickStreakTimerRef.current);
       }
       if (idleTimerRef.current) {
         window.clearTimeout(idleTimerRef.current);
@@ -78,12 +101,6 @@ const InteractiveAlien = () => {
 
   const handlePointerMove = (event: React.PointerEvent<HTMLButtonElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect();
-    const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
-    const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
-    setLook({
-      x: Math.max(-1, Math.min(1, x)),
-      y: Math.max(-1, Math.min(1, y)),
-    });
 
     const drag = dragRef.current;
     if (!drag || drag.pointerId !== event.pointerId) return;
@@ -104,7 +121,12 @@ const InteractiveAlien = () => {
     });
   };
 
-  const resetLook = () => setLook({ x: 0, y: 0 });
+  const resetLook = () => {
+    const target = buttonRef.current;
+    if (!target) return;
+    target.style.setProperty('--look-x', '0');
+    target.style.setProperty('--look-y', '0');
+  };
 
   const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -117,7 +139,7 @@ const InteractiveAlien = () => {
       moved: false,
     };
     setIsDragging(false);
-    wake('curious', '...');
+    wake('curious');
   };
 
   const finishDrag = (event: React.PointerEvent<HTMLButtonElement>) => {
@@ -128,35 +150,47 @@ const InteractiveAlien = () => {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
     setIsDragging(false);
-    resetLook();
   };
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = () => {
     if (wasDraggedRef.current) {
       wasDraggedRef.current = false;
-      wake('curious', 'parked');
+      wake('curious');
       return;
     }
-    if (event.detail > 1) return;
 
     const nextIndex = (moodIndex + 1) % moods.length;
     const nextMood = moods[nextIndex];
     setMoodIndex(nextIndex);
     setOverrideMood(null);
-    setEnergy((current) => clamp(current + 1, 1, 4));
-    wake(nextMood, moodMessages[nextMood]);
+    wake(nextMood);
+
+    clickStreakRef.current += 1;
+    if (clickStreakTimerRef.current) {
+      window.clearTimeout(clickStreakTimerRef.current);
+    }
+    clickStreakTimerRef.current = window.setTimeout(() => {
+      clickStreakRef.current = 0;
+    }, 1300);
+
+    if (clickStreakRef.current >= 5) {
+      setSparkKey((current) => current + 1);
+      wake('charged');
+      showComboMessage();
+      clickStreakRef.current = 0;
+    }
   };
 
   const handleDoubleClick = () => {
-    setEnergy(4);
     setSparkKey((current) => current + 1);
-    wake('charged', moodMessages.charged);
+    wake('charged');
   };
 
   return (
     <button
+      ref={buttonRef}
       type="button"
-      aria-label="Interact with the alien mascot"
+      aria-label={comboMessage || 'Interact with the alien mascot'}
       className="alien-mascot fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] right-4 z-40 h-16 w-16 sm:bottom-[calc(env(safe-area-inset-bottom)+1.75rem)] sm:right-7 sm:h-[72px] sm:w-[72px]"
       data-mood={mood}
       data-dragging={isDragging}
@@ -164,30 +198,18 @@ const InteractiveAlien = () => {
       onPointerDown={handlePointerDown}
       onPointerUp={finishDrag}
       onPointerCancel={finishDrag}
-      onPointerLeave={resetLook}
       onBlur={resetLook}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       style={
         {
-          '--look-x': look.x.toFixed(3),
-          '--look-y': look.y.toFixed(3),
           '--pet-x': `${offset.x}px`,
           '--pet-y': `${offset.y}px`,
         } as React.CSSProperties
       }
     >
-      <span className="alien-mascot__bubble" aria-live="polite" data-visible={Boolean(message)}>
-        {message}
-      </span>
-      <span className="alien-mascot__pips" aria-hidden="true">
-        {[0, 1, 2, 3].map((pip) => (
-          <span
-            key={pip}
-            className="alien-mascot__pip"
-            data-active={pip < energy}
-          />
-        ))}
+      <span className="alien-mascot__secret" aria-live="polite" data-visible={Boolean(comboMessage)}>
+        {comboMessage}
       </span>
       <span className="alien-mascot__halo" aria-hidden="true" />
       <svg
@@ -212,10 +234,16 @@ const InteractiveAlien = () => {
           </g>
 
           <g className="alien-mascot__left-arm">
-            <path d="M24 50H5v32h8V60h11z" />
+            <path className="alien-mascot__left-shoulder" d="M14 50h12v13H14z" />
+            <g className="alien-mascot__left-hand">
+              <path d="M16 50H5v32h8V62h3z" />
+            </g>
           </g>
           <g className="alien-mascot__right-arm">
-            <path d="M104 50h19v32h-8V60h-11z" />
+            <path className="alien-mascot__right-shoulder" d="M102 50h12v13h-12z" />
+            <g className="alien-mascot__right-hand">
+              <path d="M112 50h11v32h-8V62h-3z" />
+            </g>
           </g>
 
           <g className="alien-mascot__left-leg">

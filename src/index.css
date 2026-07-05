@@ -277,61 +277,34 @@
       transform 180ms ease;
   }
 
-  .alien-mascot__bubble {
+  .alien-mascot__secret {
     position: absolute;
-    right: 8px;
-    bottom: calc(100% + 8px);
-    max-width: 7rem;
-    border: 1px solid var(--hairline);
-    border-radius: 9999px;
-    background: var(--canvas);
+    right: 0;
+    bottom: calc(100% + 10px);
+    max-width: min(17rem, calc(100vw - 2rem));
     color: var(--ink);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
     font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.65rem;
-    line-height: 1;
-    padding: 0.38rem 0.55rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    line-height: 1.15;
     pointer-events: none;
     opacity: 0;
-    transform: translateY(5px) scale(0.96);
+    text-align: right;
+    text-shadow:
+      0 1px 0 var(--canvas),
+      0 -1px 0 var(--canvas),
+      1px 0 0 var(--canvas),
+      -1px 0 0 var(--canvas);
+    transform: translateY(5px);
     transition:
       opacity 160ms ease,
       transform 160ms ease;
     white-space: nowrap;
   }
 
-  .alien-mascot__bubble[data-visible='true'] {
+  .alien-mascot__secret[data-visible='true'] {
     opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-
-  .alien-mascot__pips {
-    position: absolute;
-    left: 50%;
-    top: -8px;
-    display: flex;
-    gap: 3px;
-    transform: translateX(-50%);
-    pointer-events: none;
-  }
-
-  .alien-mascot__pip {
-    width: 4px;
-    height: 4px;
-    border-radius: 9999px;
-    background: var(--mute);
-    opacity: 0.28;
-    transform: scale(0.8);
-    transition:
-      opacity 160ms ease,
-      transform 160ms ease,
-      background-color 160ms ease;
-  }
-
-  .alien-mascot__pip[data-active='true'] {
-    background: var(--ink);
-    opacity: 0.78;
-    transform: scale(1);
+    transform: translateY(0);
   }
 
   .alien-mascot:hover .alien-mascot__halo,
@@ -347,6 +320,12 @@
     padding: 10px;
     overflow: visible;
     fill: currentColor;
+    transform: translate(
+        calc(var(--look-x) * 1.5px),
+        calc(var(--look-y) * 1px)
+      )
+      rotate(calc(var(--look-x) * 2deg));
+    transition: transform 110ms ease-out;
   }
 
   .alien-mascot__body {
@@ -365,6 +344,8 @@
 
   .alien-mascot__left-arm,
   .alien-mascot__right-arm,
+  .alien-mascot__left-hand,
+  .alien-mascot__right-hand,
   .alien-mascot__left-antenna,
   .alien-mascot__right-antenna,
   .alien-mascot__left-leg,
@@ -378,6 +359,14 @@
 
   .alien-mascot__right-arm {
     transform-origin: 103px 56px;
+  }
+
+  .alien-mascot__left-hand {
+    transform-origin: 16px 56px;
+  }
+
+  .alien-mascot__right-hand {
+    transform-origin: 112px 56px;
   }
 
   .alien-mascot__left-antenna {
@@ -400,8 +389,8 @@
 
   .alien-mascot__eyes {
     transform: translate(
-      calc(var(--look-x) * 2.5px),
-      calc(var(--look-y) * 2px)
+      calc(var(--look-x) * 5px),
+      calc(var(--look-y) * 3.5px)
     );
     transition: transform 90ms ease-out;
   }
@@ -436,13 +425,15 @@
     transition: transform 160ms ease;
   }
 
-  .alien-mascot:hover .alien-mascot__left-arm,
-  .alien-mascot:focus-visible .alien-mascot__left-arm {
+  .alien-mascot:hover .alien-mascot__left-hand,
+  .alien-mascot:focus-visible .alien-mascot__left-hand,
+  .alien-mascot[data-mood='charged'] .alien-mascot__left-hand {
     animation: alien-left-wave 760ms ease-in-out infinite;
   }
 
-  .alien-mascot:hover .alien-mascot__right-arm,
-  .alien-mascot:focus-visible .alien-mascot__right-arm {
+  .alien-mascot:hover .alien-mascot__right-hand,
+  .alien-mascot:focus-visible .alien-mascot__right-hand,
+  .alien-mascot[data-mood='charged'] .alien-mascot__right-hand {
     animation: alien-right-wave 760ms ease-in-out infinite;
   }
 
@@ -520,19 +511,19 @@
 
   @keyframes alien-left-wave {
     0%, 100% {
-      transform: rotate(-10deg) translateY(1px);
+      transform: rotate(-8deg);
     }
     50% {
-      transform: rotate(18deg) translateY(-3px);
+      transform: rotate(24deg);
     }
   }
 
   @keyframes alien-right-wave {
     0%, 100% {
-      transform: rotate(10deg) translateY(-3px);
+      transform: rotate(8deg);
     }
     50% {
-      transform: rotate(-18deg) translateY(1px);
+      transform: rotate(-24deg);
     }
   }
 
