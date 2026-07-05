@@ -9,6 +9,8 @@ const comboMessages = [
   'Certified space booper',
   'Portfolio guardian online',
 ];
+const selectionMessage = 'Copying for what exactly?';
+const selectionMinLength = 15;
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -37,13 +39,12 @@ const InteractiveAlien = () => {
   const comboIndexRef = useRef(0);
   const clickStreakRef = useRef(0);
   const clickStreakTimerRef = useRef<number | null>(null);
+  const selectionTimerRef = useRef<number | null>(null);
   const idleTimerRef = useRef<number | null>(null);
 
   const mood: PetMood = overrideMood ?? moods[moodIndex];
 
-  const showComboMessage = useCallback(() => {
-    const nextMessage = comboMessages[comboIndexRef.current % comboMessages.length];
-    comboIndexRef.current += 1;
+  const showBubbleMessage = useCallback((nextMessage: string) => {
     setComboMessage(nextMessage);
     if (comboTimerRef.current) {
       window.clearTimeout(comboTimerRef.current);
@@ -52,6 +53,12 @@ const InteractiveAlien = () => {
       setComboMessage('');
     }, 2400);
   }, []);
+
+  const showComboMessage = useCallback(() => {
+    const nextMessage = comboMessages[comboIndexRef.current % comboMessages.length];
+    comboIndexRef.current += 1;
+    showBubbleMessage(nextMessage);
+  }, [showBubbleMessage]);
 
   const wake = useCallback((nextMood?: PetMood) => {
     if (idleTimerRef.current) {
@@ -98,27 +105,44 @@ const InteractiveAlien = () => {
       updateLook(touch.clientX, touch.clientY);
     };
 
+    const handleSelectionChange = () => {
+      if (selectionTimerRef.current) {
+        window.clearTimeout(selectionTimerRef.current);
+      }
+      selectionTimerRef.current = window.setTimeout(() => {
+        const selectedText = window.getSelection()?.toString().trim() ?? '';
+        if (selectedText.length <= selectionMinLength) return;
+        wake('curious');
+        showBubbleMessage(selectionMessage);
+      }, 180);
+    };
+
     window.addEventListener('pointerdown', handleGlobalPointerDown, { passive: true });
     window.addEventListener('pointermove', handlePointerMove, { passive: true });
     window.addEventListener('touchstart', handleTouch, { passive: true });
     window.addEventListener('touchmove', handleTouch, { passive: true });
+    document.addEventListener('selectionchange', handleSelectionChange);
 
     return () => {
       window.removeEventListener('pointerdown', handleGlobalPointerDown);
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('touchstart', handleTouch);
       window.removeEventListener('touchmove', handleTouch);
+      document.removeEventListener('selectionchange', handleSelectionChange);
       if (comboTimerRef.current) {
         window.clearTimeout(comboTimerRef.current);
       }
       if (clickStreakTimerRef.current) {
         window.clearTimeout(clickStreakTimerRef.current);
       }
+      if (selectionTimerRef.current) {
+        window.clearTimeout(selectionTimerRef.current);
+      }
       if (idleTimerRef.current) {
         window.clearTimeout(idleTimerRef.current);
       }
     };
-  }, [wake]);
+  }, [showBubbleMessage, wake]);
 
   const handlePointerMove = (event: React.PointerEvent<HTMLButtonElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect();
