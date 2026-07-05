@@ -111,6 +111,14 @@
     @apply inline-flex max-w-full items-center justify-center text-center whitespace-normal break-words bg-soft border border-hairline text-charcoal font-mono text-xs leading-tight px-3 py-1.5 rounded-full;
   }
 
+  .course-chip-long {
+    @apply w-full justify-between gap-3 rounded-lg px-3 py-2 text-left leading-snug sm:w-auto sm:justify-center sm:rounded-full sm:py-1.5 sm:text-center;
+  }
+
+  .course-chip-long .course-grade {
+    @apply inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-canvas border border-hairline px-1.5;
+  }
+
   [data-reveal] {
     opacity: 0;
     transform: translate3d(0, 18px, 0);
