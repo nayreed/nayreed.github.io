@@ -27,14 +27,16 @@ const Experience = () => {
         {experiences.map((exp) => (
           <div key={exp.title} className="card-hairline p-4 sm:p-8 md:p-10" data-reveal="scale">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-              <div className="min-w-0 flex-1">
-                <div className="w-11 h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0 mb-3">
+              <div className="flex items-start gap-2 min-[380px]:gap-3 sm:gap-4 min-w-0 flex-1">
+                <div className="w-9 h-9 min-[380px]:w-11 min-[380px]:h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
                   <Briefcase size={18} />
                 </div>
-                <h3 className="font-display text-[10px] min-[420px]:text-xs sm:text-xl font-bold text-ink leading-snug whitespace-nowrap">
-                  {exp.company}
-                </h3>
-                <p className="text-fade mt-1">{exp.title}</p>
+                <div className="min-w-0">
+                  <h3 className="font-display text-[9px] min-[380px]:text-[10px] min-[460px]:text-xs sm:text-xl font-bold text-ink leading-snug whitespace-nowrap">
+                    {exp.company}
+                  </h3>
+                  <p className="text-fade mt-1">{exp.title}</p>
+                </div>
               </div>
               <div className="flex flex-row md:flex-col flex-wrap gap-2 md:items-end shrink-0">
                 <span className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
