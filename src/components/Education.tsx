@@ -42,10 +42,7 @@ const satScores = [
 const completedCredits = 132;
 const requiredCredits = 180;
 const progressPercent = (completedCredits / requiredCredits) * 100;
-const longCourseNames = new Set([
-  'Probability & Mathematical Statistics',
-  'Simulations & Tools for Telecommunications',
-]);
+const longCourseNames = new Set(['Probability & Mathematical Statistics', 'Simulations & Tools for Telecommunications']);
 
 interface EducationMetaProps {
   date: string;
@@ -112,18 +109,16 @@ const Education = () => {
               {courseworkGroups.map((group) => (
                 <div key={group.label}>
                   <p className="font-mono text-xs uppercase tracking-[0.2em] text-mute mb-3">
-                    {group.label} coursework
+                    {group.label}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {group.courses.map((course) => (
                       <span
                         key={course.name}
-                        className={longCourseNames.has(course.name) ? 'course-chip-long chip' : 'chip'}
+                        className={longCourseNames.has(course.name) ? 'chip text-[9px] min-[390px]:text-[10px] sm:text-xs' : 'chip'}
                       >
                         <span className="min-w-0">{course.name}</span>
-                        <span className="course-grade ml-2 shrink-0 text-ink font-medium">
-                          {course.grade}
-                        </span>
+                        <span className="ml-2 shrink-0 text-ink font-medium">{course.grade}</span>
                       </span>
                     ))}
                   </div>
