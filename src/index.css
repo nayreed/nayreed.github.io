@@ -223,6 +223,20 @@
     @apply inline-flex max-w-full items-center justify-center gap-2 text-center bg-canvas text-ink border border-hairline-strong text-sm font-medium px-5 py-2.5 rounded-full transition-colors hover:bg-soft;
   }
 
+  .footer-signature {
+    display: block;
+    width: clamp(5.75rem, 14vw, 7.75rem);
+    aspect-ratio: 1;
+    background: currentColor;
+    opacity: 0.82;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+  }
+
   .alien-mascot {
     --look-x: 0;
     --look-y: 0;

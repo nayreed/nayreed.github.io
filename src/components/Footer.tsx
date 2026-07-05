@@ -1,5 +1,6 @@
 import React from 'react';
 import { Github, Linkedin, Mail } from 'lucide-react';
+import signatureUrl from '@/assets/signature.png?url';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -42,7 +43,17 @@ const Footer = () => {
           </div>
         </div>
 
-        <p className="text-center text-xs text-mute mt-8">
+        <div className="mt-8 flex justify-center text-ink" aria-hidden="true">
+          <span
+            className="footer-signature"
+            style={{
+              WebkitMaskImage: `url(${signatureUrl})`,
+              maskImage: `url(${signatureUrl})`,
+            }}
+          />
+        </div>
+
+        <p className="text-center text-xs text-mute mt-5">
           &copy; {currentYear} Rezwan Ahmad Nayreed. All rights reserved.
         </p>
       </div>
