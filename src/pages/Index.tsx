@@ -9,6 +9,7 @@ import ExtracurricularActivities from '@/components/ExtracurricularActivities';
 import Articles from '@/components/Articles';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
+import InteractiveAlien from '@/components/InteractiveAlien';
 
 const Index = () => {
   // Smooth scroll for anchor links, offset for the fixed navbar
@@ -89,6 +90,7 @@ const Index = () => {
         <Contact />
       </main>
       <Footer />
+      <InteractiveAlien />
     </div>
   );
 };

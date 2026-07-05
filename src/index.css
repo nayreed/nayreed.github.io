@@ -222,4 +222,273 @@
   .pill-secondary {
     @apply inline-flex max-w-full items-center justify-center gap-2 text-center bg-canvas text-ink border border-hairline-strong text-sm font-medium px-5 py-2.5 rounded-full transition-colors hover:bg-soft;
   }
+
+  .alien-mascot {
+    --look-x: 0;
+    --look-y: 0;
+    appearance: none;
+    border: 1px solid var(--hairline);
+    border-radius: 9999px;
+    padding: 0;
+    cursor: pointer;
+    background: var(--canvas);
+    background: color-mix(in srgb, var(--canvas) 86%, transparent);
+    color: var(--ink);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.12);
+    overflow: visible;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      border-color 180ms ease,
+      background-color 180ms ease,
+      color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .alien-mascot:hover,
+  .alien-mascot:focus-visible {
+    border-color: var(--hairline-strong);
+    background: var(--soft);
+    transform: translateY(-3px);
+  }
+
+  .alien-mascot:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 4px;
+  }
+
+  .alien-mascot__halo {
+    position: absolute;
+    inset: 7px;
+    border-radius: inherit;
+    background: var(--ink);
+    opacity: 0.06;
+    transform: scale(0.86);
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease;
+  }
+
+  .alien-mascot:hover .alien-mascot__halo,
+  .alien-mascot:focus-visible .alien-mascot__halo {
+    opacity: 0.1;
+    transform: scale(1);
+  }
+
+  .alien-mascot__svg {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    overflow: visible;
+    fill: currentColor;
+  }
+
+  .alien-mascot__body {
+    animation: alien-float 4s ease-in-out infinite;
+    transform-box: view-box;
+    transform-origin: 64px 64px;
+  }
+
+  .alien-mascot__shadow {
+    fill: currentColor;
+    opacity: 0.13;
+    animation: alien-shadow 4s ease-in-out infinite;
+    transform-box: view-box;
+    transform-origin: 64px 112px;
+  }
+
+  .alien-mascot__left-arm,
+  .alien-mascot__right-arm,
+  .alien-mascot__left-antenna,
+  .alien-mascot__right-antenna,
+  .alien-mascot__left-leg,
+  .alien-mascot__right-leg {
+    transform-box: view-box;
+  }
+
+  .alien-mascot__left-arm {
+    transform-origin: 25px 56px;
+  }
+
+  .alien-mascot__right-arm {
+    transform-origin: 103px 56px;
+  }
+
+  .alien-mascot__left-antenna {
+    transform-origin: 46px 28px;
+    animation: alien-left-antenna 3s ease-in-out infinite;
+  }
+
+  .alien-mascot__right-antenna {
+    transform-origin: 82px 28px;
+    animation: alien-right-antenna 3s ease-in-out infinite;
+  }
+
+  .alien-mascot__left-leg {
+    transform-origin: 46px 82px;
+  }
+
+  .alien-mascot__right-leg {
+    transform-origin: 82px 82px;
+  }
+
+  .alien-mascot__eyes {
+    transform: translate(
+      calc(var(--look-x) * 2.5px),
+      calc(var(--look-y) * 2px)
+    );
+    transition: transform 90ms ease-out;
+  }
+
+  .alien-mascot__eye {
+    animation: alien-blink 5.2s steps(1, end) infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .alien-mascot__sparks {
+    opacity: 0;
+    transform-box: view-box;
+    transform-origin: 64px 64px;
+  }
+
+  .alien-mascot:hover .alien-mascot__left-arm,
+  .alien-mascot:focus-visible .alien-mascot__left-arm {
+    animation: alien-left-wave 760ms ease-in-out infinite;
+  }
+
+  .alien-mascot:hover .alien-mascot__right-arm,
+  .alien-mascot:focus-visible .alien-mascot__right-arm {
+    animation: alien-right-wave 760ms ease-in-out infinite;
+  }
+
+  .alien-mascot[data-mood='excited'] .alien-mascot__body {
+    animation: alien-hop 520ms ease-in-out infinite;
+  }
+
+  .alien-mascot[data-mood='excited'] .alien-mascot__sparks {
+    animation: alien-spark 900ms ease-in-out infinite;
+  }
+
+  .alien-mascot[data-mood='curious'] .alien-mascot__left-leg {
+    animation: alien-left-step 900ms ease-in-out infinite;
+  }
+
+  .alien-mascot[data-mood='curious'] .alien-mascot__right-leg {
+    animation: alien-right-step 900ms ease-in-out infinite;
+  }
+
+  @keyframes alien-float {
+    0%, 100% {
+      transform: translateY(0) rotate(-1deg);
+    }
+    50% {
+      transform: translateY(4px) rotate(1deg);
+    }
+  }
+
+  @keyframes alien-shadow {
+    0%, 100% {
+      opacity: 0.1;
+      transform: scaleX(0.85);
+    }
+    50% {
+      opacity: 0.18;
+      transform: scaleX(1.08);
+    }
+  }
+
+  @keyframes alien-blink {
+    0%, 88%, 100% {
+      transform: scaleY(1);
+    }
+    92%, 95% {
+      transform: scaleY(0.16);
+    }
+  }
+
+  @keyframes alien-left-wave {
+    0%, 100% {
+      transform: rotate(-10deg) translateY(1px);
+    }
+    50% {
+      transform: rotate(18deg) translateY(-3px);
+    }
+  }
+
+  @keyframes alien-right-wave {
+    0%, 100% {
+      transform: rotate(10deg) translateY(-3px);
+    }
+    50% {
+      transform: rotate(-18deg) translateY(1px);
+    }
+  }
+
+  @keyframes alien-left-antenna {
+    0%, 100% {
+      transform: rotate(-5deg);
+    }
+    50% {
+      transform: rotate(6deg);
+    }
+  }
+
+  @keyframes alien-right-antenna {
+    0%, 100% {
+      transform: rotate(5deg);
+    }
+    50% {
+      transform: rotate(-6deg);
+    }
+  }
+
+  @keyframes alien-hop {
+    0%, 100% {
+      transform: translateY(0) scale(1);
+    }
+    45% {
+      transform: translateY(-7px) scale(1.04);
+    }
+  }
+
+  @keyframes alien-spark {
+    0%, 100% {
+      opacity: 0;
+      transform: scale(0.5) rotate(0deg);
+    }
+    45% {
+      opacity: 1;
+      transform: scale(1.12) rotate(90deg);
+    }
+  }
+
+  @keyframes alien-left-step {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  @keyframes alien-right-step {
+    0%, 100% {
+      transform: translateY(-4px);
+    }
+    50% {
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .alien-mascot,
+    .alien-mascot *,
+    .alien-mascot::before,
+    .alien-mascot::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
 }
