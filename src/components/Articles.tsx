@@ -24,7 +24,7 @@ const Articles = () => {
             </h3>
             <p className="text-fade text-[15px] leading-relaxed mt-2">
               An article discussing the advancements and applications of Brain-Computer
-              Interfaces (BCI).
+              Interfaces.
             </p>
             <span className="inline-flex items-center gap-1 text-sm font-medium text-ink mt-4">
               Read on LinkedIn
