@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           <a href="#home" className="text-ink transition-opacity hover:opacity-70" aria-label="Back to home">
             <span
-              className="footer-signature"
+              className="signature-wordmark"
               style={{
                 WebkitMaskImage: `url(${signatureUrl})`,
                 maskImage: `url(${signatureUrl})`,

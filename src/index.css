@@ -283,18 +283,18 @@
     }
   }
 
-  .footer-signature {
+  .signature-wordmark {
     display: block;
-    width: clamp(5.75rem, 14vw, 7.75rem);
-    aspect-ratio: 1;
+    width: 4.65rem;
+    height: 1.05rem;
     background: currentColor;
-    opacity: 0.82;
+    opacity: 0.9;
     mask-position: center;
     mask-repeat: no-repeat;
-    mask-size: contain;
+    mask-size: 100% auto;
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
+    -webkit-mask-size: 100% auto;
   }
 
   @keyframes navbar-theme-wheel {

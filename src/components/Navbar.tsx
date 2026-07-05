@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
+import signatureUrl from '@/assets/signature.png?url';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -39,10 +40,17 @@ const Navbar = () => {
       <div className="relative max-w-5xl mx-auto h-14 px-5 sm:px-6">
         <a
           href="#home"
-          className="navbar-title font-mono text-sm text-ink hover:text-fade transition-colors"
+          className="navbar-title text-ink transition-opacity hover:opacity-70"
           data-bottom={isAtBottom ? 'true' : 'false'}
+          aria-label="Back to home"
         >
-          <span className="text-mute">~/</span>nayreed
+          <span
+            className="signature-wordmark"
+            style={{
+              WebkitMaskImage: `url(${signatureUrl})`,
+              maskImage: `url(${signatureUrl})`,
+            }}
+          />
         </a>
 
         <button
