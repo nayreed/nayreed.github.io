@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="University of Oulu">
   <title>University of Oulu</title>
-  <g fill="#2463eb" transform="matrix(0.307205 0 0 -0.307205 -71.6618 802.8115)">
+  <g fill="currentColor" transform="matrix(0.307205 0 0 -0.307205 -71.6618 802.8115)">
     <g transform="translate(1605.8906 2424.1777)">
       <path d="M0 0-65.521 65.518-71.501 59.537-347.547-216.51-282.029-282.033Z"/>
     </g>

@@ -14,7 +14,7 @@ const readTheme = (): Theme =>
 export const setTheme = (next: Theme) => {
   document.documentElement.classList.toggle('dark', next === 'dark');
   try {
-    localStorage.setItem('theme', next);
+    localStorage.removeItem('theme');
   } catch {
     // localStorage unavailable (private mode); theme still applies for the session
   }

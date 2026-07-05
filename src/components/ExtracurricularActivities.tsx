@@ -102,6 +102,11 @@ const activities = [
 const isFinlandLocation = (location: string) =>
   location.includes('Oulu, Finland') || location.includes('Espoo, Finland');
 
+const universityOfOuluMarkerStyle = {
+  WebkitMask: `url(${universityOfOuluMarker}) center / contain no-repeat`,
+  mask: `url(${universityOfOuluMarker}) center / contain no-repeat`,
+} as React.CSSProperties;
+
 const ExtracurricularActivities = () => {
   return (
     <section id="activities" className="py-16 md:py-24">
@@ -123,20 +128,17 @@ const ExtracurricularActivities = () => {
                   </h3>
                 </div>
                 <div className="flex flex-col gap-2 md:items-end shrink-0">
-                  <span className="inline-flex items-center justify-center md:justify-end gap-2 text-xs text-mute text-center md:text-right">
+                  <span className="inline-flex items-baseline justify-center md:justify-end gap-2 text-xs text-mute text-center md:text-right">
                     {act.location === 'University of Oulu' ? (
-                      <span className="inline-flex h-3 w-3 shrink-0 items-center justify-center">
-                        <img
-                          src={universityOfOuluMarker}
-                          alt=""
-                          aria-hidden="true"
-                          className="block h-3 w-3 translate-y-[0.5px] object-contain"
-                        />
-                      </span>
+                      <span
+                        aria-hidden="true"
+                        className="inline-block h-3 w-3 shrink-0 bg-ink"
+                        style={universityOfOuluMarkerStyle}
+                      />
                     ) : isFinlandLocation(act.location) ? (
-                      <img src={finlandMarker} alt="" aria-hidden="true" className="w-3.5 h-3.5 object-contain shrink-0" />
+                      <img src={finlandMarker} alt="" aria-hidden="true" className="w-3.5 h-3.5 object-contain shrink-0 self-center" />
                     ) : (
-                      <MapPin size={12} className="shrink-0" />
+                      <MapPin size={12} className="shrink-0 self-center" />
                     )}
                     {act.location}
                   </span>

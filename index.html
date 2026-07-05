@@ -10,8 +10,8 @@
     <meta name="color-scheme" content="light dark" />
     <link id="favicon" rel="icon" type="image/svg+xml" href="/alien-light-0.svg" />
     <script>
-      // Apply the saved (or system) site theme before first paint, then keep
-      // the tab icon matched to the browser chrome color scheme.
+      // Follow the browser/OS theme before first paint and keep the tab icon
+      // matched to the browser chrome color scheme.
       (function () {
         try {
           var favicon = document.getElementById("favicon");
@@ -41,14 +41,11 @@
             "/alien-dark-7.svg"
           ];
 
-          var readStoredTheme = function () {
-            var stored = localStorage.getItem("theme");
-            return stored === "dark" || stored === "light" ? stored : null;
-          };
-
           var applySiteTheme = function () {
-            var stored = readStoredTheme();
-            var dark = stored === "dark" || (!stored && browserTheme.matches);
+            try {
+              localStorage.removeItem("theme");
+            } catch (e) {}
+            var dark = browserTheme.matches;
             document.documentElement.classList.toggle("dark", dark);
             window.dispatchEvent(new CustomEvent("theme-change", { detail: dark ? "dark" : "light" }));
           };
