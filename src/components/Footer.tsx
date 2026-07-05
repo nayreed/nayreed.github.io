@@ -42,7 +42,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <p className="text-center text-xs text-mute mt-8" data-reveal="fade">
+        <p className="text-center text-xs text-mute mt-8">
           &copy; {currentYear} Rezwan Ahmad Nayreed. All rights reserved.
         </p>
       </div>
