@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import SectionHeader from './SectionHeader';
 import { ArrowUpRight, Github } from 'lucide-react';
 import EisimDemoPlayer from './EisimDemoPlayer';
 
 const EISIM_DEMO_URL = 'https://a3s.fi/swift/v1/nayreed/EISim-demo.mp4';
+const EISIM_DEMO_TARGET_ID = 'eisim-demo';
+
+const shouldLaunchEisimDemo = () => {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('demo') === 'eisim' || window.location.hash === `#${EISIM_DEMO_TARGET_ID}`;
+};
 
 const projects = [
   {
@@ -35,6 +41,22 @@ const projects = [
 ];
 
 const Projects = () => {
+  const [launchEisimDemo, setLaunchEisimDemo] = useState(false);
+
+  useEffect(() => {
+    const launchRequested = shouldLaunchEisimDemo();
+    setLaunchEisimDemo(launchRequested);
+
+    if (!launchRequested) return;
+
+    window.setTimeout(() => {
+      document.getElementById(EISIM_DEMO_TARGET_ID)?.scrollIntoView({
+        block: 'center',
+        behavior: 'smooth',
+      });
+    }, 350);
+  }, []);
+
   return (
     <section id="projects" className="py-16 md:py-24">
       <div className="max-w-3xl mx-auto px-5 sm:px-6">
@@ -70,7 +92,7 @@ const Projects = () => {
                 </div>
 
                 {'demoUrl' in project && project.demoUrl ? (
-                  <EisimDemoPlayer src={project.demoUrl} />
+                  <EisimDemoPlayer src={project.demoUrl} launchRequested={launchEisimDemo} />
                 ) : (
                   <div className="mt-5">
                     <span className="inline-flex max-w-full items-center gap-1.5 font-mono text-xs text-mute group-hover:text-ink transition-colors">
@@ -101,6 +123,7 @@ const Projects = () => {
             return (
               <article
                 key={project.title}
+                id={'demoUrl' in project ? EISIM_DEMO_TARGET_ID : undefined}
                 className="card-hairline p-6 sm:p-8"
                 data-reveal="scale"
                 style={{ '--reveal-delay': `${index * 90}ms` } as React.CSSProperties}

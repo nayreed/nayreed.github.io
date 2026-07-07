@@ -47,11 +47,13 @@ const formatTime = (seconds: number) => {
 
 interface EisimDemoPlayerProps {
   src: string;
+  launchRequested?: boolean;
 }
 
-const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
+const EisimDemoPlayer = ({ src, launchRequested = false }: EisimDemoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
+  const launchButtonRef = useRef<HTMLButtonElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -62,6 +64,7 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
   const [controlsActivity, setControlsActivity] = useState(0);
   const [speedMenuOpen, setSpeedMenuOpen] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const [launchPromptVisible, setLaunchPromptVisible] = useState(launchRequested);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -114,6 +117,14 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
       playPromise.catch(() => setIsPlaying(false));
     }
   }, [prefersNativeControls]);
+
+  useEffect(() => {
+    if (!launchRequested) return;
+
+    setLaunchPromptVisible(true);
+    setControlsVisible(true);
+    window.setTimeout(() => launchButtonRef.current?.focus(), 450);
+  }, [launchRequested]);
 
   useEffect(() => {
     const video = videoRef.current as FullscreenVideoElement | null;
@@ -243,6 +254,32 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
     setSpeedMenuOpen((open) => !open);
   };
 
+  const launchFullscreenDemo = async () => {
+    revealControls();
+    const frame = frameRef.current;
+    const video = videoRef.current as FullscreenVideoElement | null;
+    if (!video) return;
+
+    setLaunchPromptVisible(false);
+    video.defaultMuted = false;
+    video.muted = false;
+    video.volume = 1;
+    setIsMuted(false);
+
+    try {
+      const fullscreenPromise =
+        !prefersNativeControls && frame?.requestFullscreen && !document.fullscreenElement
+          ? frame.requestFullscreen()
+          : Promise.resolve(video.webkitEnterFullscreen?.());
+      const playPromise = video.play();
+
+      await fullscreenPromise;
+      await playPromise;
+    } catch {
+      setLaunchPromptVisible(true);
+    }
+  };
+
   const togglePictureInPicture = async () => {
     revealControls();
     const video = videoRef.current as FullscreenVideoElement | null;
@@ -333,6 +370,20 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
         >
           <source src={src} type="video/mp4" />
         </video>
+
+        {launchPromptVisible ? (
+          <div className="absolute inset-0 z-10 grid place-items-center bg-black/35 px-6 text-white backdrop-blur-sm">
+            <button
+              ref={launchButtonRef}
+              type="button"
+              className="eisim-demo-launch"
+              onClick={launchFullscreenDemo}
+            >
+              <Play size={24} fill="currentColor" />
+              <span>Play EISim demo</span>
+            </button>
+          </div>
+        ) : null}
 
         {!prefersNativeControls ? (
           <div
