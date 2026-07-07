@@ -29,6 +29,10 @@ type FullscreenVideoElement = HTMLVideoElement & {
   disablePictureInPicture?: boolean;
 };
 
+const PLAYBACK_RATES = [0.5, 0.75, 1, 1.25, 1.5, 2];
+
+const formatRate = (rate: number) => `${Number.isInteger(rate) ? rate.toFixed(0) : rate.toFixed(2).replace(/0$/, '')}x`;
+
 const formatTime = (seconds: number) => {
   if (!Number.isFinite(seconds) || seconds <= 0) {
     return '00:00';
@@ -54,8 +58,10 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
   const [isPictureInPicture, setIsPictureInPicture] = useState(false);
   const [prefersNativeControls, setPrefersNativeControls] = useState(false);
   const [controlsVisible, setControlsVisible] = useState(true);
-  const [controlsHaveFocus, setControlsHaveFocus] = useState(false);
+  const [controlsHovered, setControlsHovered] = useState(false);
   const [controlsActivity, setControlsActivity] = useState(0);
+  const [speedMenuOpen, setSpeedMenuOpen] = useState(false);
+  const [playbackRate, setPlaybackRate] = useState(1);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -78,16 +84,22 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
   }, []);
 
   useEffect(() => {
-    if (prefersNativeControls || !isPlaying || controlsHaveFocus) {
+    if (prefersNativeControls || !isPlaying || controlsHovered) {
       setControlsVisible(true);
       return;
     }
 
     if (!controlsVisible) return;
 
-    const timeoutId = window.setTimeout(() => setControlsVisible(false), 2200);
+    const timeoutId = window.setTimeout(() => setControlsVisible(false), 1200);
     return () => window.clearTimeout(timeoutId);
-  }, [controlsActivity, controlsHaveFocus, controlsVisible, isPlaying, prefersNativeControls]);
+  }, [controlsActivity, controlsHovered, controlsVisible, isPlaying, prefersNativeControls]);
+
+  useEffect(() => {
+    if (!controlsVisible) {
+      setSpeedMenuOpen(false);
+    }
+  }, [controlsVisible]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -154,11 +166,14 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
     }
   };
 
-  const handleControlsBlur = (event: React.FocusEvent<HTMLDivElement>) => {
-    const nextTarget = event.relatedTarget;
-    if (!(nextTarget instanceof Node) || !event.currentTarget.contains(nextTarget)) {
-      setControlsHaveFocus(false);
-    }
+  const keepControlsOpen = () => {
+    setControlsHovered(true);
+    revealControls();
+  };
+
+  const releaseControls = () => {
+    setControlsHovered(false);
+    revealControls();
   };
 
   const syncDuration = () => {
@@ -213,6 +228,21 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
     setCurrentTime(nextTime);
   };
 
+  const changePlaybackRate = (rate: number) => {
+    revealControls();
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.playbackRate = rate;
+    setPlaybackRate(rate);
+    setSpeedMenuOpen(false);
+  };
+
+  const toggleSpeedMenu = () => {
+    revealControls();
+    setSpeedMenuOpen((open) => !open);
+  };
+
   const togglePictureInPicture = async () => {
     revealControls();
     const video = videoRef.current as FullscreenVideoElement | null;
@@ -225,8 +255,10 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
         return;
       }
 
+      video.disablePictureInPicture = false;
       await video.requestPictureInPicture?.();
     } catch {
+      video.disablePictureInPicture = true;
       // Picture-in-picture support and permissions vary by browser.
     }
   };
@@ -268,11 +300,14 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
         className="eisim-demo-frame group relative overflow-hidden bg-black"
         onPointerMove={revealControls}
         onPointerDown={revealControls}
-        onFocusCapture={() => {
-          setControlsHaveFocus(true);
-          revealControls();
+        onPointerLeave={() => {
+          if (isPlaying) {
+            setControlsVisible(false);
+            setSpeedMenuOpen(false);
+            setControlsHovered(false);
+          }
         }}
-        onBlurCapture={handleControlsBlur}
+        onFocusCapture={revealControls}
       >
         <video
           ref={videoRef}
@@ -282,6 +317,9 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
           autoPlay={prefersNativeControls}
           defaultMuted={prefersNativeControls}
           controls={prefersNativeControls}
+          controlsList="nodownload noremoteplayback"
+          disablePictureInPicture={!prefersNativeControls && !isPictureInPicture}
+          disableRemotePlayback
           onClick={prefersNativeControls ? undefined : togglePlayback}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
@@ -290,6 +328,7 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
           onLoadedMetadata={syncDuration}
           onDurationChange={syncDuration}
           onVolumeChange={(event) => setIsMuted(event.currentTarget.muted)}
+          onRateChange={(event) => setPlaybackRate(event.currentTarget.playbackRate)}
           aria-label="EISim demo video"
         >
           <source src={src} type="video/mp4" />
@@ -304,7 +343,11 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
             <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/45 to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/55 to-transparent" />
 
-            <div className="absolute left-3 top-3 flex items-center gap-2 sm:left-4 sm:top-4">
+            <div
+              className="absolute left-3 top-3 flex items-center gap-2 sm:left-4 sm:top-4"
+              onPointerEnter={keepControlsOpen}
+              onPointerLeave={releaseControls}
+            >
               <button
                 type="button"
                 className="eisim-video-button"
@@ -324,7 +367,11 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
               </button>
             </div>
 
-            <div className="absolute right-3 top-3 sm:right-4 sm:top-4">
+            <div
+              className="absolute right-3 top-3 sm:right-4 sm:top-4"
+              onPointerEnter={keepControlsOpen}
+              onPointerLeave={releaseControls}
+            >
               <button
                 type="button"
                 className="eisim-video-button"
@@ -340,6 +387,8 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
                 type="button"
                 className="eisim-video-button h-12 w-12 sm:h-14 sm:w-14"
                 onClick={() => skipBy(-10)}
+                onPointerEnter={keepControlsOpen}
+                onPointerLeave={releaseControls}
                 aria-label="Rewind EISim demo 10 seconds"
               >
                 <RotateCcw size={22} />
@@ -350,6 +399,8 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
                 type="button"
                 className="eisim-video-button eisim-video-button--primary h-16 w-16 sm:h-20 sm:w-20"
                 onClick={togglePlayback}
+                onPointerEnter={keepControlsOpen}
+                onPointerLeave={releaseControls}
                 aria-label={isPlaying ? 'Pause EISim demo' : 'Play EISim demo'}
               >
                 {isPlaying ? <Pause size={32} fill="currentColor" /> : <Play size={34} fill="currentColor" />}
@@ -359,6 +410,8 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
                 type="button"
                 className="eisim-video-button h-12 w-12 sm:h-14 sm:w-14"
                 onClick={() => skipBy(10)}
+                onPointerEnter={keepControlsOpen}
+                onPointerLeave={releaseControls}
                 aria-label="Forward EISim demo 10 seconds"
               >
                 <RotateCw size={22} />
@@ -367,7 +420,11 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
             </div>
 
             <div className="absolute inset-x-3 bottom-3 sm:inset-x-4 sm:bottom-4">
-              <div className="eisim-video-control-dock flex min-h-12 items-center gap-3 rounded-full px-3 py-2 sm:gap-4 sm:px-4">
+              <div
+                className="eisim-video-control-dock flex min-h-12 items-center gap-3 rounded-full px-3 py-2 sm:gap-4 sm:px-4"
+                onPointerEnter={keepControlsOpen}
+                onPointerLeave={releaseControls}
+              >
                 <span className="min-w-[2.6rem] text-right font-mono text-[11px] tabular-nums text-white/85 sm:min-w-[3rem] sm:text-xs">
                   {formatTime(currentTime)}
                 </span>
@@ -388,13 +445,35 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
                   -{formatTime(remainingTime)}
                 </span>
 
-                <button
-                  type="button"
-                  className="eisim-video-button h-8 w-8 shrink-0"
-                  aria-label="Additional playback options"
-                >
-                  <Ellipsis size={18} />
-                </button>
+                <div className="relative shrink-0">
+                  <button
+                    type="button"
+                    className={`eisim-video-button h-8 w-8 shrink-0 ${speedMenuOpen ? 'is-active' : ''}`}
+                    onClick={toggleSpeedMenu}
+                    aria-label="Playback speed options"
+                    aria-expanded={speedMenuOpen}
+                    aria-haspopup="menu"
+                  >
+                    <Ellipsis size={18} />
+                  </button>
+
+                  {speedMenuOpen ? (
+                    <div className="eisim-playback-menu" role="menu" aria-label="Playback speed" onPointerEnter={keepControlsOpen} onPointerLeave={releaseControls}>
+                      {PLAYBACK_RATES.map((rate) => (
+                        <button
+                          key={rate}
+                          type="button"
+                          className={`eisim-playback-menu__item ${playbackRate === rate ? 'is-active' : ''}`}
+                          onClick={() => changePlaybackRate(rate)}
+                          role="menuitemradio"
+                          aria-checked={playbackRate === rate}
+                        >
+                          {formatRate(rate)}
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>

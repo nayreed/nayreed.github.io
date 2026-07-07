@@ -188,18 +188,19 @@
     place-items: center;
     flex: none;
     border-radius: 9999px;
-    border: 1px solid rgb(255 255 255 / 0.28);
+    border: 1px solid rgb(255 255 255 / 0.2);
     background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.34) 0%, rgb(255 255 255 / 0.13) 100%),
-      rgb(28 28 30 / 0.34);
+      radial-gradient(circle at 30% 18%, rgb(255 255 255 / 0.3), transparent 34%),
+      linear-gradient(180deg, rgb(255 255 255 / 0.16) 0%, rgb(255 255 255 / 0.055) 100%),
+      rgb(255 255 255 / 0.045);
     color: #ffffff;
     box-shadow:
-      0 1rem 2.5rem rgb(0 0 0 / 0.32),
-      inset 0 1px 0 rgb(255 255 255 / 0.42),
-      inset 0 -1px 0 rgb(255 255 255 / 0.1);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    backdrop-filter: blur(28px) saturate(180%);
-    text-shadow: 0 1px 0 rgb(0 0 0 / 0.32);
+      0 1rem 2.75rem rgb(0 0 0 / 0.24),
+      inset 0 1px 0 rgb(255 255 255 / 0.32),
+      inset 0 -1px 0 rgb(255 255 255 / 0.08);
+    -webkit-backdrop-filter: blur(34px) saturate(190%);
+    backdrop-filter: blur(34px) saturate(190%);
+    text-shadow: 0 1px 0 rgb(0 0 0 / 0.26);
     transition:
       background-color 160ms ease,
       box-shadow 160ms ease,
@@ -210,20 +211,22 @@
   .eisim-video-button:hover,
   .eisim-video-button.is-active {
     background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.48) 0%, rgb(255 255 255 / 0.2) 100%),
-      rgb(72 72 74 / 0.38);
-    border-color: rgb(255 255 255 / 0.42);
+      radial-gradient(circle at 30% 18%, rgb(255 255 255 / 0.42), transparent 34%),
+      linear-gradient(180deg, rgb(255 255 255 / 0.24) 0%, rgb(255 255 255 / 0.08) 100%),
+      rgb(255 255 255 / 0.075);
+    border-color: rgb(255 255 255 / 0.36);
     box-shadow:
-      0 1.15rem 3rem rgb(0 0 0 / 0.36),
-      inset 0 1px 0 rgb(255 255 255 / 0.55),
-      inset 0 -1px 0 rgb(255 255 255 / 0.14);
+      0 1.15rem 3rem rgb(0 0 0 / 0.3),
+      inset 0 1px 0 rgb(255 255 255 / 0.46),
+      inset 0 -1px 0 rgb(255 255 255 / 0.12);
     transform: scale(1.045);
   }
 
   .eisim-video-button--primary {
     background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.46) 0%, rgb(255 255 255 / 0.18) 100%),
-      rgb(28 28 30 / 0.38);
+      radial-gradient(circle at 30% 18%, rgb(255 255 255 / 0.38), transparent 34%),
+      linear-gradient(180deg, rgb(255 255 255 / 0.22) 0%, rgb(255 255 255 / 0.075) 100%),
+      rgb(255 255 255 / 0.06);
   }
 
   .eisim-video-button:focus-visible {
@@ -235,22 +238,65 @@
     pointer-events: auto;
     width: min(100%, 46rem);
     margin-inline: auto;
-    border: 1px solid rgb(255 255 255 / 0.24);
+    border: 1px solid rgb(255 255 255 / 0.2);
     background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.28) 0%, rgb(255 255 255 / 0.12) 100%),
-      rgb(28 28 30 / 0.38);
+      radial-gradient(circle at 20% 0%, rgb(255 255 255 / 0.24), transparent 32%),
+      linear-gradient(180deg, rgb(255 255 255 / 0.14) 0%, rgb(255 255 255 / 0.05) 100%),
+      rgb(255 255 255 / 0.045);
     box-shadow:
-      0 1rem 3rem rgb(0 0 0 / 0.34),
-      inset 0 1px 0 rgb(255 255 255 / 0.38),
-      inset 0 -1px 0 rgb(255 255 255 / 0.1);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    backdrop-filter: blur(30px) saturate(180%);
+      0 1rem 3rem rgb(0 0 0 / 0.28),
+      inset 0 1px 0 rgb(255 255 255 / 0.32),
+      inset 0 -1px 0 rgb(255 255 255 / 0.08);
+    -webkit-backdrop-filter: blur(36px) saturate(190%);
+    backdrop-filter: blur(36px) saturate(190%);
   }
 
   .eisim-controls-hidden .eisim-video-button,
   .eisim-controls-hidden .apple-video-range,
   .eisim-controls-hidden .eisim-video-control-dock {
     pointer-events: none;
+  }
+
+  .eisim-playback-menu {
+    pointer-events: auto;
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 0.75rem);
+    display: grid;
+    min-width: 5.5rem;
+    gap: 0.125rem;
+    border-radius: 1rem;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.16) 0%, rgb(255 255 255 / 0.06) 100%),
+      rgb(255 255 255 / 0.055);
+    padding: 0.35rem;
+    box-shadow:
+      0 1rem 2.75rem rgb(0 0 0 / 0.32),
+      inset 0 1px 0 rgb(255 255 255 / 0.3);
+    -webkit-backdrop-filter: blur(34px) saturate(190%);
+    backdrop-filter: blur(34px) saturate(190%);
+  }
+
+  .eisim-playback-menu__item {
+    border-radius: 0.7rem;
+    padding: 0.45rem 0.65rem;
+    color: rgb(255 255 255 / 0.82);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+    line-height: 1;
+    text-align: left;
+    transition:
+      background-color 140ms ease,
+      color 140ms ease;
+  }
+
+  .eisim-playback-menu__item:hover,
+  .eisim-playback-menu__item:focus-visible,
+  .eisim-playback-menu__item.is-active {
+    background: rgb(255 255 255 / 0.18);
+    color: #ffffff;
+    outline: none;
   }
 
   .eisim-demo-frame {
