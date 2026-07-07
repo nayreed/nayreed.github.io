@@ -172,6 +172,10 @@
     outline-offset: 3px;
   }
 
+  .eisim-demo-frame {
+    aspect-ratio: 8 / 5;
+  }
+
   .eisim-demo-frame:fullscreen,
   .eisim-demo-frame:-webkit-full-screen {
     width: 100vw;

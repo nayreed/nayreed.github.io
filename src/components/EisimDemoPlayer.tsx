@@ -55,6 +55,20 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
   }, []);
 
   useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !prefersNativeControls) return;
+
+    video.defaultMuted = true;
+    video.muted = true;
+    setIsMuted(true);
+
+    const playPromise = video.play();
+    if (playPromise) {
+      playPromise.catch(() => setIsPlaying(false));
+    }
+  }, [prefersNativeControls]);
+
+  useEffect(() => {
     const video = videoRef.current as FullscreenVideoElement | null;
     const syncFullscreen = () => {
       const fullscreenDocument = document as FullscreenDocument;
@@ -151,12 +165,14 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
 
   return (
     <div className="mt-6 -mx-2 overflow-hidden rounded-xl border border-hairline-strong bg-soft sm:mx-0">
-      <div ref={frameRef} className="eisim-demo-frame group relative aspect-video overflow-hidden bg-black">
+      <div ref={frameRef} className="eisim-demo-frame group relative overflow-hidden bg-black">
         <video
           ref={videoRef}
           className="h-full w-full object-contain"
           preload="metadata"
           playsInline
+          autoPlay={prefersNativeControls}
+          defaultMuted={prefersNativeControls}
           controls={prefersNativeControls}
           onClick={prefersNativeControls ? undefined : togglePlayback}
           onPlay={() => setIsPlaying(true)}
