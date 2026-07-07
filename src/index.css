@@ -111,6 +111,75 @@
     @apply inline-flex max-w-full items-center justify-center text-center whitespace-normal break-words bg-soft border border-hairline text-charcoal font-mono text-xs leading-tight px-3 py-1.5 rounded-full;
   }
 
+  .apple-video-range {
+    height: 1rem;
+    appearance: none;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  .apple-video-range::-webkit-slider-runnable-track {
+    height: 0.25rem;
+    border-radius: 9999px;
+    background:
+      linear-gradient(#ffffff, #ffffff) 0 / var(--progress, 0%) 100% no-repeat,
+      rgb(255 255 255 / 0.24);
+  }
+
+  .apple-video-range::-webkit-slider-thumb {
+    width: 0.75rem;
+    height: 0.75rem;
+    margin-top: -0.25rem;
+    appearance: none;
+    border: 0;
+    border-radius: 9999px;
+    background: #ffffff;
+    box-shadow: 0 0.125rem 0.75rem rgb(0 0 0 / 0.35);
+  }
+
+  .apple-video-range::-moz-range-track {
+    height: 0.25rem;
+    border-radius: 9999px;
+    background: rgb(255 255 255 / 0.24);
+  }
+
+  .apple-video-range::-moz-range-progress {
+    height: 0.25rem;
+    border-radius: 9999px;
+    background: #ffffff;
+  }
+
+  .apple-video-range::-moz-range-thumb {
+    width: 0.75rem;
+    height: 0.75rem;
+    border: 0;
+    border-radius: 9999px;
+    background: #ffffff;
+    box-shadow: 0 0.125rem 0.75rem rgb(0 0 0 / 0.35);
+  }
+
+  .apple-video-range:focus-visible {
+    outline: none;
+  }
+
+  .apple-video-range:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid rgb(255 255 255 / 0.8);
+    outline-offset: 3px;
+  }
+
+  .apple-video-range:focus-visible::-moz-range-thumb {
+    outline: 2px solid rgb(255 255 255 / 0.8);
+    outline-offset: 3px;
+  }
+
+  .eisim-demo-frame:fullscreen,
+  .eisim-demo-frame:-webkit-full-screen {
+    width: 100vw;
+    height: 100vh;
+    aspect-ratio: auto;
+    border-radius: 0;
+  }
+
   [data-reveal] {
     opacity: 0;
     transform: translate3d(0, 18px, 0);
