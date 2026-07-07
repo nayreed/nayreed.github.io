@@ -22,6 +22,8 @@ type PictureInPictureDocument = Document & {
   exitPictureInPicture?: () => Promise<void>;
 };
 
+type ControlContrast = 'dark' | 'mixed' | 'bright';
+
 type FullscreenVideoElement = HTMLVideoElement & {
   webkitEnterFullscreen?: () => void;
   webkitDisplayingFullscreen?: boolean;
@@ -54,6 +56,7 @@ const EisimDemoPlayer = ({ src, launchRequested = false }: EisimDemoPlayerProps)
   const videoRef = useRef<HTMLVideoElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const launchButtonRef = useRef<HTMLButtonElement>(null);
+  const sampleCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -65,6 +68,7 @@ const EisimDemoPlayer = ({ src, launchRequested = false }: EisimDemoPlayerProps)
   const [speedMenuOpen, setSpeedMenuOpen] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [launchPromptVisible, setLaunchPromptVisible] = useState(launchRequested);
+  const [controlContrast, setControlContrast] = useState<ControlContrast>('dark');
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -103,6 +107,70 @@ const EisimDemoPlayer = ({ src, launchRequested = false }: EisimDemoPlayerProps)
       setSpeedMenuOpen(false);
     }
   }, [controlsVisible]);
+
+  useEffect(() => {
+    if (prefersNativeControls) return;
+
+    const video = videoRef.current;
+    if (!video) return;
+
+    let timeoutId: number | undefined;
+    let cancelled = false;
+
+    const sampleFrame = () => {
+      if (cancelled) return;
+
+      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && video.videoWidth > 0) {
+        const canvas = sampleCanvasRef.current ?? document.createElement('canvas');
+        sampleCanvasRef.current = canvas;
+        canvas.width = 24;
+        canvas.height = 15;
+        const context = canvas.getContext('2d', { willReadFrequently: true });
+
+        try {
+          context?.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const pixels = context?.getImageData(0, 0, canvas.width, canvas.height).data;
+
+          if (pixels) {
+            let luminanceTotal = 0;
+            let brightPixels = 0;
+            let darkPixels = 0;
+            const pixelCount = pixels.length / 4;
+
+            for (let index = 0; index < pixels.length; index += 4) {
+              const luminance = pixels[index] * 0.2126 + pixels[index + 1] * 0.7152 + pixels[index + 2] * 0.0722;
+              luminanceTotal += luminance;
+              if (luminance > 180) brightPixels += 1;
+              if (luminance < 70) darkPixels += 1;
+            }
+
+            const averageLuminance = luminanceTotal / pixelCount;
+            const brightRatio = brightPixels / pixelCount;
+            const darkRatio = darkPixels / pixelCount;
+
+            if (averageLuminance > 148 || brightRatio > 0.46) {
+              setControlContrast('bright');
+            } else if (averageLuminance < 78 || darkRatio > 0.5) {
+              setControlContrast('dark');
+            } else {
+              setControlContrast('mixed');
+            }
+          }
+        } catch {
+          setControlContrast('dark');
+        }
+      }
+
+      timeoutId = window.setTimeout(sampleFrame, isPlaying ? 900 : 1600);
+    };
+
+    sampleFrame();
+
+    return () => {
+      cancelled = true;
+      if (timeoutId) window.clearTimeout(timeoutId);
+    };
+  }, [isPlaying, prefersNativeControls]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -334,7 +402,7 @@ const EisimDemoPlayer = ({ src, launchRequested = false }: EisimDemoPlayerProps)
     <div className="mt-6 -mx-2 overflow-hidden rounded-xl border border-hairline-strong bg-soft sm:mx-0">
       <div
         ref={frameRef}
-        className="eisim-demo-frame group relative overflow-hidden bg-black"
+        className={`eisim-demo-frame group relative overflow-hidden bg-black eisim-demo-frame--${controlContrast}`}
         onPointerMove={revealControls}
         onPointerDown={revealControls}
         onPointerLeave={() => {
@@ -349,6 +417,7 @@ const EisimDemoPlayer = ({ src, launchRequested = false }: EisimDemoPlayerProps)
         <video
           ref={videoRef}
           className="h-full w-full object-contain"
+          crossOrigin="anonymous"
           preload="metadata"
           playsInline
           autoPlay={prefersNativeControls}
@@ -391,8 +460,8 @@ const EisimDemoPlayer = ({ src, launchRequested = false }: EisimDemoPlayerProps)
               controlsVisible ? 'opacity-100' : 'eisim-controls-hidden opacity-0'
             }`}
           >
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/45 to-transparent" />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/55 to-transparent" />
+            <div className="eisim-video-scrim eisim-video-scrim--top" />
+            <div className="eisim-video-scrim eisim-video-scrim--bottom" />
 
             <div
               className="absolute left-3 top-3 flex items-center gap-2 sm:left-4 sm:top-4"
