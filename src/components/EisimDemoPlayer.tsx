@@ -24,6 +24,13 @@ type PictureInPictureDocument = Document & {
 
 type ControlContrast = 'dark' | 'mixed' | 'bright';
 
+type SampleZone = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 type FullscreenVideoElement = HTMLVideoElement & {
   webkitEnterFullscreen?: () => void;
   webkitDisplayingFullscreen?: boolean;
@@ -32,6 +39,14 @@ type FullscreenVideoElement = HTMLVideoElement & {
 };
 
 const PLAYBACK_RATES = [0.5, 0.75, 1, 1.25, 1.5, 2];
+const SAMPLE_WIDTH = 80;
+const SAMPLE_HEIGHT = 50;
+const CONTROL_SAMPLE_ZONES: SampleZone[] = [
+  { x: 0, y: 0, width: 0.38, height: 0.24 },
+  { x: 0.62, y: 0, width: 0.38, height: 0.24 },
+  { x: 0.2, y: 0.26, width: 0.6, height: 0.48 },
+  { x: 0, y: 0.66, width: 1, height: 0.34 },
+];
 
 const formatRate = (rate: number) => `${Number.isInteger(rate) ? rate.toFixed(0) : rate.toFixed(2).replace(/0$/, '')}x`;
 
@@ -45,6 +60,58 @@ const formatTime = (seconds: number) => {
   const remainingSeconds = rounded % 60;
 
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+};
+
+const getControlContrast = (pixels: Uint8ClampedArray, width: number, height: number): ControlContrast => {
+  let weightedLuminanceTotal = 0;
+  let weightedPixels = 0;
+  let brightPixels = 0;
+  let darkPixels = 0;
+  let brightestZoneAverage = 0;
+
+  CONTROL_SAMPLE_ZONES.forEach((zone) => {
+    const startX = Math.max(Math.floor(zone.x * width), 0);
+    const startY = Math.max(Math.floor(zone.y * height), 0);
+    const endX = Math.min(Math.ceil((zone.x + zone.width) * width), width);
+    const endY = Math.min(Math.ceil((zone.y + zone.height) * height), height);
+    let zoneLuminanceTotal = 0;
+    let zonePixels = 0;
+
+    for (let y = startY; y < endY; y += 1) {
+      for (let x = startX; x < endX; x += 1) {
+        const index = (y * width + x) * 4;
+        const luminance = pixels[index] * 0.2126 + pixels[index + 1] * 0.7152 + pixels[index + 2] * 0.0722;
+        zoneLuminanceTotal += luminance;
+        zonePixels += 1;
+
+        if (luminance > 150) brightPixels += 1;
+        if (luminance < 68) darkPixels += 1;
+      }
+    }
+
+    if (zonePixels > 0) {
+      const zoneAverage = zoneLuminanceTotal / zonePixels;
+      brightestZoneAverage = Math.max(brightestZoneAverage, zoneAverage);
+      weightedLuminanceTotal += zoneLuminanceTotal;
+      weightedPixels += zonePixels;
+    }
+  });
+
+  if (weightedPixels === 0) return 'dark';
+
+  const averageLuminance = weightedLuminanceTotal / weightedPixels;
+  const brightRatio = brightPixels / weightedPixels;
+  const darkRatio = darkPixels / weightedPixels;
+
+  if (brightestZoneAverage > 126 || averageLuminance > 116 || brightRatio > 0.28) {
+    return 'bright';
+  }
+
+  if (averageLuminance < 72 || darkRatio > 0.52) {
+    return 'dark';
+  }
+
+  return 'mixed';
 };
 
 interface EisimDemoPlayerProps {
@@ -123,8 +190,8 @@ const EisimDemoPlayer = ({ src, launchRequested = false }: EisimDemoPlayerProps)
       if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && video.videoWidth > 0) {
         const canvas = sampleCanvasRef.current ?? document.createElement('canvas');
         sampleCanvasRef.current = canvas;
-        canvas.width = 24;
-        canvas.height = 15;
+        canvas.width = SAMPLE_WIDTH;
+        canvas.height = SAMPLE_HEIGHT;
         const context = canvas.getContext('2d', { willReadFrequently: true });
 
         try {
@@ -132,32 +199,10 @@ const EisimDemoPlayer = ({ src, launchRequested = false }: EisimDemoPlayerProps)
           const pixels = context?.getImageData(0, 0, canvas.width, canvas.height).data;
 
           if (pixels) {
-            let luminanceTotal = 0;
-            let brightPixels = 0;
-            let darkPixels = 0;
-            const pixelCount = pixels.length / 4;
-
-            for (let index = 0; index < pixels.length; index += 4) {
-              const luminance = pixels[index] * 0.2126 + pixels[index + 1] * 0.7152 + pixels[index + 2] * 0.0722;
-              luminanceTotal += luminance;
-              if (luminance > 180) brightPixels += 1;
-              if (luminance < 70) darkPixels += 1;
-            }
-
-            const averageLuminance = luminanceTotal / pixelCount;
-            const brightRatio = brightPixels / pixelCount;
-            const darkRatio = darkPixels / pixelCount;
-
-            if (averageLuminance > 148 || brightRatio > 0.46) {
-              setControlContrast('bright');
-            } else if (averageLuminance < 78 || darkRatio > 0.5) {
-              setControlContrast('dark');
-            } else {
-              setControlContrast('mixed');
-            }
+            setControlContrast(getControlContrast(pixels, canvas.width, canvas.height));
           }
         } catch {
-          setControlContrast('dark');
+          setControlContrast('bright');
         }
       }
 
@@ -545,7 +590,7 @@ const EisimDemoPlayer = ({ src, launchRequested = false }: EisimDemoPlayerProps)
                 onPointerEnter={keepControlsOpen}
                 onPointerLeave={releaseControls}
               >
-                <span className="min-w-[2.6rem] text-right font-mono text-[11px] tabular-nums text-white/85 sm:min-w-[3rem] sm:text-xs">
+                <span className="eisim-video-time min-w-[2.6rem] text-right font-mono text-[11px] tabular-nums sm:min-w-[3rem] sm:text-xs">
                   {formatTime(currentTime)}
                 </span>
 
@@ -561,7 +606,7 @@ const EisimDemoPlayer = ({ src, launchRequested = false }: EisimDemoPlayerProps)
                   aria-label="EISim demo playback position"
                 />
 
-                <span className="min-w-[2.9rem] font-mono text-[11px] tabular-nums text-white/85 sm:min-w-[3.3rem] sm:text-xs">
+                <span className="eisim-video-time min-w-[2.9rem] font-mono text-[11px] tabular-nums sm:min-w-[3.3rem] sm:text-xs">
                   -{formatTime(remainingTime)}
                 </span>
 

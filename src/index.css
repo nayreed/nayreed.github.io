@@ -182,13 +182,18 @@
   .eisim-demo-frame {
     aspect-ratio: 8 / 5;
     --eisim-glass-highlight: rgb(255 255 255 / 0.3);
+    --eisim-glass-sheen: rgb(255 255 255 / 0.16);
+    --eisim-glass-sheen-hover: rgb(255 255 255 / 0.24);
+    --eisim-primary-sheen: rgb(255 255 255 / 0.22);
+    --eisim-dock-sheen: rgb(255 255 255 / 0.14);
     --eisim-glass-fill: rgb(255 255 255 / 0.055);
     --eisim-glass-fill-strong: rgb(255 255 255 / 0.075);
     --eisim-glass-border: rgb(255 255 255 / 0.2);
     --eisim-glass-border-strong: rgb(255 255 255 / 0.36);
     --eisim-glass-shadow: rgb(0 0 0 / 0.24);
     --eisim-text-strong: #ffffff;
-    --eisim-text-soft: rgb(255 255 255 / 0.85);
+    --eisim-text-soft: rgb(255 255 255 / 0.86);
+    --eisim-text-shadow: rgb(0 0 0 / 0.42);
     --eisim-scrim-top: rgb(0 0 0 / 0.45);
     --eisim-scrim-bottom: rgb(0 0 0 / 0.55);
     --eisim-track: rgb(255 255 255 / 0.24);
@@ -196,31 +201,41 @@
   }
 
   .eisim-demo-frame--bright {
-    --eisim-glass-highlight: rgb(0 0 0 / 0.12);
-    --eisim-glass-fill: rgb(0 0 0 / 0.18);
-    --eisim-glass-fill-strong: rgb(0 0 0 / 0.24);
-    --eisim-glass-border: rgb(255 255 255 / 0.26);
-    --eisim-glass-border-strong: rgb(255 255 255 / 0.38);
-    --eisim-glass-shadow: rgb(0 0 0 / 0.34);
+    --eisim-glass-highlight: rgb(255 255 255 / 0.2);
+    --eisim-glass-sheen: rgb(255 255 255 / 0.12);
+    --eisim-glass-sheen-hover: rgb(255 255 255 / 0.2);
+    --eisim-primary-sheen: rgb(255 255 255 / 0.16);
+    --eisim-dock-sheen: rgb(255 255 255 / 0.12);
+    --eisim-glass-fill: rgb(0 0 0 / 0.42);
+    --eisim-glass-fill-strong: rgb(0 0 0 / 0.54);
+    --eisim-glass-border: rgb(255 255 255 / 0.38);
+    --eisim-glass-border-strong: rgb(255 255 255 / 0.62);
+    --eisim-glass-shadow: rgb(0 0 0 / 0.52);
     --eisim-text-strong: #ffffff;
-    --eisim-text-soft: rgb(255 255 255 / 0.9);
-    --eisim-scrim-top: rgb(0 0 0 / 0.5);
-    --eisim-scrim-bottom: rgb(0 0 0 / 0.64);
-    --eisim-track: rgb(255 255 255 / 0.32);
+    --eisim-text-soft: rgb(255 255 255 / 0.96);
+    --eisim-text-shadow: rgb(0 0 0 / 0.78);
+    --eisim-scrim-top: rgb(0 0 0 / 0.72);
+    --eisim-scrim-bottom: rgb(0 0 0 / 0.78);
+    --eisim-track: rgb(255 255 255 / 0.3);
     --eisim-track-played: #ffffff;
   }
 
   .eisim-demo-frame--mixed {
     --eisim-glass-highlight: rgb(255 255 255 / 0.24);
-    --eisim-glass-fill: rgb(20 20 22 / 0.12);
-    --eisim-glass-fill-strong: rgb(20 20 22 / 0.16);
-    --eisim-glass-border: rgb(255 255 255 / 0.22);
-    --eisim-glass-border-strong: rgb(255 255 255 / 0.38);
-    --eisim-glass-shadow: rgb(0 0 0 / 0.28);
+    --eisim-glass-sheen: rgb(255 255 255 / 0.14);
+    --eisim-glass-sheen-hover: rgb(255 255 255 / 0.22);
+    --eisim-primary-sheen: rgb(255 255 255 / 0.2);
+    --eisim-dock-sheen: rgb(255 255 255 / 0.12);
+    --eisim-glass-fill: rgb(0 0 0 / 0.22);
+    --eisim-glass-fill-strong: rgb(0 0 0 / 0.32);
+    --eisim-glass-border: rgb(255 255 255 / 0.26);
+    --eisim-glass-border-strong: rgb(255 255 255 / 0.44);
+    --eisim-glass-shadow: rgb(0 0 0 / 0.38);
     --eisim-text-strong: #ffffff;
-    --eisim-text-soft: rgb(255 255 255 / 0.88);
-    --eisim-scrim-top: rgb(0 0 0 / 0.42);
-    --eisim-scrim-bottom: rgb(0 0 0 / 0.56);
+    --eisim-text-soft: rgb(255 255 255 / 0.92);
+    --eisim-text-shadow: rgb(0 0 0 / 0.62);
+    --eisim-scrim-top: rgb(0 0 0 / 0.58);
+    --eisim-scrim-bottom: rgb(0 0 0 / 0.64);
     --eisim-track: rgb(255 255 255 / 0.28);
     --eisim-track-played: #ffffff;
   }
@@ -256,7 +271,7 @@
     border: 1px solid var(--eisim-glass-border);
     background:
       radial-gradient(circle at 30% 18%, var(--eisim-glass-highlight), transparent 34%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.16) 0%, var(--eisim-glass-fill) 100%),
+      linear-gradient(180deg, var(--eisim-glass-sheen) 0%, var(--eisim-glass-fill) 100%),
       var(--eisim-glass-fill);
     color: var(--eisim-text-strong);
     box-shadow:
@@ -265,7 +280,7 @@
       inset 0 -1px 0 rgb(255 255 255 / 0.08);
     -webkit-backdrop-filter: blur(34px) saturate(190%);
     backdrop-filter: blur(34px) saturate(190%);
-    text-shadow: 0 1px 0 rgb(0 0 0 / 0.26);
+    text-shadow: 0 1px 2px var(--eisim-text-shadow);
     transition:
       background-color 160ms ease,
       box-shadow 160ms ease,
@@ -277,7 +292,7 @@
   .eisim-video-button.is-active {
     background:
       radial-gradient(circle at 30% 18%, var(--eisim-glass-border-strong), transparent 34%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.24) 0%, rgb(255 255 255 / 0.08) 100%),
+      linear-gradient(180deg, var(--eisim-glass-sheen-hover) 0%, rgb(255 255 255 / 0.08) 100%),
       var(--eisim-glass-fill-strong);
     border-color: var(--eisim-glass-border-strong);
     box-shadow:
@@ -290,13 +305,23 @@
   .eisim-video-button--primary {
     background:
       radial-gradient(circle at 30% 18%, rgb(255 255 255 / 0.38), transparent 34%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.22) 0%, var(--eisim-glass-fill-strong) 100%),
+      linear-gradient(180deg, var(--eisim-primary-sheen) 0%, var(--eisim-glass-fill-strong) 100%),
       var(--eisim-glass-fill);
   }
 
   .eisim-video-button:focus-visible {
     outline: 2px solid rgb(255 255 255 / 0.86);
     outline-offset: 3px;
+  }
+
+  .eisim-video-button svg,
+  .eisim-video-button span {
+    filter: drop-shadow(0 1px 1.5px var(--eisim-text-shadow));
+  }
+
+  .eisim-video-time {
+    color: var(--eisim-text-soft);
+    text-shadow: 0 1px 2px var(--eisim-text-shadow);
   }
 
   .eisim-video-control-dock {
@@ -306,7 +331,7 @@
     border: 1px solid var(--eisim-glass-border);
     background:
       radial-gradient(circle at 20% 0%, rgb(255 255 255 / 0.24), transparent 32%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.14) 0%, rgb(255 255 255 / 0.05) 100%),
+      linear-gradient(180deg, var(--eisim-dock-sheen) 0%, rgb(255 255 255 / 0.05) 100%),
       var(--eisim-glass-fill);
     box-shadow:
       0 1rem 3rem var(--eisim-glass-shadow),
@@ -333,7 +358,7 @@
     border-radius: 1rem;
     border: 1px solid var(--eisim-glass-border);
     background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.16) 0%, var(--eisim-glass-fill) 100%),
+      linear-gradient(180deg, var(--eisim-glass-sheen) 0%, var(--eisim-glass-fill) 100%),
       var(--eisim-glass-fill);
     padding: 0.35rem;
     box-shadow:
