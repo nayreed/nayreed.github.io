@@ -53,6 +53,9 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isPictureInPicture, setIsPictureInPicture] = useState(false);
   const [prefersNativeControls, setPrefersNativeControls] = useState(false);
+  const [controlsVisible, setControlsVisible] = useState(true);
+  const [controlsHaveFocus, setControlsHaveFocus] = useState(false);
+  const [controlsActivity, setControlsActivity] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -73,6 +76,18 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
     mediaQuery.addListener(syncNativeControls);
     return () => mediaQuery.removeListener(syncNativeControls);
   }, []);
+
+  useEffect(() => {
+    if (prefersNativeControls || !isPlaying || controlsHaveFocus) {
+      setControlsVisible(true);
+      return;
+    }
+
+    if (!controlsVisible) return;
+
+    const timeoutId = window.setTimeout(() => setControlsVisible(false), 2200);
+    return () => window.clearTimeout(timeoutId);
+  }, [controlsActivity, controlsHaveFocus, controlsVisible, isPlaying, prefersNativeControls]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -132,6 +147,20 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
     };
   }, []);
 
+  const revealControls = () => {
+    if (!prefersNativeControls) {
+      setControlsVisible(true);
+      setControlsActivity((activity) => activity + 1);
+    }
+  };
+
+  const handleControlsBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+    const nextTarget = event.relatedTarget;
+    if (!(nextTarget instanceof Node) || !event.currentTarget.contains(nextTarget)) {
+      setControlsHaveFocus(false);
+    }
+  };
+
   const syncDuration = () => {
     const video = videoRef.current;
     if (!video) return;
@@ -139,6 +168,7 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
   };
 
   const togglePlayback = async () => {
+    revealControls();
     const video = videoRef.current;
     if (!video) return;
 
@@ -155,6 +185,7 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
   };
 
   const toggleMute = () => {
+    revealControls();
     const video = videoRef.current;
     if (!video) return;
 
@@ -163,6 +194,7 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
   };
 
   const seek = (event: React.ChangeEvent<HTMLInputElement>) => {
+    revealControls();
     const video = videoRef.current;
     if (!video) return;
 
@@ -172,6 +204,7 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
   };
 
   const skipBy = (seconds: number) => {
+    revealControls();
     const video = videoRef.current;
     if (!video) return;
 
@@ -181,6 +214,7 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
   };
 
   const togglePictureInPicture = async () => {
+    revealControls();
     const video = videoRef.current as FullscreenVideoElement | null;
     const pipDocument = document as PictureInPictureDocument;
     if (!video) return;
@@ -198,6 +232,7 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
   };
 
   const toggleFullscreen = async () => {
+    revealControls();
     const frame = frameRef.current;
     const video = videoRef.current as FullscreenVideoElement | null;
     const fullscreenDocument = document as FullscreenDocument;
@@ -228,7 +263,17 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
 
   return (
     <div className="mt-6 -mx-2 overflow-hidden rounded-xl border border-hairline-strong bg-soft sm:mx-0">
-      <div ref={frameRef} className="eisim-demo-frame group relative overflow-hidden bg-black">
+      <div
+        ref={frameRef}
+        className="eisim-demo-frame group relative overflow-hidden bg-black"
+        onPointerMove={revealControls}
+        onPointerDown={revealControls}
+        onFocusCapture={() => {
+          setControlsHaveFocus(true);
+          revealControls();
+        }}
+        onBlurCapture={handleControlsBlur}
+      >
         <video
           ref={videoRef}
           className="h-full w-full object-contain"
@@ -251,7 +296,11 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
         </video>
 
         {!prefersNativeControls ? (
-          <div className="pointer-events-none absolute inset-0 text-white">
+          <div
+            className={`pointer-events-none absolute inset-0 text-white transition-opacity duration-300 ${
+              controlsVisible ? 'opacity-100' : 'eisim-controls-hidden opacity-0'
+            }`}
+          >
             <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/45 to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/55 to-transparent" />
 
@@ -267,7 +316,7 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
 
               <button
                 type="button"
-                className={`eisim-video-button ${isPictureInPicture ? 'bg-white/25' : ''}`}
+                className={`eisim-video-button ${isPictureInPicture ? 'is-active' : ''}`}
                 onClick={togglePictureInPicture}
                 aria-label={isPictureInPicture ? 'Exit picture in picture' : 'Open picture in picture'}
               >
@@ -299,7 +348,7 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
 
               <button
                 type="button"
-                className="eisim-video-button h-16 w-16 bg-white/22 sm:h-20 sm:w-20"
+                className="eisim-video-button eisim-video-button--primary h-16 w-16 sm:h-20 sm:w-20"
                 onClick={togglePlayback}
                 aria-label={isPlaying ? 'Pause EISim demo' : 'Play EISim demo'}
               >
@@ -318,7 +367,7 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
             </div>
 
             <div className="absolute inset-x-3 bottom-3 sm:inset-x-4 sm:bottom-4">
-              <div className="flex min-h-12 items-center gap-3 rounded-full border border-white/15 bg-black/45 px-3 py-2 shadow-2xl backdrop-blur-2xl sm:gap-4 sm:px-4">
+              <div className="eisim-video-control-dock flex min-h-12 items-center gap-3 rounded-full px-3 py-2 sm:gap-4 sm:px-4">
                 <span className="min-w-[2.6rem] text-right font-mono text-[11px] tabular-nums text-white/85 sm:min-w-[3rem] sm:text-xs">
                   {formatTime(currentTime)}
                 </span>

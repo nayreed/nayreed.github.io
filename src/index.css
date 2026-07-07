@@ -112,6 +112,7 @@
   }
 
   .apple-video-range {
+    pointer-events: auto;
     height: 1rem;
     appearance: none;
     cursor: pointer;
@@ -119,43 +120,49 @@
   }
 
   .apple-video-range::-webkit-slider-runnable-track {
-    height: 0.25rem;
+    height: 0.3125rem;
     border-radius: 9999px;
     background:
       linear-gradient(#ffffff, #ffffff) 0 / var(--progress, 0%) 100% no-repeat,
       rgb(255 255 255 / 0.24);
+    box-shadow: inset 0 1px 1px rgb(255 255 255 / 0.18);
   }
 
   .apple-video-range::-webkit-slider-thumb {
-    width: 0.75rem;
-    height: 0.75rem;
-    margin-top: -0.25rem;
+    width: 0.875rem;
+    height: 0.875rem;
+    margin-top: -0.28125rem;
     appearance: none;
-    border: 0;
+    border: 1px solid rgb(255 255 255 / 0.75);
     border-radius: 9999px;
-    background: #ffffff;
-    box-shadow: 0 0.125rem 0.75rem rgb(0 0 0 / 0.35);
+    background: linear-gradient(180deg, #ffffff 0%, rgb(230 230 230) 100%);
+    box-shadow:
+      0 0.25rem 1rem rgb(0 0 0 / 0.34),
+      inset 0 1px 0 rgb(255 255 255 / 0.9);
   }
 
   .apple-video-range::-moz-range-track {
-    height: 0.25rem;
+    height: 0.3125rem;
     border-radius: 9999px;
     background: rgb(255 255 255 / 0.24);
+    box-shadow: inset 0 1px 1px rgb(255 255 255 / 0.18);
   }
 
   .apple-video-range::-moz-range-progress {
-    height: 0.25rem;
+    height: 0.3125rem;
     border-radius: 9999px;
     background: #ffffff;
   }
 
   .apple-video-range::-moz-range-thumb {
-    width: 0.75rem;
-    height: 0.75rem;
-    border: 0;
+    width: 0.875rem;
+    height: 0.875rem;
+    border: 1px solid rgb(255 255 255 / 0.75);
     border-radius: 9999px;
-    background: #ffffff;
-    box-shadow: 0 0.125rem 0.75rem rgb(0 0 0 / 0.35);
+    background: linear-gradient(180deg, #ffffff 0%, rgb(230 230 230) 100%);
+    box-shadow:
+      0 0.25rem 1rem rgb(0 0 0 / 0.34),
+      inset 0 1px 0 rgb(255 255 255 / 0.9);
   }
 
   .apple-video-range:focus-visible {
@@ -163,12 +170,12 @@
   }
 
   .apple-video-range:focus-visible::-webkit-slider-thumb {
-    outline: 2px solid rgb(255 255 255 / 0.8);
+    outline: 2px solid rgb(255 255 255 / 0.86);
     outline-offset: 3px;
   }
 
   .apple-video-range:focus-visible::-moz-range-thumb {
-    outline: 2px solid rgb(255 255 255 / 0.8);
+    outline: 2px solid rgb(255 255 255 / 0.86);
     outline-offset: 3px;
   }
 
@@ -181,26 +188,69 @@
     place-items: center;
     flex: none;
     border-radius: 9999px;
-    border: 1px solid rgb(255 255 255 / 0.16);
-    background: rgb(0 0 0 / 0.42);
+    border: 1px solid rgb(255 255 255 / 0.28);
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.34) 0%, rgb(255 255 255 / 0.13) 100%),
+      rgb(28 28 30 / 0.34);
     color: #ffffff;
-    box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 0.28);
-    backdrop-filter: blur(20px);
+    box-shadow:
+      0 1rem 2.5rem rgb(0 0 0 / 0.32),
+      inset 0 1px 0 rgb(255 255 255 / 0.42),
+      inset 0 -1px 0 rgb(255 255 255 / 0.1);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    backdrop-filter: blur(28px) saturate(180%);
+    text-shadow: 0 1px 0 rgb(0 0 0 / 0.32);
     transition:
       background-color 160ms ease,
+      box-shadow 160ms ease,
       transform 160ms ease,
       border-color 160ms ease;
   }
 
-  .eisim-video-button:hover {
-    background: rgb(255 255 255 / 0.18);
-    border-color: rgb(255 255 255 / 0.26);
-    transform: scale(1.04);
+  .eisim-video-button:hover,
+  .eisim-video-button.is-active {
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.48) 0%, rgb(255 255 255 / 0.2) 100%),
+      rgb(72 72 74 / 0.38);
+    border-color: rgb(255 255 255 / 0.42);
+    box-shadow:
+      0 1.15rem 3rem rgb(0 0 0 / 0.36),
+      inset 0 1px 0 rgb(255 255 255 / 0.55),
+      inset 0 -1px 0 rgb(255 255 255 / 0.14);
+    transform: scale(1.045);
+  }
+
+  .eisim-video-button--primary {
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.46) 0%, rgb(255 255 255 / 0.18) 100%),
+      rgb(28 28 30 / 0.38);
   }
 
   .eisim-video-button:focus-visible {
-    outline: 2px solid rgb(255 255 255 / 0.78);
+    outline: 2px solid rgb(255 255 255 / 0.86);
     outline-offset: 3px;
+  }
+
+  .eisim-video-control-dock {
+    pointer-events: auto;
+    width: min(100%, 46rem);
+    margin-inline: auto;
+    border: 1px solid rgb(255 255 255 / 0.24);
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.28) 0%, rgb(255 255 255 / 0.12) 100%),
+      rgb(28 28 30 / 0.38);
+    box-shadow:
+      0 1rem 3rem rgb(0 0 0 / 0.34),
+      inset 0 1px 0 rgb(255 255 255 / 0.38),
+      inset 0 -1px 0 rgb(255 255 255 / 0.1);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+  }
+
+  .eisim-controls-hidden .eisim-video-button,
+  .eisim-controls-hidden .apple-video-range,
+  .eisim-controls-hidden .eisim-video-control-dock {
+    pointer-events: none;
   }
 
   .eisim-demo-frame {
@@ -213,6 +263,17 @@
     height: 100vh;
     aspect-ratio: auto;
     border-radius: 0;
+  }
+
+  .eisim-demo-frame:fullscreen .eisim-video-control-dock,
+  .eisim-demo-frame:-webkit-full-screen .eisim-video-control-dock {
+    width: min(calc(100vw - 3rem), 72rem);
+  }
+
+  .eisim-demo-frame:fullscreen .eisim-video-button--primary,
+  .eisim-demo-frame:-webkit-full-screen .eisim-video-button--primary {
+    height: 5.75rem;
+    width: 5.75rem;
   }
 
   [data-reveal] {
