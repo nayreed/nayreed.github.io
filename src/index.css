@@ -172,6 +172,37 @@
     outline-offset: 3px;
   }
 
+  .eisim-video-button {
+    pointer-events: auto;
+    position: relative;
+    display: inline-grid;
+    height: 2.5rem;
+    width: 2.5rem;
+    place-items: center;
+    flex: none;
+    border-radius: 9999px;
+    border: 1px solid rgb(255 255 255 / 0.16);
+    background: rgb(0 0 0 / 0.42);
+    color: #ffffff;
+    box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 0.28);
+    backdrop-filter: blur(20px);
+    transition:
+      background-color 160ms ease,
+      transform 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .eisim-video-button:hover {
+    background: rgb(255 255 255 / 0.18);
+    border-color: rgb(255 255 255 / 0.26);
+    transform: scale(1.04);
+  }
+
+  .eisim-video-button:focus-visible {
+    outline: 2px solid rgb(255 255 255 / 0.78);
+    outline-offset: 3px;
+  }
+
   .eisim-demo-frame {
     aspect-ratio: 8 / 5;
   }

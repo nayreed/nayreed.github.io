@@ -1,26 +1,44 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Maximize2, Minimize2, Pause, Play, Volume2, VolumeX } from 'lucide-react';
+import {
+  Ellipsis,
+  Maximize2,
+  Minimize2,
+  Pause,
+  PictureInPicture2,
+  Play,
+  RotateCcw,
+  RotateCw,
+  Volume2,
+  VolumeX,
+} from 'lucide-react';
 
 type FullscreenDocument = Document & {
   webkitExitFullscreen?: () => Promise<void> | void;
   webkitFullscreenElement?: Element | null;
 };
 
+type PictureInPictureDocument = Document & {
+  pictureInPictureElement?: Element | null;
+  exitPictureInPicture?: () => Promise<void>;
+};
+
 type FullscreenVideoElement = HTMLVideoElement & {
   webkitEnterFullscreen?: () => void;
   webkitDisplayingFullscreen?: boolean;
+  requestPictureInPicture?: () => Promise<PictureInPictureWindow>;
+  disablePictureInPicture?: boolean;
 };
 
 const formatTime = (seconds: number) => {
   if (!Number.isFinite(seconds) || seconds <= 0) {
-    return '0:00';
+    return '00:00';
   }
 
   const rounded = Math.floor(seconds);
   const minutes = Math.floor(rounded / 60);
   const remainingSeconds = rounded % 60;
 
-  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 };
 
 interface EisimDemoPlayerProps {
@@ -33,11 +51,13 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isPictureInPicture, setIsPictureInPicture] = useState(false);
   const [prefersNativeControls, setPrefersNativeControls] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const remainingTime = Math.max(duration - currentTime, 0);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 640px), (pointer: coarse) and (max-width: 900px)');
@@ -95,6 +115,23 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
     };
   }, []);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    const syncPictureInPicture = () => {
+      const pipDocument = document as PictureInPictureDocument;
+      setIsPictureInPicture(Boolean(pipDocument.pictureInPictureElement));
+    };
+
+    syncPictureInPicture();
+    video?.addEventListener('enterpictureinpicture', syncPictureInPicture);
+    video?.addEventListener('leavepictureinpicture', syncPictureInPicture);
+
+    return () => {
+      video?.removeEventListener('enterpictureinpicture', syncPictureInPicture);
+      video?.removeEventListener('leavepictureinpicture', syncPictureInPicture);
+    };
+  }, []);
+
   const syncDuration = () => {
     const video = videoRef.current;
     if (!video) return;
@@ -132,6 +169,32 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
     const nextTime = Number(event.target.value);
     video.currentTime = nextTime;
     setCurrentTime(nextTime);
+  };
+
+  const skipBy = (seconds: number) => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const nextTime = Math.min(Math.max(video.currentTime + seconds, 0), duration || video.duration || 0);
+    video.currentTime = nextTime;
+    setCurrentTime(nextTime);
+  };
+
+  const togglePictureInPicture = async () => {
+    const video = videoRef.current as FullscreenVideoElement | null;
+    const pipDocument = document as PictureInPictureDocument;
+    if (!video) return;
+
+    try {
+      if (pipDocument.pictureInPictureElement) {
+        await pipDocument.exitPictureInPicture?.();
+        return;
+      }
+
+      await video.requestPictureInPicture?.();
+    } catch {
+      // Picture-in-picture support and permissions vary by browser.
+    }
   };
 
   const toggleFullscreen = async () => {
@@ -188,32 +251,75 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
         </video>
 
         {!prefersNativeControls ? (
-          <>
-            <button
-              type="button"
-              className={`absolute inset-0 grid place-items-center bg-black/5 text-white transition-opacity duration-200 ${
-                isPlaying ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'
-              }`}
-              onClick={togglePlayback}
-              aria-label={isPlaying ? 'Pause EISim demo' : 'Play EISim demo'}
-            >
-              <span className="grid h-14 w-14 place-items-center rounded-full border border-white/20 bg-black/35 shadow-xl backdrop-blur-xl transition-transform hover:scale-105">
-                {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" />}
-              </span>
-            </button>
+          <div className="pointer-events-none absolute inset-0 text-white">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/45 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/55 to-transparent" />
 
-            <div className="absolute inset-x-2 bottom-2 sm:inset-x-4 sm:bottom-4">
-              <div className="mx-auto flex min-h-12 max-w-[36rem] items-center gap-2 rounded-full border border-white/15 bg-black/45 px-2.5 py-2 text-white shadow-2xl backdrop-blur-2xl sm:gap-3 sm:px-3">
-                <button
-                  type="button"
-                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-white transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
-                  onClick={togglePlayback}
-                  aria-label={isPlaying ? 'Pause EISim demo' : 'Play EISim demo'}
-                >
-                  {isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
-                </button>
+            <div className="absolute left-3 top-3 flex items-center gap-2 sm:left-4 sm:top-4">
+              <button
+                type="button"
+                className="eisim-video-button"
+                onClick={toggleFullscreen}
+                aria-label={isFullscreen ? 'Exit EISim demo fullscreen' : 'Open EISim demo fullscreen'}
+              >
+                {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+              </button>
 
-                <span className="hidden min-w-[2.3rem] text-right font-mono text-[11px] tabular-nums text-white/75 sm:inline">
+              <button
+                type="button"
+                className={`eisim-video-button ${isPictureInPicture ? 'bg-white/25' : ''}`}
+                onClick={togglePictureInPicture}
+                aria-label={isPictureInPicture ? 'Exit picture in picture' : 'Open picture in picture'}
+              >
+                <PictureInPicture2 size={18} />
+              </button>
+            </div>
+
+            <div className="absolute right-3 top-3 sm:right-4 sm:top-4">
+              <button
+                type="button"
+                className="eisim-video-button"
+                onClick={toggleMute}
+                aria-label={isMuted ? 'Unmute EISim demo' : 'Mute EISim demo'}
+              >
+                {isMuted ? <VolumeX size={19} /> : <Volume2 size={19} />}
+              </button>
+            </div>
+
+            <div className="absolute inset-0 flex items-center justify-center gap-5 sm:gap-7">
+              <button
+                type="button"
+                className="eisim-video-button h-12 w-12 sm:h-14 sm:w-14"
+                onClick={() => skipBy(-10)}
+                aria-label="Rewind EISim demo 10 seconds"
+              >
+                <RotateCcw size={22} />
+                <span className="absolute mt-0.5 text-[10px] font-bold leading-none">10</span>
+              </button>
+
+              <button
+                type="button"
+                className="eisim-video-button h-16 w-16 bg-white/22 sm:h-20 sm:w-20"
+                onClick={togglePlayback}
+                aria-label={isPlaying ? 'Pause EISim demo' : 'Play EISim demo'}
+              >
+                {isPlaying ? <Pause size={32} fill="currentColor" /> : <Play size={34} fill="currentColor" />}
+              </button>
+
+              <button
+                type="button"
+                className="eisim-video-button h-12 w-12 sm:h-14 sm:w-14"
+                onClick={() => skipBy(10)}
+                aria-label="Forward EISim demo 10 seconds"
+              >
+                <RotateCw size={22} />
+                <span className="absolute mt-0.5 text-[10px] font-bold leading-none">10</span>
+              </button>
+            </div>
+
+            <div className="absolute inset-x-3 bottom-3 sm:inset-x-4 sm:bottom-4">
+              <div className="flex min-h-12 items-center gap-3 rounded-full border border-white/15 bg-black/45 px-3 py-2 shadow-2xl backdrop-blur-2xl sm:gap-4 sm:px-4">
+                <span className="min-w-[2.6rem] text-right font-mono text-[11px] tabular-nums text-white/85 sm:min-w-[3rem] sm:text-xs">
                   {formatTime(currentTime)}
                 </span>
 
@@ -229,30 +335,20 @@ const EisimDemoPlayer = ({ src }: EisimDemoPlayerProps) => {
                   aria-label="EISim demo playback position"
                 />
 
-                <span className="hidden min-w-[2.3rem] font-mono text-[11px] tabular-nums text-white/75 sm:inline">
-                  {formatTime(duration)}
+                <span className="min-w-[2.9rem] font-mono text-[11px] tabular-nums text-white/85 sm:min-w-[3.3rem] sm:text-xs">
+                  -{formatTime(remainingTime)}
                 </span>
 
                 <button
                   type="button"
-                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-white transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
-                  onClick={toggleMute}
-                  aria-label={isMuted ? 'Unmute EISim demo' : 'Mute EISim demo'}
+                  className="eisim-video-button h-8 w-8 shrink-0"
+                  aria-label="Additional playback options"
                 >
-                  {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
-                </button>
-
-                <button
-                  type="button"
-                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-white transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
-                  onClick={toggleFullscreen}
-                  aria-label={isFullscreen ? 'Exit EISim demo fullscreen' : 'Open EISim demo fullscreen'}
-                >
-                  {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                  <Ellipsis size={18} />
                 </button>
               </div>
             </div>
-          </>
+          </div>
         ) : null}
       </div>
     </div>
