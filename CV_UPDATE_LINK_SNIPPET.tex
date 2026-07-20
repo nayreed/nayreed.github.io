@@ -1,9 +1,0 @@
-% Requires the CV's existing hyperref and xcolor packages.
-% \pdfcreationdate expands to D:YYYYMMDDhhmmssZ or a timezone-offset form.
-% The checker accepts timezone offsets even when a URL parser decodes + as a space.
-\begingroup
-  \edef\nayreedCVUpdateURL{%
-    https://nayreed.vercel.app/cv/status?v=\pdfcreationdate
-  }%
-  \href{\nayreedCVUpdateURL}{\textcolor{blue}{Check for updates}}%
-\endgroup
