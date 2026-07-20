@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/cv/status",
+      "destination": "/api/cv-status"
+    }
+  ]
+}
