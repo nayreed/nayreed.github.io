@@ -26,8 +26,8 @@ const projects = [
     details:
       'A federated learning framework supporting MLP, CNN and Spiking Neural Network (SNN) architectures under both IID and non-IID data distributions.',
     tags: ['Python', 'PyTorch', 'snnTorch', 'Flower'],
-    repo: 'RA-Nayreed/FMML',
-    link: 'https://github.com/RA-Nayreed/FMML',
+    repo: 'nayreed/FMML',
+    link: 'https://github.com/nayreed/FMML',
   },
   {
     title: 'Spectrum Analyzer',
@@ -35,8 +35,8 @@ const projects = [
     details:
       'A graphical tool for analyzing and visualizing spectral data, offering features like background removal, intensity calculation, and interactive plotting.',
     tags: ['Python', 'Tkinter', 'Matplotlib', 'NumPy'],
-    repo: 'RA-Nayreed/Spectrum_Analyzer-1.0',
-    link: 'https://github.com/RA-Nayreed/Spectrum_Analyzer-1.0/tree/main',
+    repo: 'nayreed/Spectrum_Analyzer-1.0',
+    link: 'https://github.com/nayreed/Spectrum_Analyzer-1.0/tree/main',
   },
 ];
 

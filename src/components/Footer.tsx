@@ -29,7 +29,7 @@ const Footer = () => {
               Send Mail
             </a>
             <a
-              href="https://github.com/RA-Nayreed"
+              href="https://github.com/nayreed"
               target="_blank"
               rel="noopener noreferrer"
               className="w-9 h-9 rounded-full border border-hairline flex items-center justify-center text-fade hover:text-ink hover:bg-soft transition-colors"

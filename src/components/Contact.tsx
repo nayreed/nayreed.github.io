@@ -24,8 +24,8 @@ const contactInfo = [
   {
     icon: <Github size={14} />,
     label: 'GitHub',
-    value: 'github.com/RA-Nayreed',
-    link: 'https://www.github.com/RA-Nayreed',
+    value: 'github.com/nayreed',
+    link: 'https://www.github.com/nayreed',
   },
 ];
 
