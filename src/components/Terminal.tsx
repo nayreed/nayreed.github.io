@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Terminal as TerminalIcon } from 'lucide-react';
 
 const researchInterests = [
-  'Spiking Neural Networks',
+  'Ambient IoT',
   'Federated Learning',
+  'Spiking Neural Networks',
   'Neuromorphic Computing',
   'Edge Intelligence',
   'Wireless Communications & Signal Processing',
   'High-Performance Computing',
-  'Deep Learning for Communications',
 ];
 
 const COMMANDS = [

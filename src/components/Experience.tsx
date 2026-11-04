@@ -6,11 +6,23 @@ import finlandMarker from '@/assets/finland.svg?url';
 const experiences = [
   {
     title: 'Research Assistant',
+    company: '6G Flagship, Centre for Wireless Communications, University of Oulu',
+    location: 'Oulu, Finland',
+    period: 'October 2026 - Present',
+    achievements: [
+      'Conduct research on Ambient Internet of Things (AIoT) technologies in the context of 5G/6G wireless communications.',
+      'Implement and integrate AIoT PHY and MAC functionality as per 3GPP standard within open-source 5G RAN platform, working across C and Python components.',
+      'Develop and extend simulation capabilities for evaluating AIoT communication alongside conventional 5G NR.',
+      'Design, run, and analyze radio-frequency simulation experiments to assess system integration and communication behavior.',
+    ],
+  },
+  {
+    title: 'Research Assistant',
     company: 'Centre for Applied Computing, University of Oulu',
     location: 'Oulu, Finland',
     period: 'January 2026 - June 2026',
     achievements: [
-      'Researched, co-developed, and contributed to manuscript writing for journal resubmission work on intelligent edge orchestration.',
+      'Co-authored a journal manuscript presenting the Continuum Ecosystem Simulator (CES), an extension of EISim, contributing to its conceptualization, software development, investigation, and manuscript review and editing.',
       'Implemented and upgraded deep reinforcement learning agents for learning-based resource-management experiments in edge-computing simulation environments.',
       'Designed stress-testing, out-of-distribution evaluation, and domain-randomization workflows to analyze agent robustness under varying simulation conditions.',
       'Developed a prototype desktop software application, integrating scenario configuration, simulator setup generation, experiment execution, and result inspection.',
@@ -26,7 +38,7 @@ const Experience = () => {
         <SectionHeader title="Professional Experience" />
 
         {experiences.map((exp) => (
-          <div key={exp.title} className="card-hairline p-4 sm:p-8 md:p-10" data-reveal="scale">
+          <div key={exp.company} className="card-hairline p-4 sm:p-8 md:p-10" data-reveal="scale">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
               <div className="flex items-start gap-2 min-[380px]:gap-3 sm:gap-4 min-w-0 flex-1">
                 <div className="w-9 h-9 min-[380px]:w-11 min-[380px]:h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">

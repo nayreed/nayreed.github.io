@@ -4,24 +4,24 @@ import { Code2, TerminalSquare, CircuitBoard, PenLine } from 'lucide-react';
 
 const skillCategories = [
   {
-    title: 'Programming',
+    title: 'Languages',
     icon: <Code2 size={18} />,
-    skills: ['C/C++', 'Java', 'JavaScript/TypeScript', 'Python'],
+    skills: ['Python', 'C/C++', 'SystemVerilog', 'Java', 'SQL', 'JavaScript/TypeScript'],
   },
   {
-    title: 'Systems & Tools',
+    title: 'Systems',
     icon: <TerminalSquare size={18} />,
-    skills: ['Bash', 'Git', 'GPU Computing', 'Linux', 'MPI/OpenMP', 'SLURM'],
+    skills: ['Linux', 'Bash', 'Git', 'SLURM', 'MPI/OpenMP', 'GPU Computing'],
   },
   {
-    title: 'Engineering',
+    title: 'Engineering Tools',
     icon: <CircuitBoard size={18} />,
-    skills: ['KiCad', 'LTSpice', 'MATLAB/Simulink'],
+    skills: ['MATLAB/Simulink', 'QuestaSim', 'Design Compiler', 'Vivado', 'LTspice', 'KiCad'],
   },
   {
     title: 'Professional',
     icon: <PenLine size={18} />,
-    skills: ['Research Writing', 'Result Analysis', 'Technical Documentation'],
+    skills: ['Experiment Design', 'Simulation & Modelling', 'Research Writing', 'Technical Documentation'],
   },
 ];
 

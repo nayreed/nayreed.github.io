@@ -39,7 +39,7 @@ const satScores = [
   { subject: 'Reading & Writing', score: '620' },
 ];
 
-const completedCredits = 132;
+const completedCredits = 142;
 const requiredCredits = 180;
 const progressPercent = (completedCredits / requiredCredits) * 100;
 const longCourseNames = new Set(['Probability & Mathematical Statistics', 'Simulations & Tools for Telecommunications']);

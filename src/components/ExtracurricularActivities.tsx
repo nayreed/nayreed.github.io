@@ -5,7 +5,7 @@ import finlandMarker from '@/assets/finland.svg?url';
 
 const activities = [
   {
-    title: 'CSC Summer School in High-Performance Computing (2026)',
+    title: 'CSC Summer School in High-Performance Computing',
     location: 'Hotelli Nuuksio, Espoo, Finland',
     date: 'June 23 - July 2',
     description:
@@ -29,7 +29,7 @@ const activities = [
     },
   },
   {
-    title: 'JunctionX OuluES - 2nd Runner-Up, Nordea Challenge (2025)',
+    title: 'JunctionX OuluES - 2nd Runner-Up, Nordea Challenge',
     location: 'University of Oulu',
     date: 'September 18 - September 21',
     description:
@@ -63,7 +63,7 @@ const activities = [
     link: null,
   },
   {
-    title: 'Hack Oulu 2025 - AI Siege',
+    title: 'Hack Oulu - AI Siege',
     location: 'University of Oulu',
     date: 'April 11 - April 13',
     description:
