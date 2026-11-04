@@ -111,6 +111,9 @@ const HELP_ROWS: [string, string][] = [
   ['open <target>', 'open cv, github or linkedin'],
 ];
 
+// Lines that scroll off the top are dropped; this just caps what is kept in memory.
+const MAX_ENTRIES = 30;
+
 const COMMAND_NAMES = ['help', 'whoami', 'about', 'open', 'contact', 'history', 'clear'];
 
 const ExtLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
@@ -236,7 +239,6 @@ const Terminal = () => {
   const [state, setState] = useState({ step: 0, chars: 0 });
   const done = state.step >= COMMANDS.length;
   const rootRef = useRef<HTMLDivElement>(null);
-  const sessionRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const nextId = useRef(0);
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -260,7 +262,7 @@ const Terminal = () => {
       clearScreen();
       return;
     }
-    setEntries((e) => [...e, { id: nextId.current++, cmd: line, output: result }]);
+    setEntries((e) => [...e, { id: nextId.current++, cmd: line, output: result }].slice(-MAX_ENTRIES));
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -293,17 +295,11 @@ const Terminal = () => {
       clearScreen();
     } else if (e.ctrlKey && (e.key === 'c' || e.key === 'C') && !window.getSelection()?.toString()) {
       e.preventDefault();
-      setEntries((list) => [...list, { id: nextId.current++, cmd: `${input}^C`, output: null }]);
+      setEntries((list) => [...list, { id: nextId.current++, cmd: `${input}^C`, output: null }].slice(-MAX_ENTRIES));
       setInput('');
       setHistoryIndex(null);
     }
   };
-
-  // Keep the newest output in view by scrolling the terminal itself, never the page.
-  useEffect(() => {
-    const el = sessionRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  }, [entries, done]);
 
   const focusInput = () => {
     if (window.getSelection()?.toString()) return; // let people select and copy text
@@ -384,10 +380,12 @@ const Terminal = () => {
 
       {/* Session */}
       <div
-        ref={sessionRef}
         onClick={done ? focusInput : undefined}
-        className={`p-4 sm:p-5 font-mono text-[13px] sm:text-sm leading-relaxed min-h-[240px] sm:min-h-[215px] md:min-h-[200px] max-h-[360px] overflow-y-auto ${done ? 'cursor-text' : ''}`}
+        className={`p-4 sm:p-5 font-mono text-[13px] sm:text-sm leading-relaxed h-[260px] sm:h-[240px] overflow-hidden flex flex-col justify-end ${done ? 'cursor-text' : ''}`}
       >
+        {/* Fills the window while short (text starts at the top); once taller, the bottom
+            stays pinned and the oldest lines are cut off at the top, like a real terminal. */}
+        <div className="min-h-full shrink-0">
         {!introCleared && COMMANDS.slice(0, state.step).map((c) => (
           <div key={c.cmd} className="mb-3">
             <p>
@@ -446,6 +444,7 @@ const Terminal = () => {
             </label>
           </>
         )}
+        </div>
       </div>
     </div>
   );
