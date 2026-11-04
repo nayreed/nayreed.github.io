@@ -26,15 +26,21 @@ const Publications = () => {
                 <div className="w-9 h-9 min-[380px]:w-11 min-[380px]:h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
                   <BookOpenText size={18} />
                 </div>
-                {/* The status pill floats at the right end of the title's last line,
-                    and drops below it, still right-aligned, when that line has no room. */}
+                {/* From md up, the status pill floats at the right end of the title's last line.
+                    On phones it sits below the title, like the date pills on the other cards. */}
                 <div className="min-w-0 flex-1 flow-root">
                   <h3 className="inline font-display text-base sm:text-xl font-bold text-ink leading-snug">{pub.title}</h3>
-                  <span className="float-right ml-3 inline-flex max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
+                  <span className="hidden md:inline-flex float-right ml-3 max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
                     <Hourglass size={12} className="shrink-0" />
                     {pub.status}
                   </span>
                 </div>
+              </div>
+              <div className="flex flex-col gap-2 mt-4 md:hidden">
+                <span className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
+                  <Hourglass size={12} className="shrink-0" />
+                  {pub.status}
+                </span>
               </div>
               <div className="mt-6">
                 <p className="text-fade text-[15px] leading-relaxed">
