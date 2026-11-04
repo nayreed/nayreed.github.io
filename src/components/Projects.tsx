@@ -35,8 +35,8 @@ const projects = [
     details:
       'A graphical tool for analyzing and visualizing spectral data, offering features like background removal, intensity calculation, and interactive plotting.',
     tags: ['Python', 'Tkinter', 'Matplotlib', 'NumPy'],
-    repo: 'nayreed/Spectrum_Analyzer-1.0',
-    link: 'https://github.com/nayreed/Spectrum_Analyzer-1.0/tree/main',
+    repo: 'nayreed/Spectrum-Analyzer',
+    link: 'https://github.com/nayreed/Spectrum-Analyzer',
   },
 ];
 
