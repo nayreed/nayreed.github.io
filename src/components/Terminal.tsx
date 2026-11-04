@@ -105,7 +105,6 @@ type LinkTarget = keyof typeof LINKS;
 const EMAILS = ['nayreedptk@gmail.com', 'RezwanAhmad.Nayreed@student.oulu.fi'];
 
 const HELP_ROWS: [string, string][] = [
-  ['help', 'list available commands'],
   ['whoami', 'print the current user'],
   ['about', 'a little about me'],
   ['open <target>', 'open cv, github or linkedin'],
