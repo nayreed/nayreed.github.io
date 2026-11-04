@@ -133,9 +133,58 @@ interface Entry {
   id: number;
   cmd: string;
   output: React.ReactNode;
+  anim?: 'wipe';
 }
 
-const runCommand = (raw: string, history: string[]): React.ReactNode | 'CLEAR' => {
+// --- rm -rf / and sudo ------------------------------------------------------
+
+// True for "rm -rf /" and its flag spellings (-fr, -Rf, -r -f, ...).
+const isRmRfRoot = (tokens: string[]) => {
+  if (tokens[0] !== 'rm') return false;
+  const rest = tokens.slice(1);
+  const flags = rest.filter((t) => t.startsWith('-')).join('');
+  const targets = rest.filter((t) => !t.startsWith('-'));
+  return /[rR]/.test(flags) && flags.includes('f') && targets.length === 1 && targets[0] === '/';
+};
+
+const WIPE_PATHS = ['/bin', '/boot', '/dev', '/etc', '/home/nayreed', '/lib', '/opt', '/root', '/sbin', '/srv', '/tmp', '/usr', '/var'];
+const WIPE_BAR = 20;
+const WIPE_STEP_MS = 150;
+
+// Fake "sudo rm -rf /": a progress bar runs to 100%, then the punchline.
+const WipeOutput = ({ running, onDone }: { running: boolean; onDone: () => void }) => {
+  const reduceMotion = useRef(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const [step, setStep] = useState(reduceMotion.current ? WIPE_PATHS.length : 0);
+  const onDoneRef = useRef(onDone);
+  onDoneRef.current = onDone;
+  const finished = step >= WIPE_PATHS.length;
+
+  useEffect(() => {
+    if (!running) return;
+    if (finished) {
+      onDoneRef.current();
+      return;
+    }
+    const timer = setTimeout(() => setStep((s) => s + 1), WIPE_STEP_MS);
+    return () => clearTimeout(timer);
+  }, [running, step, finished]);
+
+  const pct = Math.round((step / WIPE_PATHS.length) * 100);
+  const filled = Math.round((step / WIPE_PATHS.length) * WIPE_BAR);
+  return (
+    <div className="text-fade">
+      <p>{finished ? 'removed /' : `removing ${WIPE_PATHS[step]}`}</p>
+      <p className="whitespace-pre">
+        [{'#'.repeat(filled)}
+        {'-'.repeat(WIPE_BAR - filled)}] {String(pct).padStart(3, ' ')}%
+      </p>
+      {finished && <p className="text-ink mt-1">just kidding ^^</p>}
+      {!running && !finished && <p>^C</p>}
+    </div>
+  );
+};
+
+const runCommand = (raw: string, history: string[]): React.ReactNode | 'CLEAR' | 'WIPE' => {
   const line = raw.trim();
   if (!line) return null;
 
@@ -143,7 +192,21 @@ const runCommand = (raw: string, history: string[]): React.ReactNode | 'CLEAR' =
   const intro = COMMANDS.find((c) => c.cmd === line);
   if (intro) return intro.output;
 
-  const [name, ...args] = line.split(/\s+/);
+  const tokens = line.split(/\s+/);
+  if (tokens[0] === 'sudo') {
+    if (isRmRfRoot(tokens.slice(1))) return 'WIPE';
+    return <p className="text-fade">You are not in the sudoers file. This incident will be reported.</p>;
+  }
+  if (isRmRfRoot(tokens)) {
+    return (
+      <div className="text-fade">
+        <p>rm: it is dangerous to operate recursively on '/'</p>
+        <p>rm: use sudo!! to override this failsafe</p>
+      </div>
+    );
+  }
+
+  const [name, ...args] = tokens;
   const cmd = name.toLowerCase();
 
   switch (cmd) {
@@ -244,10 +307,15 @@ const Terminal = () => {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState<number | null>(null);
+  // Id of the entry whose output is still running (prompt hidden until it finishes or ^C).
+  const [busyId, setBusyId] = useState<number | null>(null);
+  const busy = busyId !== null;
+  const [contentTick, setContentTick] = useState(0);
 
   const clearScreen = useCallback(() => {
     setEntries([]);
     setIntroDropped(COMMANDS.length);
+    setBusyId(null);
   }, []);
 
   const submit = () => {
@@ -260,10 +328,29 @@ const Terminal = () => {
       clearScreen();
       return;
     }
-    setEntries((e) => [...e, { id: nextId.current++, cmd: line, output: result }].slice(-MAX_ENTRIES));
+    const id = nextId.current++;
+    if (result === 'WIPE') {
+      setEntries((e) => [...e, { id, cmd: line, output: null, anim: 'wipe' as const }].slice(-MAX_ENTRIES));
+      setBusyId(id);
+      return;
+    }
+    setEntries((e) => [...e, { id, cmd: line, output: result }].slice(-MAX_ENTRIES));
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (busy) {
+      // While a command runs, only Ctrl+C (stop) and Ctrl+L (clear) do anything.
+      if (e.ctrlKey && (e.key === 'c' || e.key === 'C')) {
+        e.preventDefault();
+        setBusyId(null);
+      } else if (e.ctrlKey && (e.key === 'l' || e.key === 'L')) {
+        e.preventDefault();
+        clearScreen();
+      } else if (e.key === 'Enter' || e.key === 'Tab' || e.key.startsWith('Arrow')) {
+        e.preventDefault();
+      }
+      return;
+    }
     if (e.key === 'Enter') {
       e.preventDefault();
       submit();
@@ -299,6 +386,15 @@ const Terminal = () => {
     }
   };
 
+  useEffect(() => {
+    if (!done || typeof ResizeObserver === 'undefined') return;
+    const el = contentRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => setContentTick((t) => t + 1));
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [done]);
+
   useLayoutEffect(() => {
     if (!done) return;
     const el = contentRef.current;
@@ -307,7 +403,7 @@ const Terminal = () => {
     if (introLeft + entries.length <= 1) return; // a single block taller than the cap is shown in full
     if (introLeft > 0) setIntroDropped((n) => n + 1);
     else setEntries((list) => list.slice(1));
-  }, [done, entries, introDropped, input]);
+  }, [done, entries, introDropped, input, contentTick]);
 
   const focusInput = () => {
     if (window.getSelection()?.toString()) return; // let people select and copy text
@@ -417,19 +513,28 @@ const Terminal = () => {
                     <span className="text-mute">$ </span>
                     <span className="text-ink">{entry.cmd}</span>
                   </p>
-                  {entry.output}
+                  {entry.anim === 'wipe' ? (
+                    <WipeOutput running={busyId === entry.id} onDone={() => setBusyId(null)} />
+                  ) : (
+                    entry.output
+                  )}
                 </div>
               ))}
             </div>
-            <label className="relative block break-all">
-              <span className="text-mute">$ </span>
-              <span className="text-ink whitespace-pre-wrap">{input}</span>
-              <Caret />
+            <label className={busy ? 'relative block h-0 overflow-hidden' : 'relative block break-all'}>
+              {!busy && (
+                <>
+                  <span className="text-mute">$ </span>
+                  <span className="text-ink whitespace-pre-wrap">{input}</span>
+                  <Caret />
+                </>
+              )}
               <span className="sr-only">Terminal command</span>
               <input
                 ref={inputRef}
                 value={input}
                 onChange={(e) => {
+                  if (busy) return;
                   setInput(e.target.value);
                   setHistoryIndex(null);
                 }}
