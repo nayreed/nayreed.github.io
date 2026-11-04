@@ -164,11 +164,7 @@ const runCommand = (raw: string, history: string[]): React.ReactNode | 'CLEAR' =
       return <p className="text-fade">ECE undergrad @ University of Oulu</p>;
     case 'about':
       return (
-        <div className="text-fade">
-          <p>Rezwan Ahmad Nayreed, Electronics and Communications Engineering undergrad at the University of Oulu.</p>
-          <p>Research Assistant at 6G Flagship, working on Ambient IoT for 5G/6G.</p>
-          <p>Into spiking neural networks, federated learning, edge intelligence and HPC.</p>
-        </div>
+        <p className="text-fade">all you need to know is nayreed's a good boiiii ^^</p>
       );
     case 'open': {
       const target = (args[0] || '').toLowerCase();
