@@ -1107,3 +1107,49 @@
     }
   }
 }
+
+/* Terminal title-bar prompt signals (see Terminal.tsx) */
+.prompt-spike {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transform: scaleY(0);
+  animation: prompt-spike 2.8s ease-out infinite;
+}
+
+@keyframes prompt-spike {
+  0%, 62% { transform: scaleY(0); }
+  68% { transform: scaleY(1); }
+  76% { transform: scaleY(0); }
+  80% { transform: scaleY(0.55); }
+  86%, 100% { transform: scaleY(0); }
+}
+
+.prompt-wave {
+  animation: prompt-wave 1.8s linear infinite;
+}
+
+@keyframes prompt-wave {
+  from { transform: translateX(0); }
+  to { transform: translateX(-6px); }
+}
+
+.prompt-arc {
+  opacity: 0;
+  animation: prompt-arc 2.4s ease-out infinite;
+}
+
+.prompt-arc-2 {
+  animation-delay: 0.3s;
+}
+
+@keyframes prompt-arc {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  55%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prompt-icon * {
+    animation: none !important;
+  }
+}

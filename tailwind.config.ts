@@ -123,11 +123,6 @@ export default {
         'caret-blink': {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0' }
-        },
-        'prompt-nudge': {
-          '0%, 70%, 100%': { transform: 'translateX(0)' },
-          '78%': { transform: 'translateX(3px)' },
-          '86%': { transform: 'translateX(0)' }
         }
       },
       animation: {
@@ -135,8 +130,7 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in-up': 'fade-in-up 0.6s ease-out both',
         'fade-in': 'fade-in 0.6s ease-out both',
-        'caret-blink': 'caret-blink 1.1s step-end infinite',
-        'prompt-nudge': 'prompt-nudge 3.2s ease-in-out infinite'
+        'caret-blink': 'caret-blink 1.1s step-end infinite'
       }
     }
   },
