@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 
 const researchInterests = [
   'Ambient IoT',
@@ -91,10 +91,227 @@ const PromptIcon = ({ variant }: { variant: PromptVariant }) => {
   );
 };
 
+// ---------------------------------------------------------------------------
+// Interactive shell
+// ---------------------------------------------------------------------------
+
+const LINKS = {
+  cv: 'https://a3s.fi/swift/v1/nayreed/Nayreeds-Resume.pdf',
+  github: 'https://github.com/nayreed',
+  linkedin: 'https://www.linkedin.com/in/nayreed/',
+} as const;
+type LinkTarget = keyof typeof LINKS;
+
+const EMAILS = ['nayreedptk@gmail.com', 'RezwanAhmad.Nayreed@student.oulu.fi'];
+
+const HELP_ROWS: [string, string][] = [
+  ['help', 'list available commands'],
+  ['whoami', 'print the current user'],
+  ['about', 'a little about me'],
+  ['open <target>', 'open cv, github or linkedin'],
+  ['contact', 'ways to reach me'],
+  ['history', 'show previous commands'],
+  ['clear', 'clear the screen (Ctrl+L)'],
+];
+
+const COMMAND_NAMES = ['help', 'whoami', 'about', 'open', 'contact', 'history', 'clear'];
+
+const ExtLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
+  <a
+    href={href}
+    target={href.startsWith('mailto:') ? undefined : '_blank'}
+    rel="noopener noreferrer"
+    className="text-ink underline underline-offset-2 decoration-hairline-strong hover:decoration-current"
+  >
+    {children}
+  </a>
+);
+
+interface Entry {
+  id: number;
+  cmd: string;
+  output: React.ReactNode;
+}
+
+const runCommand = (raw: string, history: string[]): React.ReactNode | 'CLEAR' => {
+  const line = raw.trim();
+  if (!line) return null;
+
+  // Re-running a command from the intro prints the same output again.
+  const intro = COMMANDS.find((c) => c.cmd === line);
+  if (intro) return intro.output;
+
+  const [name, ...args] = line.split(/\s+/);
+  const cmd = name.toLowerCase();
+
+  switch (cmd) {
+    case 'help':
+      return (
+        <div className="text-fade">
+          <div className="grid grid-cols-[auto_1fr] gap-x-4">
+            {HELP_ROWS.map(([c, d]) => (
+              <React.Fragment key={c}>
+                <span className="text-ink">{c}</span>
+                <span>{d}</span>
+              </React.Fragment>
+            ))}
+          </div>
+          <p className="text-mute mt-1">tip: use ↑/↓ for history and Tab to complete</p>
+        </div>
+      );
+    case 'whoami':
+      return <p className="text-fade">ECE undergrad @ University of Oulu</p>;
+    case 'about':
+      return (
+        <div className="text-fade">
+          <p>Rezwan Ahmad Nayreed, Electronics and Communications Engineering undergrad at the University of Oulu.</p>
+          <p>Research Assistant at 6G Flagship, working on Ambient IoT for 5G/6G.</p>
+          <p>Into spiking neural networks, federated learning, edge intelligence and HPC.</p>
+        </div>
+      );
+    case 'open': {
+      const target = (args[0] || '').toLowerCase();
+      if (!target) return <p className="text-fade">usage: open &lt;cv | github | linkedin&gt;</p>;
+      if (!(target in LINKS)) {
+        return <p className="text-fade">open: unknown target '{args[0]}'. try: cv, github, linkedin</p>;
+      }
+      const url = LINKS[target as LinkTarget];
+      window.open(url, '_blank', 'noopener,noreferrer');
+      return (
+        <p className="text-fade">
+          opening {target}... <span className="text-mute">(blocked? </span>
+          <ExtLink href={url}>click here</ExtLink>
+          <span className="text-mute">)</span>
+        </p>
+      );
+    }
+    case 'contact':
+      return (
+        <div className="text-fade grid grid-cols-[auto_1fr] gap-x-4">
+          <span className="text-mute">email</span>
+          <span className="flex flex-col">
+            {EMAILS.map((e) => (
+              <ExtLink key={e} href={`mailto:${e}`}>{e}</ExtLink>
+            ))}
+          </span>
+          <span className="text-mute">github</span>
+          <ExtLink href={LINKS.github}>github.com/nayreed</ExtLink>
+          <span className="text-mute">linkedin</span>
+          <ExtLink href={LINKS.linkedin}>linkedin.com/in/nayreed</ExtLink>
+        </div>
+      );
+    case 'history':
+      return (
+        <div className="text-fade">
+          {[...history, line].map((h, i) => (
+            <p key={i}>
+              <span className="text-mute inline-block w-8 text-right mr-3">{i + 1}</span>
+              {h}
+            </p>
+          ))}
+        </div>
+      );
+    case 'clear':
+      return 'CLEAR';
+    default:
+      return (
+        <p className="text-fade">
+          command not found: {name} <span className="text-mute">— try 'help'</span>
+        </p>
+      );
+  }
+};
+
+const complete = (value: string): string => {
+  const parts = value.trimStart().split(/\s+/);
+  if (parts.length === 1) {
+    const matches = COMMAND_NAMES.filter((c) => c.startsWith(parts[0].toLowerCase()));
+    return matches.length === 1 ? `${matches[0]} ` : value;
+  }
+  if (parts.length === 2 && parts[0].toLowerCase() === 'open') {
+    const matches = (Object.keys(LINKS) as LinkTarget[]).filter((t) => t.startsWith(parts[1].toLowerCase()));
+    return matches.length === 1 ? `open ${matches[0]}` : value;
+  }
+  return value;
+};
+
 const Terminal = () => {
   const [state, setState] = useState({ step: 0, chars: 0 });
   const done = state.step >= COMMANDS.length;
   const rootRef = useRef<HTMLDivElement>(null);
+  const sessionRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const nextId = useRef(0);
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const [introCleared, setIntroCleared] = useState(false);
+  const [input, setInput] = useState('');
+  const [history, setHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState<number | null>(null);
+
+  const clearScreen = useCallback(() => {
+    setEntries([]);
+    setIntroCleared(true);
+  }, []);
+
+  const submit = () => {
+    const line = input;
+    const result = runCommand(line, history);
+    if (line.trim()) setHistory((h) => [...h, line.trim()]);
+    setHistoryIndex(null);
+    setInput('');
+    if (result === 'CLEAR') {
+      clearScreen();
+      return;
+    }
+    setEntries((e) => [...e, { id: nextId.current++, cmd: line, output: result }]);
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      submit();
+    } else if (e.key === 'ArrowUp') {
+      if (!history.length) return;
+      e.preventDefault();
+      const i = historyIndex === null ? history.length - 1 : Math.max(0, historyIndex - 1);
+      setHistoryIndex(i);
+      setInput(history[i]);
+    } else if (e.key === 'ArrowDown') {
+      if (historyIndex === null) return;
+      e.preventDefault();
+      const i = historyIndex + 1;
+      if (i >= history.length) {
+        setHistoryIndex(null);
+        setInput('');
+      } else {
+        setHistoryIndex(i);
+        setInput(history[i]);
+      }
+    } else if (e.key === 'Tab') {
+      if (!input.trim()) return;
+      e.preventDefault();
+      setInput((v) => complete(v));
+    } else if (e.ctrlKey && (e.key === 'l' || e.key === 'L')) {
+      e.preventDefault();
+      clearScreen();
+    } else if (e.ctrlKey && (e.key === 'c' || e.key === 'C') && !window.getSelection()?.toString()) {
+      e.preventDefault();
+      setEntries((list) => [...list, { id: nextId.current++, cmd: `${input}^C`, output: null }]);
+      setInput('');
+      setHistoryIndex(null);
+    }
+  };
+
+  // Keep the newest output in view by scrolling the terminal itself, never the page.
+  useEffect(() => {
+    const el = sessionRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [entries, done]);
+
+  const focusInput = () => {
+    if (window.getSelection()?.toString()) return; // let people select and copy text
+    inputRef.current?.focus({ preventScroll: true });
+  };
   const [promptVariant, setPromptVariant] = useState<PromptVariant>(() => pickVariant());
 
   // Each time the terminal leaves the viewport, switch to a different random signal.
@@ -117,11 +334,11 @@ const Terminal = () => {
   // Type each command character by character; output prints on "Enter",
   // then the next prompt appears, exactly like a real shell session.
   useEffect(() => {
+    if (done) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setState({ step: COMMANDS.length, chars: 0 });
       return;
     }
-    if (done) return;
 
     const current = COMMANDS[state.step].cmd;
     const delay =
@@ -151,8 +368,12 @@ const Terminal = () => {
       </div>
 
       {/* Session */}
-      <div className="p-4 sm:p-5 font-mono text-[13px] sm:text-sm leading-relaxed min-h-[240px] sm:min-h-[215px] md:min-h-[200px]">
-        {COMMANDS.slice(0, state.step).map((c) => (
+      <div
+        ref={sessionRef}
+        onClick={done ? focusInput : undefined}
+        className={`p-4 sm:p-5 font-mono text-[13px] sm:text-sm leading-relaxed min-h-[240px] sm:min-h-[215px] md:min-h-[200px] max-h-[360px] overflow-y-auto ${done ? 'cursor-text' : ''}`}
+      >
+        {!introCleared && COMMANDS.slice(0, state.step).map((c) => (
           <div key={c.cmd} className="mb-3">
             <p>
               <span className="text-mute">$ </span>
@@ -169,10 +390,39 @@ const Terminal = () => {
             <Caret />
           </p>
         ) : (
-          <p>
-            <span className="text-mute">$ </span>
-            <Caret />
-          </p>
+          <>
+            <div aria-live="polite">
+              {entries.map((entry) => (
+                <div key={entry.id} className="mb-3">
+                  <p className="break-all">
+                    <span className="text-mute">$ </span>
+                    <span className="text-ink">{entry.cmd}</span>
+                  </p>
+                  {entry.output}
+                </div>
+              ))}
+            </div>
+            <label className="flex items-baseline">
+              <span className="text-mute shrink-0">$&nbsp;</span>
+              <span className="sr-only">Terminal command</span>
+              <input
+                ref={inputRef}
+                value={input}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                  setHistoryIndex(null);
+                }}
+                onKeyDown={onKeyDown}
+                placeholder="type 'help'"
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                enterKeyHint="send"
+                className="flex-1 min-w-0 bg-transparent outline-none border-0 p-0 text-ink caret-current placeholder:text-mute text-[16px] sm:text-sm font-mono"
+              />
+            </label>
+          </>
         )}
       </div>
     </div>
