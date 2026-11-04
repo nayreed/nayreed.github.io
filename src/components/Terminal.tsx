@@ -164,7 +164,7 @@ const runCommand = (raw: string, history: string[]): React.ReactNode | 'CLEAR' =
       return <p className="text-fade">ECE undergrad @ University of Oulu</p>;
     case 'about':
       return (
-        <p className="text-fade">all you need to know is nayreed's a good boiiii ^^</p>
+        <p className="text-fade">all you need to know is nayreed's a good boiii ^^</p>
       );
     case 'open': {
       const target = (args[0] || '').toLowerCase();
