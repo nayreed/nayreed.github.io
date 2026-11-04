@@ -22,17 +22,13 @@ const Publications = () => {
         <div className="space-y-5">
           {publications.map((pub) => (
             <article key={pub.title} className="card-hairline p-4 sm:p-8 md:p-10" data-reveal="scale">
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                <div className="flex items-start gap-2 min-[380px]:gap-3 sm:gap-4 min-w-0 flex-1">
-                  <div className="w-9 h-9 min-[380px]:w-11 min-[380px]:h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
-                    <BookOpenText size={18} />
-                  </div>
-                  <h3 className="font-display text-base sm:text-xl font-bold text-ink leading-snug min-w-0">
-                    {pub.title}
-                  </h3>
+              <div className="flex items-start gap-2 min-[380px]:gap-3 sm:gap-4">
+                <div className="w-9 h-9 min-[380px]:w-11 min-[380px]:h-11 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
+                  <BookOpenText size={18} />
                 </div>
-                <div className="flex flex-col gap-2 md:items-end shrink-0">
-                  <span className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5">
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-display text-base sm:text-xl font-bold text-ink leading-snug">{pub.title}</h3>
+                  <span className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-xs text-charcoal text-center border border-hairline rounded-full px-3 py-1.5 mt-3">
                     <Hourglass size={12} className="shrink-0" />
                     {pub.status}
                   </span>
