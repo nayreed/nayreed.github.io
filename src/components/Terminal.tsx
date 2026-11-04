@@ -109,9 +109,6 @@ const HELP_ROWS: [string, string][] = [
   ['whoami', 'print the current user'],
   ['about', 'a little about me'],
   ['open <target>', 'open cv, github or linkedin'],
-  ['contact', 'ways to reach me'],
-  ['history', 'show previous commands'],
-  ['clear', 'clear the screen (Ctrl+L)'],
 ];
 
 const COMMAND_NAMES = ['help', 'whoami', 'about', 'open', 'contact', 'history', 'clear'];
@@ -312,6 +309,17 @@ const Terminal = () => {
     if (window.getSelection()?.toString()) return; // let people select and copy text
     inputRef.current?.focus({ preventScroll: true });
   };
+
+  // Put the cursor in the terminal once the intro finishes, but only while it is on screen,
+  // and only if nothing else on the page has focus.
+  const isOnScreen = useRef(false);
+  useEffect(() => {
+    if (!done) return;
+    const active = document.activeElement;
+    if (isOnScreen.current && (!active || active === document.body)) {
+      inputRef.current?.focus({ preventScroll: true });
+    }
+  }, [done]);
   const [promptVariant, setPromptVariant] = useState<PromptVariant>(() => pickVariant());
 
   // Each time the terminal leaves the viewport, switch to a different random signal.
@@ -320,11 +328,18 @@ const Terminal = () => {
     if (!el || !('IntersectionObserver' in window)) return;
     let wasVisible = false;
     const observer = new IntersectionObserver(([entry]) => {
+      isOnScreen.current = entry.isIntersecting;
+      const input = inputRef.current;
       if (entry.isIntersecting) {
         wasVisible = true;
+        // Coming back into view: take the cursor back if nothing else has focus.
+        const active = document.activeElement;
+        if (input && (!active || active === document.body)) input.focus({ preventScroll: true });
       } else if (wasVisible) {
         wasVisible = false;
         setPromptVariant((current) => pickVariant(current));
+        // Scrolled away: release focus so Space and arrow keys scroll the page again.
+        if (input && document.activeElement === input) input.blur();
       }
     });
     observer.observe(el);
@@ -402,8 +417,10 @@ const Terminal = () => {
                 </div>
               ))}
             </div>
-            <label className="flex items-baseline">
-              <span className="text-mute shrink-0">$&nbsp;</span>
+            <label className="relative block break-all">
+              <span className="text-mute">$ </span>
+              <span className="text-ink whitespace-pre-wrap">{input}</span>
+              <Caret />
               <span className="sr-only">Terminal command</span>
               <input
                 ref={inputRef}
@@ -413,13 +430,18 @@ const Terminal = () => {
                   setHistoryIndex(null);
                 }}
                 onKeyDown={onKeyDown}
-                placeholder="type 'help'"
+                onSelect={(e) => {
+                  // The drawn caret always sits at the end, so keep the real one there too.
+                  const el = e.currentTarget;
+                  const end = el.value.length;
+                  if (el.selectionStart !== end || el.selectionEnd !== end) el.setSelectionRange(end, end);
+                }}
                 autoComplete="off"
                 autoCorrect="off"
                 autoCapitalize="off"
                 spellCheck={false}
                 enterKeyHint="send"
-                className="flex-1 min-w-0 bg-transparent outline-none border-0 p-0 text-ink caret-current placeholder:text-mute text-[16px] sm:text-sm font-mono"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-text text-[16px] font-mono"
               />
             </label>
           </>
