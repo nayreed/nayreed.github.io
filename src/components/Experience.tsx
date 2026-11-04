@@ -37,6 +37,7 @@ const Experience = () => {
       <div className="max-w-3xl mx-auto px-5 sm:px-6">
         <SectionHeader title="Professional Experience" />
 
+        <div className="space-y-5">
         {experiences.map((exp) => (
           <div key={exp.company} className="card-hairline p-4 sm:p-8 md:p-10" data-reveal="scale">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
@@ -77,6 +78,7 @@ const Experience = () => {
             </ul>
           </div>
         ))}
+        </div>
       </div>
     </section>
   );
