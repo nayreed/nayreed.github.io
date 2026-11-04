@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 
 const researchInterests = [
   'Ambient IoT',
@@ -111,7 +111,10 @@ const HELP_ROWS: [string, string][] = [
   ['open <target>', 'open cv, github or linkedin'],
 ];
 
-// Lines that scroll off the top are dropped; this just caps what is kept in memory.
+// The window grows with its content up to this height (px, excluding padding). Past that,
+// the oldest whole command blocks are removed so it never needs a scrollbar.
+const MAX_CONTENT_HEIGHT = 320;
+// Hard cap on stored commands, in case one is ever added without being measured.
 const MAX_ENTRIES = 30;
 
 const COMMAND_NAMES = ['help', 'whoami', 'about', 'open', 'contact', 'history', 'clear'];
@@ -242,14 +245,15 @@ const Terminal = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const nextId = useRef(0);
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [introCleared, setIntroCleared] = useState(false);
+  const [introDropped, setIntroDropped] = useState(0);
+  const contentRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState<number | null>(null);
 
   const clearScreen = useCallback(() => {
     setEntries([]);
-    setIntroCleared(true);
+    setIntroDropped(COMMANDS.length);
   }, []);
 
   const submit = () => {
@@ -300,6 +304,16 @@ const Terminal = () => {
       setHistoryIndex(null);
     }
   };
+
+  useLayoutEffect(() => {
+    if (!done) return;
+    const el = contentRef.current;
+    if (!el || el.offsetHeight <= MAX_CONTENT_HEIGHT) return;
+    const introLeft = COMMANDS.length - introDropped;
+    if (introLeft + entries.length <= 1) return; // a single block taller than the cap is shown in full
+    if (introLeft > 0) setIntroDropped((n) => n + 1);
+    else setEntries((list) => list.slice(1));
+  }, [done, entries, introDropped, input]);
 
   const focusInput = () => {
     if (window.getSelection()?.toString()) return; // let people select and copy text
@@ -381,12 +395,10 @@ const Terminal = () => {
       {/* Session */}
       <div
         onClick={done ? focusInput : undefined}
-        className={`p-4 sm:p-5 font-mono text-[13px] sm:text-sm leading-relaxed h-[260px] sm:h-[240px] overflow-hidden flex flex-col justify-end ${done ? 'cursor-text' : ''}`}
+        className={`p-4 sm:p-5 font-mono text-[13px] sm:text-sm leading-relaxed min-h-[240px] sm:min-h-[215px] md:min-h-[200px] ${done ? 'cursor-text' : ''}`}
       >
-        {/* Fills the window while short (text starts at the top); once taller, the bottom
-            stays pinned and the oldest lines are cut off at the top, like a real terminal. */}
-        <div className="min-h-full shrink-0">
-        {!introCleared && COMMANDS.slice(0, state.step).map((c) => (
+        <div ref={contentRef}>
+        {COMMANDS.slice(introDropped, state.step).map((c) => (
           <div key={c.cmd} className="mb-3">
             <p>
               <span className="text-mute">$ </span>
