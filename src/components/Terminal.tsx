@@ -158,7 +158,6 @@ const runCommand = (raw: string, history: string[]): React.ReactNode | 'CLEAR' =
               </React.Fragment>
             ))}
           </div>
-          <p className="text-mute mt-1">tip: use ↑/↓ for history and Tab to complete</p>
         </div>
       );
     case 'whoami':
