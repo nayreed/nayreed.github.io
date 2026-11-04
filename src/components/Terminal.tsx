@@ -34,7 +34,14 @@ const START_DELAY = 700;
 const CHAR_DELAY = 45;
 const ENTER_DELAY = 400; // pause between finishing a command and its output appearing
 
-const Caret = () => <span className="text-ink animate-caret-blink">|</span>;
+const Caret = () => <span className="text-ink animate-caret-blink select-none">|</span>;
+
+// Cursor for the input line: zero width, so moving it with ←/→ never shifts the text.
+const InputCaret = () => (
+  <span className="inline-block w-0 select-none" aria-hidden="true">
+    <span className="inline-block -translate-x-1/2 text-ink animate-caret-blink">|</span>
+  </span>
+);
 
 // Title-bar prompt icon. The cursor of ">_" is replaced by one of three signals:
 // a neuron spike train, a drifting carrier wave, or radio pulses from the prompt.
@@ -192,7 +199,10 @@ const runCommand = (raw: string, history: string[]): React.ReactNode | 'CLEAR' |
   const intro = COMMANDS.find((c) => c.cmd === line);
   if (intro) return intro.output;
 
-  const tokens = line.split(/\s+/);
+  // "rm -rf/" is read as "rm -rf /".
+  const tokens = line
+    .split(/\s+/)
+    .flatMap((t) => (t.length > 2 && t.startsWith('-') && t.endsWith('/') ? [t.slice(0, -1), '/'] : [t]));
   if (tokens[0] === 'sudo') {
     if (isRmRfRoot(tokens.slice(1))) return 'WIPE';
     return <p className="text-fade">You are not in the sudoers file. This incident will be reported.</p>;
@@ -307,6 +317,7 @@ const Terminal = () => {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState<number | null>(null);
+  const [cursor, setCursor] = useState(0);
   // Id of the entry whose output is still running (prompt hidden until it finishes or ^C).
   const [busyId, setBusyId] = useState<number | null>(null);
   const busy = busyId !== null;
@@ -318,12 +329,24 @@ const Terminal = () => {
     setBusyId(null);
   }, []);
 
+  // Replace the whole line (history, Tab, clear) and put the cursor at its end.
+  const setLine = (value: string) => {
+    setInput(value);
+    setCursor(value.length);
+    requestAnimationFrame(() => inputRef.current?.setSelectionRange(value.length, value.length));
+  };
+
+  const syncCursor = () => {
+    const el = inputRef.current;
+    if (el) setCursor(el.selectionStart ?? el.value.length);
+  };
+
   const submit = () => {
     const line = input;
     const result = runCommand(line, history);
     if (line.trim()) setHistory((h) => [...h, line.trim()]);
     setHistoryIndex(null);
-    setInput('');
+    setLine('');
     if (result === 'CLEAR') {
       clearScreen();
       return;
@@ -359,29 +382,29 @@ const Terminal = () => {
       e.preventDefault();
       const i = historyIndex === null ? history.length - 1 : Math.max(0, historyIndex - 1);
       setHistoryIndex(i);
-      setInput(history[i]);
+      setLine(history[i]);
     } else if (e.key === 'ArrowDown') {
       if (historyIndex === null) return;
       e.preventDefault();
       const i = historyIndex + 1;
       if (i >= history.length) {
         setHistoryIndex(null);
-        setInput('');
+        setLine('');
       } else {
         setHistoryIndex(i);
-        setInput(history[i]);
+        setLine(history[i]);
       }
     } else if (e.key === 'Tab') {
       if (!input.trim()) return;
       e.preventDefault();
-      setInput((v) => complete(v));
+      setLine(complete(input));
     } else if (e.ctrlKey && (e.key === 'l' || e.key === 'L')) {
       e.preventDefault();
       clearScreen();
     } else if (e.ctrlKey && (e.key === 'c' || e.key === 'C') && !window.getSelection()?.toString()) {
       e.preventDefault();
       setEntries((list) => [...list, { id: nextId.current++, cmd: `${input}^C`, output: null }].slice(-MAX_ENTRIES));
-      setInput('');
+      setLine('');
       setHistoryIndex(null);
     }
   };
@@ -524,26 +547,32 @@ const Terminal = () => {
             <label className={busy ? 'relative block h-0 overflow-hidden' : 'relative block break-all'}>
               {!busy && (
                 <>
-                  <span className="text-mute">$ </span>
-                  <span className="text-ink whitespace-pre-wrap">{input}</span>
-                  <Caret />
+                  <span className="text-mute select-none">$ </span>
+                  <span className="text-ink whitespace-pre-wrap">{input.slice(0, cursor)}</span>
+                  <InputCaret />
+                  <span className="text-ink whitespace-pre-wrap">{input.slice(cursor)}</span>
                 </>
               )}
-              <span className="sr-only">Terminal command</span>
               <input
+                aria-label="Terminal command"
                 ref={inputRef}
                 value={input}
                 onChange={(e) => {
                   if (busy) return;
                   setInput(e.target.value);
+                  setCursor(e.target.selectionStart ?? e.target.value.length);
                   setHistoryIndex(null);
                 }}
                 onKeyDown={onKeyDown}
-                onSelect={(e) => {
-                  // The drawn caret always sits at the end, so keep the real one there too.
+                onSelect={syncCursor}
+                onKeyUp={syncCursor}
+                onMouseUp={(e) => {
+                  // The hidden input isn't aligned with the drawn text, so a click puts the
+                  // cursor at the end; ←/→ move it, like in a real terminal.
                   const el = e.currentTarget;
                   const end = el.value.length;
-                  if (el.selectionStart !== end || el.selectionEnd !== end) el.setSelectionRange(end, end);
+                  el.setSelectionRange(end, end);
+                  setCursor(end);
                 }}
                 autoComplete="off"
                 autoCorrect="off"
