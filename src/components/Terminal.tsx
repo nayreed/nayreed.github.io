@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Terminal as TerminalIcon } from 'lucide-react';
 
 const researchInterests = [
   'Spiking Neural Networks',
@@ -72,10 +73,12 @@ const Terminal = () => {
     <div className="card-hairline overflow-hidden text-left">
       {/* Title bar */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-hairline bg-soft">
-        <span className="w-3 h-3 rounded-full bg-terminal-red"></span>
-        <span className="w-3 h-3 rounded-full bg-terminal-yellow"></span>
-        <span className="w-3 h-3 rounded-full bg-terminal-green"></span>
-        <span className="ml-3 font-mono text-xs text-mute truncate">nayreed@oulu: ~</span>
+        <TerminalIcon
+          aria-hidden="true"
+          strokeWidth={2}
+          className="w-4 h-4 shrink-0 text-ink [&>line]:animate-caret-blink motion-reduce:[&>line]:animate-none"
+        />
+        <span className="ml-1 font-mono text-xs text-mute truncate">nayreed@oulu: ~</span>
       </div>
 
       {/* Session */}
