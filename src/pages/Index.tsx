@@ -39,9 +39,8 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    const animatedElements = Array.from(
-      document.querySelectorAll<HTMLElement>('[data-reveal], [data-progress]')
-    );
+    const animatedElements = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
+    const progressBars = Array.from(document.querySelectorAll<HTMLElement>('[data-progress]'));
 
     const showElement = (element: HTMLElement) => {
       element.classList.add('is-visible');
@@ -52,6 +51,7 @@ const Index = () => {
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
     ) {
       animatedElements.forEach(showElement);
+      progressBars.forEach(showElement);
       return;
     }
 
@@ -73,7 +73,33 @@ const Index = () => {
     );
 
     animatedElements.forEach((element) => observer.observe(element));
-    return () => observer.disconnect();
+
+    // Progress bars fill only once they are fully in the upper three-quarters of the screen
+    // (below the fixed navbar), so the animation plays where people are actually looking.
+    const progressStart = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) showElement(entry.target as HTMLElement);
+        });
+      },
+      { rootMargin: '-72px 0px -25% 0px', threshold: 1 }
+    );
+    // ...and reset only after leaving the screen completely, so small scrolls don't replay it.
+    const progressReset = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) (entry.target as HTMLElement).classList.remove('is-visible');
+      });
+    });
+    progressBars.forEach((bar) => {
+      progressStart.observe(bar);
+      progressReset.observe(bar);
+    });
+
+    return () => {
+      observer.disconnect();
+      progressStart.disconnect();
+      progressReset.disconnect();
+    };
   }, []);
 
   return (
