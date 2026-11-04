@@ -76,7 +76,7 @@ const Terminal = () => {
         <TerminalIcon
           aria-hidden="true"
           strokeWidth={2}
-          className="w-4 h-4 shrink-0 text-ink [&>line]:animate-caret-blink motion-reduce:[&>line]:animate-none"
+          className="w-4 h-4 shrink-0 text-ink [&>polyline]:animate-prompt-nudge motion-reduce:[&>polyline]:animate-none"
         />
         <span className="ml-1 font-mono text-xs text-mute truncate">nayreed@oulu: ~</span>
       </div>

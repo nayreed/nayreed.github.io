@@ -31,16 +31,14 @@ const Skills = () => {
       <div className="max-w-3xl mx-auto px-5 sm:px-6">
         <SectionHeader title="Skills" />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {skillCategories.map((category, index) => (
+        <div className="card-hairline divide-y divide-hairline" data-reveal="scale">
+          {skillCategories.map((category) => (
             <div
               key={category.title}
-              className="card-hairline p-6 md:p-7"
-              data-reveal="scale"
-              style={{ '--reveal-delay': `${index * 70}ms` } as React.CSSProperties}
+              className="grid grid-cols-1 sm:grid-cols-[13rem_1fr] sm:items-center gap-4 sm:gap-5 p-5 sm:px-7 sm:py-6"
             >
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-9 h-9 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-soft border border-hairline flex items-center justify-center text-ink shrink-0">
                   {category.icon}
                 </div>
                 <h3 className="font-display text-lg font-bold text-ink">{category.title}</h3>
