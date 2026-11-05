@@ -1,9 +1,21 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { MASCOT_EVENT, type MascotEventType } from '@/lib/mascotBus';
+import {
+  dropCloth,
+  isHoldingCloth,
+  isMessy,
+  restore as restoreMess,
+  splat,
+  setMessListener,
+  stainSpots,
+  takeCloth,
+  wipe,
+  finish as finishMess,
+} from '@/lib/vomitMess';
 
 const moods = ['idle', 'happy', 'curious'] as const;
 type Mood = (typeof moods)[number];
-type PetMood = Mood | 'charged' | 'sleepy' | 'shocked' | 'hiding' | 'wink' | 'shades' | 'queasy' | 'vomit' | 'dazed';
+type PetMood = Mood | 'charged' | 'sleepy' | 'shocked' | 'hiding' | 'wink' | 'shades' | 'queasy' | 'vomit' | 'dazed' | 'embarrassed' | 'offer' | 'cleaning';
 
 const comboMessages = [
   'Nayreed is a good boy',
@@ -85,27 +97,45 @@ const VOMIT_WINDOW_MS = 1500; // ...within this time make it vomit
 const VOMIT_MIN_AFTER_BARF_MS = 900; // it always gags for a moment first
 const RECOVER_AFTER_MS = 5000; // calm time after the last violent swing before "all good"
 const DAZED_MS = 4500; // how long it stays wobbly after vomiting
+const SELF_CLEAN_AFTER_MS = 20000; // if nobody takes the cloth, the robot cleans up itself
+const REFRESH_TAUNTS = [
+  "Nice try. Refreshing doesn't clean screens.",
+  'Still here. Refresh all you want.',
+  "It's on the glass, not the page!",
+  'Okay, now you are just wasting time. Grab the cloth.',
+];
 const VOMIT_COLORS = ['#9bbf3a', '#b7cf5a', '#7ea32b', '#c9d97a'];
 
-// Spew green pixel chunks from a point on screen: a few heaves, each a burst that arcs
-// out and falls with gravity, fading as it goes.
+// Spew pixel chunks from a point on screen: a few heaves, each a burst that arcs out toward
+// the viewer (growing as it nears the glass) and splats onto the screen, where it sticks.
 const spewVomit = (origin: Point, direction: number) => {
   const layer = document.createElement('div');
   layer.setAttribute('aria-hidden', 'true');
   Object.assign(layer.style, { position: 'fixed', inset: '0', pointerEvents: 'none', zIndex: '41' });
   document.body.appendChild(layer);
 
-  type Chunk = { el: HTMLDivElement; x: number; y: number; vx: number; vy: number; born: number; life: number };
+  type Chunk = {
+    el: HTMLDivElement;
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    size: number;
+    born: number;
+    impact: number; // ms until it hits the glass
+    landed: boolean;
+  };
   const chunks: Chunk[] = [];
   const start = performance.now();
   const bursts = [0, 260, 520];
 
   bursts.forEach((delay, burst) => {
     window.setTimeout(() => {
-      const count = burst === 1 ? 18 : 12;
+      const count = burst === 1 ? 16 : 10;
       for (let i = 0; i < count; i++) {
+        const big = burst === 1 && i === 0; // one big blob in the main heave
+        const size = big ? 11 : 3 + Math.random() * 5;
         const el = document.createElement('div');
-        const size = 3 + Math.random() * 5;
         Object.assign(el.style, {
           position: 'absolute',
           left: '0',
@@ -121,10 +151,12 @@ const spewVomit = (origin: Point, direction: number) => {
           el,
           x: origin.x,
           y: origin.y,
-          vx: direction * (0.08 + Math.random() * 0.22) + (Math.random() - 0.5) * 0.12,
-          vy: -0.12 - Math.random() * 0.18,
+          vx: direction * (0.1 + Math.random() * 0.32) + (Math.random() - 0.5) * 0.2,
+          vy: -0.2 - Math.random() * 0.22,
+          size,
           born: performance.now(),
-          life: 900 + Math.random() * 600,
+          impact: big ? 520 : 380 + Math.random() * 360,
+          landed: false,
         });
       }
     }, delay);
@@ -134,22 +166,32 @@ const spewVomit = (origin: Point, direction: number) => {
   const frame = (now: number) => {
     const dt = Math.min(40, now - last);
     last = now;
-    let alive = 0;
+    let flying = 0;
     chunks.forEach((c) => {
+      if (c.landed) return;
       const age = now - c.born;
-      if (age > c.life) {
-        c.el.style.opacity = '0';
+      if (age >= c.impact) {
+        // Hits the glass: a quick flattening flash, and the stain stays on the screen.
+        c.landed = true;
+        splat(c.x, c.y, c.size * (1.5 + Math.random() * 1.1));
+        c.el.animate(
+          [
+            { transform: `translate(${c.x}px, ${c.y}px) scale(2.4)`, opacity: 1 },
+            { transform: `translate(${c.x}px, ${c.y}px) scale(3.4, 2.6)`, opacity: 0 },
+          ],
+          { duration: 110, fill: 'forwards' }
+        );
         return;
       }
-      alive++;
-      c.vy += 0.0016 * dt; // gravity
+      flying++;
+      c.vy += 0.0011 * dt; // a gentler arc: it's flying toward you, not just falling
       c.x += c.vx * dt;
       c.y += c.vy * dt;
-      c.el.style.transform = `translate(${c.x}px, ${c.y}px) rotate(${age * 0.4}deg)`;
-      c.el.style.opacity = String(Math.min(1, (1 - age / c.life) * 1.6));
+      const nearness = 1 + 1.4 * (age / c.impact); // grows as it approaches the glass
+      c.el.style.transform = `translate(${c.x}px, ${c.y}px) rotate(${age * 0.5}deg) scale(${nearness.toFixed(2)})`;
     });
-    if (alive > 0 || now - start < 700) requestAnimationFrame(frame);
-    else layer.remove();
+    if (flying > 0 || now - start < 800) requestAnimationFrame(frame);
+    else window.setTimeout(() => layer.remove(), 150);
   };
   requestAnimationFrame(frame);
 };
@@ -231,6 +273,10 @@ const InteractiveAlien = () => {
   const idleTimerRef = useRef<number | null>(null);
   const reactionTimerRef = useRef<number | null>(null);
   const reactingRef = useRef(false);
+  const selfCleaningRef = useRef(false);
+  const selfCleanTimerRef = useRef(0);
+  const saidKeepGoingRef = useRef(false);
+  const notAgainAtRef = useRef(0);
   type Axis = { dir: number; extreme: number; extremeT: number; prevExtreme: number; prevExtremeT: number };
   const newAxis = (value: number, now: number): Axis => ({
     dir: 0,
@@ -458,6 +504,56 @@ const InteractiveAlien = () => {
     },
     []
   );
+
+  // Mess events, and a mess left over from before a page refresh.
+  useEffect(() => {
+    setMessListener({
+      onSettled: () => window.setTimeout(noticeMess, 1800),
+      onClothChange: (holding) => {
+        window.clearTimeout(selfCleanTimerRef.current);
+        if (holding) {
+          saidKeepGoingRef.current = false;
+          setSick('happy', 'Scrub it! (Esc to hand it back)', 3200);
+        } else if (isMessy()) {
+          selfClean();
+        }
+      },
+      onProgress: (left) => {
+        if (isHoldingCloth() && left < 0.5 && !saidKeepGoingRef.current) {
+          saidKeepGoingRef.current = true;
+          showBubbleMessage('Keep going!', 1600);
+        }
+      },
+      onCleaned: () => {
+        window.clearTimeout(selfCleanTimerRef.current);
+        const byRobot = selfCleaningRef.current;
+        selfCleaningRef.current = false;
+        shakeRef.current.stage = 'fine';
+        shakeRef.current.swings = [];
+        setSparkKey((k) => k + 1);
+        react('happy', byRobot ? 'There. Spotless.' : 'Spotless! Thank you.', 2800);
+      },
+    });
+
+    let cancelled = false;
+    restoreMess().then((refreshCount) => {
+      if (cancelled || !refreshCount) return;
+      window.setTimeout(() => {
+        const taunt = REFRESH_TAUNTS[Math.min(refreshCount, REFRESH_TAUNTS.length) - 1];
+        const spot = stainSpots()[0];
+        if (spot) lookAt(spot);
+        setSick('wink', taunt, 3000);
+        window.setTimeout(() => offerCloth(), 3000);
+      }, 700);
+    });
+    return () => {
+      cancelled = true;
+      setMessListener({});
+      window.clearTimeout(selfCleanTimerRef.current);
+    };
+    // Runs once; the handlers only use refs and stable callbacks.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ---------------------------------------------------------------------------
   // Remembered position + keep it on screen when the window resizes
@@ -701,7 +797,8 @@ const InteractiveAlien = () => {
         !dragRef.current &&
         !reactingRef.current &&
         !bubbleVisibleRef.current &&
-        moodRef.current !== 'sleepy';
+        moodRef.current !== 'sleepy' &&
+        !isMessy();
       if (canWander) {
         if (Math.random() < 0.33) floatAround();
         else wander();
@@ -761,7 +858,102 @@ const InteractiveAlien = () => {
       }, 780);
     }
     window.setTimeout(() => setSick('dazed', 'ugh…', DAZED_MS - 600), 1700);
-    window.setTimeout(() => recover("…okay. I'm good now."), 1700 + DAZED_MS);
+    // With motion off there is no mess to clean, so it simply recovers.
+    if (prefersReducedMotion()) window.setTimeout(() => recover("…okay. I'm good now."), 1700 + DAZED_MS);
+  };
+
+  // --- The mess on the glass: embarrassed, offers a cloth, or cleans it up itself -------------
+
+  const lookAt = (point: Point) => {
+    const el = buttonRef.current;
+    if (!el) return;
+    const box = el.getBoundingClientRect();
+    const dx = point.x - (box.left + box.width / 2);
+    const dy = point.y - (box.top + box.height / 2);
+    const length = Math.hypot(dx, dy) || 1;
+    el.style.setProperty('--look-x', ((dx / length) * 0.9).toFixed(3));
+    el.style.setProperty('--look-y', ((dy / length) * 0.9).toFixed(3));
+  };
+
+  const offerCloth = (message = 'Click me for a cloth.') => {
+    if (!isMessy() || isHoldingCloth() || selfCleaningRef.current) return;
+    setSick('offer', message, 4200);
+    window.clearTimeout(selfCleanTimerRef.current);
+    selfCleanTimerRef.current = window.setTimeout(() => {
+      if (isMessy() && !isHoldingCloth()) selfClean();
+    }, SELF_CLEAN_AFTER_MS);
+  };
+
+  const noticeMess = () => {
+    const spot = stainSpots()[0];
+    if (spot) lookAt(spot);
+    setSick('embarrassed', '…what a mess.', 2000);
+    window.setTimeout(() => offerCloth(), 2000);
+  };
+
+  // Gives up waiting and floats around the screen scrubbing the stains off itself.
+  const selfClean = () => {
+    const el = buttonRef.current;
+    if (!el || !isMessy() || selfCleaningRef.current) return;
+    selfCleaningRef.current = true;
+    window.clearTimeout(selfCleanTimerRef.current);
+    stopWalking();
+    stopFloating();
+    setSick('cleaning', "fine… I'll do it myself.", 2600);
+    if (prefersReducedMotion()) {
+      finishMess();
+      return;
+    }
+
+    const box = el.getBoundingClientRect();
+    const start = { ...offsetRef.current };
+    const homeX = box.left + box.width / 2 - start.x; // screen centre when the offset is 0
+    const homeY = box.top + box.height / 2 - start.y;
+    const { minX, minY } = limits();
+    const toOffset = (p: Point) => ({ x: clamp(p.x - homeX, minX, 0), y: clamp(p.y - homeY, minY, 0) });
+
+    // Visit the biggest stains, nearest first, then come home.
+    const spots = stainSpots().slice(0, 7);
+    const route: Point[] = [];
+    let at = { x: homeX + start.x, y: homeY + start.y };
+    while (spots.length) {
+      spots.sort((a, b) => Math.hypot(a.x - at.x, a.y - at.y) - Math.hypot(b.x - at.x, b.y - at.y));
+      at = spots.shift() as Point;
+      route.push(at);
+    }
+    if (!route.length) route.push({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+    const points = [start, ...route.map(toOffset), start];
+
+    const duration = clamp(points.length * 1100, 3200, 9000);
+    el.dataset.floating = 'true';
+    const begin = performance.now();
+    let previous: Point | null = null;
+    const frame = (now: number) => {
+      const t = Math.min(1, (now - begin) / duration);
+      const eased = -(Math.cos(Math.PI * t) - 1) / 2;
+      const envelope = Math.sin(Math.PI * t);
+      const p = pointOnCurve(points, eased);
+      // Little scrubbing circles on top of the route.
+      const x = clamp(p.x + Math.sin(now / 55) * 10 * envelope, minX, 0);
+      const y = clamp(p.y + Math.cos(now / 55) * 7 * envelope, minY, 0);
+      applyOffset(x, y);
+      el.style.setProperty('--tilt', `${(Math.sin(now / 90) * 10 * envelope).toFixed(2)}deg`);
+      const screen = { x: homeX + x, y: homeY + y };
+      if (previous) wipe(previous.x, previous.y, screen.x, screen.y, 48);
+      previous = screen;
+      if (t < 1) {
+        requestAnimationFrame(frame);
+        return;
+      }
+      el.style.setProperty('--tilt', '0deg');
+      applyOffset(start.x, start.y);
+      requestAnimationFrame(() => {
+        el.dataset.floating = 'false';
+        squash(['1 1', '1.12 0.86', '0.96 1.05', '1 1'], 440);
+        if (isMessy()) finishMess(); // whatever's left fades out
+      });
+    };
+    requestAnimationFrame(frame);
   };
 
   // Splits the pointer path into swings per axis and records the violent ones.
@@ -808,6 +1000,14 @@ const InteractiveAlien = () => {
     const recent = (windowMs: number, since = 0) =>
       shake.swings.filter((t) => now - t <= windowMs && t > since).length;
 
+    if (shake.stage === 'fine' && recent(BARF_WINDOW_MS) >= BARF_SWINGS && isMessy()) {
+      if (now - notAgainAtRef.current > 3000) {
+        notAgainAtRef.current = now;
+        showBubbleMessage('Not again… clean this first.', 2200);
+      }
+      shake.swings = [];
+      return;
+    }
     if (shake.stage === 'fine' && recent(BARF_WINDOW_MS) >= BARF_SWINGS) {
       shake.stage = 'queasy';
       shake.barfAt = now;
@@ -928,10 +1128,20 @@ const InteractiveAlien = () => {
     target.style.setProperty('--look-y', '0');
   };
 
-  const handleClick = () => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (wasDraggedRef.current) {
       wasDraggedRef.current = false;
       wake('curious');
+      return;
+    }
+
+    // Dirty screen: clicking takes the cloth (or hands it back). Keyboard users can't scrub,
+    // so a keyboard press asks the robot to clean up instead.
+    if (isMessy()) {
+      if (isHoldingCloth()) dropCloth();
+      else if (selfCleaningRef.current) return;
+      else if (event.detail === 0) selfClean();
+      else takeCloth({ x: event.clientX, y: event.clientY });
       return;
     }
 
@@ -1036,6 +1246,13 @@ const InteractiveAlien = () => {
           <g className="alien-mascot__right-arm">
             <path className="alien-mascot__arm-line" d="M101 55 C110 55 117 62 117 73 C117 79 115 84 113 87" />
             <path className="alien-mascot__palm" d="M109 83c2-2 8-2 10 0l-1 6h-8z" />
+            <g className="alien-mascot__cloth">
+              <path
+                className="alien-mascot__cloth-body"
+                d="M104 88 L124 85 L127 101 L122 103 L119 100 L116 104 L112 101 L108 104 L106 100 Z"
+              />
+              <path className="alien-mascot__cloth-stripe" d="M108 92 L123 90 M109 96 L124 94" />
+            </g>
           </g>
 
           <g className="alien-mascot__sparks">

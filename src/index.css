@@ -1235,6 +1235,99 @@
     transform: rotate(10deg) translateY(3px);
   }
 
+  /* The cloth it hands over (and uses when cleaning up itself) */
+  .alien-mascot__cloth {
+    opacity: 0;
+    transform-box: view-box;
+    transform-origin: 114px 86px;
+    transform: scale(0.4) rotate(-20deg);
+    transition:
+      opacity 160ms ease,
+      transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .alien-mascot__cloth-body {
+    fill: #bcd6f2;
+    stroke: #2c3e5c;
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+  }
+
+  .alien-mascot__cloth-stripe {
+    fill: none;
+    stroke: #7ea6d6;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+
+  .alien-mascot[data-mood='offer'] .alien-mascot__cloth,
+  .alien-mascot[data-mood='cleaning'] .alien-mascot__cloth {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+
+  /* Embarrassed: looks at the mess, shrinks a little, antennas droop */
+  .alien-mascot[data-mood='embarrassed'] .alien-mascot__eye {
+    animation: none;
+    transform: scaleY(0.7);
+  }
+
+  .alien-mascot[data-mood='embarrassed'] .alien-mascot__mouth {
+    transform: scaleX(0.45) translateY(1px);
+  }
+
+  .alien-mascot[data-mood='embarrassed'] .alien-mascot__body {
+    animation: none;
+    transform: translateY(2px) scale(0.97);
+  }
+
+  .alien-mascot[data-mood='embarrassed'] .alien-mascot__left-antenna {
+    animation: none;
+    transform: rotate(-16deg);
+  }
+
+  .alien-mascot[data-mood='embarrassed'] .alien-mascot__right-antenna {
+    animation: none;
+    transform: rotate(16deg);
+  }
+
+  /* Offer: holds the cloth out and waves it a little */
+  .alien-mascot[data-mood='offer'] .alien-mascot__right-arm {
+    animation: alien-offer 1.4s ease-in-out infinite;
+  }
+
+  .alien-mascot[data-mood='offer'] .alien-mascot__mouth {
+    transform: scaleX(1.25);
+  }
+
+  /* Cleaning: scrubbing hard with a determined squint */
+  .alien-mascot[data-mood='cleaning'] .alien-mascot__right-arm {
+    animation: alien-scrub 240ms ease-in-out infinite;
+  }
+
+  .alien-mascot[data-mood='cleaning'] .alien-mascot__eye {
+    animation: none;
+    transform: scaleY(0.55);
+  }
+
+  @keyframes alien-offer {
+    0%, 100% {
+      transform: rotate(-38deg);
+    }
+    50% {
+      transform: rotate(-30deg) translateY(-1px);
+    }
+  }
+
+  @keyframes alien-scrub {
+    0%, 100% {
+      transform: rotate(-44deg);
+    }
+    50% {
+      transform: rotate(-20deg);
+    }
+  }
+
   .alien-mascot[data-mood='sleepy'] .alien-mascot__body {
     animation: alien-sleep 5s ease-in-out infinite;
   }
@@ -1612,4 +1705,60 @@
   syntax: '<angle>';
   inherits: true;
   initial-value: 0deg;
+}
+
+/* Screen mess (see src/lib/vomitMess.ts): stains stuck to the "glass" over the page. */
+.screen-mess {
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  pointer-events: none;
+}
+
+/* While the cloth is held, the stain layer takes the pointer and the cloth replaces the cursor. */
+.cloth-mode .screen-mess:not(.screen-mess--sheen) {
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.cloth-mode,
+.cloth-mode * {
+  cursor: none !important;
+}
+
+.screen-mess-cloth {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 60;
+  pointer-events: none;
+  display: none;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.25));
+  transition: scale 120ms ease;
+}
+
+.screen-mess-shine {
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  background-size: 250% 100%;
+  animation: screen-mess-shine 850ms ease-out forwards;
+}
+
+@keyframes screen-mess-shine {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -20% 0;
+  }
 }
