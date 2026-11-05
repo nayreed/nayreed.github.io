@@ -70,6 +70,29 @@ const getShortcutMessage = (event: KeyboardEvent) => {
   return null;
 };
 
+type Point = { x: number; y: number };
+
+// Catmull-Rom spline: a smooth curve that passes through every point.
+const pointOnCurve = (points: Point[], u: number): Point => {
+  const segments = points.length - 1;
+  const s = clamp(u, 0, 1) * segments;
+  const i = Math.min(Math.floor(s), segments - 1);
+  const t = s - i;
+  const p0 = points[Math.max(i - 1, 0)];
+  const p1 = points[i];
+  const p2 = points[i + 1];
+  const p3 = points[Math.min(i + 2, points.length - 1)];
+  const t2 = t * t;
+  const t3 = t2 * t;
+  const axis = (k: 'x' | 'y') =>
+    0.5 *
+    (2 * p1[k] +
+      (-p0[k] + p2[k]) * t +
+      (2 * p0[k] - 5 * p1[k] + 4 * p2[k] - p3[k]) * t2 +
+      (-p0[k] + 3 * p1[k] - 3 * p2[k] + p3[k]) * t3);
+  return { x: axis('x'), y: axis('y') };
+};
+
 const readSavedPosition = (): { x: number; y: number } | null => {
   try {
     const raw = window.localStorage.getItem(POSITION_KEY);
@@ -115,6 +138,8 @@ const InteractiveAlien = () => {
   } | null>(null);
   const wasDraggedRef = useRef(false);
   const walkingRef = useRef(false);
+  const floatingRef = useRef(false);
+  const floatFrameRef = useRef<number | null>(null);
   const walkTimerRef = useRef<number | null>(null);
   const comboTimerRef = useRef<number | null>(null);
   const comboIndexRef = useRef(0);
@@ -172,6 +197,22 @@ const InteractiveAlien = () => {
     el.style.setProperty('--look-x', '0');
     applyOffset(matrix.m41, matrix.m42);
   }, [applyOffset]);
+
+  const stopFloating = useCallback(() => {
+    const el = buttonRef.current;
+    if (!el || !floatingRef.current) return;
+    if (floatFrameRef.current) cancelAnimationFrame(floatFrameRef.current);
+    floatingRef.current = false;
+    // Unwind any somersault to the nearest upright angle, then let it spring back.
+    const angle = parseFloat(el.style.getPropertyValue('--tilt')) || 0;
+    el.style.setProperty('--tilt', `${(((angle % 360) + 540) % 360) - 180}deg`);
+    el.style.setProperty('--look-x', '0');
+    el.style.setProperty('--look-y', '0');
+    requestAnimationFrame(() => {
+      el.dataset.floating = 'false';
+      el.style.setProperty('--tilt', '0deg');
+    });
+  }, []);
 
   // ---------------------------------------------------------------------------
   // Speech bubble, moods and reactions
@@ -237,7 +278,7 @@ const InteractiveAlien = () => {
 
     const updateLook = (clientX: number, clientY: number) => {
       const target = buttonRef.current;
-      if (!target || walkingRef.current) return;
+      if (!target || walkingRef.current || floatingRef.current) return;
 
       const bounds = target.getBoundingClientRect();
       const centerX = bounds.left + bounds.width / 2;
@@ -466,21 +507,99 @@ const InteractiveAlien = () => {
       }, duration + 60);
     };
 
+    // Zero-gravity trip: lift off, drift along a smooth curve through a few random points
+    // with a lazy sway (or the odd slow somersault), then come back down to its usual edge.
+    const floatAround = () => {
+      const el = buttonRef.current;
+      if (!el) return;
+      const { minX, minY } = limits();
+      const start = { ...offsetRef.current };
+      const between = (a: number, b: number) => a + Math.random() * (b - a);
+
+      const points: Point[] = [start];
+      const stops = Math.random() < 0.5 ? 2 : 3;
+      for (let i = 0; i < stops; i++) {
+        points.push({ x: between(minX * 0.9, minX * 0.1), y: between(minY * 0.7, minY * 0.2) });
+      }
+      let endX = between(minX, 0);
+      if (Math.abs(endX - start.x) < 80) endX = clamp(start.x + (start.x > minX / 2 ? -160 : 160), minX, 0);
+      const end = { x: endX, y: start.y };
+      points.push(end);
+
+      const duration = between(6500, 9000);
+      const somersault = Math.random() < 0.3;
+      const spin = Math.random() < 0.5 ? -1 : 1;
+      floatingRef.current = true;
+      el.dataset.floating = 'true';
+      squash(['1 1', '1.08 0.9', '0.95 1.06', '1 1'], 380); // little crouch to push off
+
+      const startTime = performance.now();
+      let previous = start;
+      const frame = (now: number) => {
+        if (!floatingRef.current) return;
+        const t = Math.min(1, (now - startTime) / duration);
+        const eased = -(Math.cos(Math.PI * t) - 1) / 2; // gentle start and stop
+        const envelope = Math.sin(Math.PI * t); // effects fade in and out with the trip
+        const point = pointOnCurve(points, eased);
+        const x = clamp(point.x, minX, 0);
+        const y = clamp(point.y + Math.sin(t * Math.PI * 4.4) * 7 * envelope, minY, 0);
+        applyOffset(x, y);
+
+        const angle = somersault
+          ? spin * 360 * eased + 8 * Math.sin(t * Math.PI * 4) * envelope
+          : spin * 24 * Math.sin(t * Math.PI * 1.8) * envelope;
+        el.style.setProperty('--tilt', `${angle.toFixed(2)}deg`);
+
+        // Look where it's drifting.
+        const dx = x - previous.x;
+        const dy = y - previous.y;
+        const length = Math.hypot(dx, dy);
+        if (length > 0.05) {
+          el.style.setProperty('--look-x', ((dx / length) * 0.7).toFixed(3));
+          el.style.setProperty('--look-y', ((dy / length) * 0.7).toFixed(3));
+        }
+        previous = { x, y };
+
+        if (t < 1) {
+          floatFrameRef.current = requestAnimationFrame(frame);
+          return;
+        }
+        // Touch down: settle upright (360° looks the same as 0°), then a landing squash.
+        el.style.setProperty('--tilt', '0deg');
+        applyOffset(end.x, end.y);
+        requestAnimationFrame(() => {
+          floatingRef.current = false;
+          el.dataset.floating = 'false';
+          el.style.setProperty('--look-x', '0');
+          el.style.setProperty('--look-y', '0');
+          squash(['1 1', '1.12 0.86', '0.96 1.05', '1 1'], 440);
+        });
+      };
+      floatFrameRef.current = requestAnimationFrame(frame);
+    };
+
     const tick = () => {
       const canWander =
         document.visibilityState === 'visible' &&
         !walkingRef.current &&
+        !floatingRef.current &&
         !dragRef.current &&
         !reactingRef.current &&
         !bubbleVisibleRef.current &&
         moodRef.current !== 'sleepy';
-      if (canWander) wander();
+      if (canWander) {
+        if (Math.random() < 0.33) floatAround();
+        else wander();
+      }
       timer = window.setTimeout(tick, 12000 + Math.random() * 10000);
     };
 
     timer = window.setTimeout(tick, 9000 + Math.random() * 6000);
-    return () => window.clearTimeout(timer);
-  }, [applyOffset, limits]);
+    return () => {
+      window.clearTimeout(timer);
+      if (floatFrameRef.current) cancelAnimationFrame(floatFrameRef.current);
+    };
+  }, [applyOffset, limits, squash]);
 
   // ---------------------------------------------------------------------------
   // Pointer: drag with tilt, click moods, double-click spark
@@ -488,6 +607,7 @@ const InteractiveAlien = () => {
 
   const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
     stopWalking();
+    stopFloating();
     event.currentTarget.setPointerCapture(event.pointerId);
     dragRef.current = {
       pointerId: event.pointerId,

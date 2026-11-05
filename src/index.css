@@ -691,6 +691,41 @@
       transform var(--walk-ms) cubic-bezier(0.45, 0, 0.55, 1);
   }
 
+  /* Floating in space: motion is driven frame by frame, limbs drift loosely, no ground shadow. */
+  .alien-mascot[data-floating='true'] {
+    transition:
+      border-color 180ms ease,
+      background-color 180ms ease,
+      color 180ms ease;
+  }
+
+  .alien-mascot[data-floating='true'] .alien-mascot__shadow {
+    animation: none;
+    opacity: 0;
+  }
+
+  .alien-mascot[data-floating='true'] .alien-mascot__left-arm {
+    animation: alien-drift-left 2.6s ease-in-out infinite;
+  }
+
+  .alien-mascot[data-floating='true'] .alien-mascot__right-arm {
+    animation: alien-drift-right 2.9s ease-in-out infinite;
+  }
+
+  .alien-mascot[data-floating='true'] .alien-mascot__left-leg {
+    animation: alien-dangle 3.2s ease-in-out infinite;
+  }
+
+  .alien-mascot[data-floating='true'] .alien-mascot__right-leg {
+    animation: alien-dangle 3.6s ease-in-out infinite reverse;
+  }
+
+  .alien-mascot[data-floating='true'] .alien-mascot__left-antenna,
+  .alien-mascot[data-floating='true'] .alien-mascot__right-antenna {
+    rotate: 0deg;
+    animation-duration: 4.5s;
+  }
+
   .alien-mascot[data-walking='true'] .alien-mascot__left-leg {
     animation: alien-left-step 340ms ease-in-out infinite;
   }
@@ -1249,6 +1284,33 @@
     72% {
       opacity: 0.12;
       transform: translate(-10px, -14px) rotate(-2deg) scale(1.08);
+    }
+  }
+
+  @keyframes alien-drift-left {
+    0%, 100% {
+      transform: rotate(-4deg);
+    }
+    50% {
+      transform: rotate(16deg) translateY(-2px);
+    }
+  }
+
+  @keyframes alien-drift-right {
+    0%, 100% {
+      transform: rotate(4deg);
+    }
+    50% {
+      transform: rotate(-14deg) translateY(-2px);
+    }
+  }
+
+  @keyframes alien-dangle {
+    0%, 100% {
+      transform: rotate(-7deg);
+    }
+    50% {
+      transform: rotate(7deg);
     }
   }
 
