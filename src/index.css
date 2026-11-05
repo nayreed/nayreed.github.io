@@ -2251,6 +2251,21 @@
   animation: screen-mess-shine 850ms ease-out forwards;
 }
 
+/* Light theme: a white streak disappears on an off-white page, so give the glare tinted edges. */
+html:not(.dark) .screen-mess-shine {
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 38%,
+    rgba(110, 135, 170, 0.18) 45%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(110, 135, 170, 0.18) 55%,
+    transparent 62%,
+    transparent 100%
+  );
+  background-size: 250% 100%;
+}
+
 @keyframes screen-mess-shine {
   from {
     background-position: 120% 0;
