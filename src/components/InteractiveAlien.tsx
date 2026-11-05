@@ -338,25 +338,80 @@ const InteractiveAlien = () => {
 
   useEffect(() => {
     if (!('IntersectionObserver' in window)) return;
+    // A quip only fires once someone is actually reading: the section fills a good part
+    // of the screen and stays there, with no fast scrolling, for READ_DWELL_MS.
+    const READ_DWELL_MS = 3000;
+    const SKIM_SPEED = 0.8; // px per ms (~800 px/s); faster than this counts as skimming
     const seen = new Set<string>();
+    const reading = new Map<string, number>(); // section id -> pending dwell timer
+
+    const stopTimer = (id: string) => {
+      const timer = reading.get(id);
+      if (timer) window.clearTimeout(timer);
+      reading.delete(id);
+    };
+
+    const startTimer = (id: string, delay = READ_DWELL_MS) => {
+      stopTimer(id);
+      reading.set(
+        id,
+        window.setTimeout(() => {
+          reading.delete(id);
+          if (seen.has(id)) return;
+          // Never talk over another message; try again shortly while they keep reading.
+          if (bubbleVisibleRef.current || reactingRef.current || dragRef.current) {
+            startTimer(id, 1500);
+            return;
+          }
+          seen.add(id);
+          react('happy', sectionQuips[id], 2600);
+        }, delay)
+      );
+    };
+
+    const isReadable = (entry: IntersectionObserverEntry) => {
+      if (!entry.isIntersecting) return false;
+      const viewportShare = entry.intersectionRect.height / window.innerHeight;
+      // Tall sections: fill at least 40% of the screen. Short ones: be mostly visible.
+      return viewportShare >= 0.4 || entry.intersectionRatio >= 0.6;
+    };
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           const id = entry.target.id;
-          if (!entry.isIntersecting || seen.has(id)) return;
-          // Only after the visitor has started scrolling, and never over another message.
-          if (window.scrollY < 40 || bubbleVisibleRef.current || reactingRef.current || dragRef.current) return;
-          seen.add(id);
-          react('happy', sectionQuips[id], 2600);
+          if (seen.has(id)) return;
+          if (isReadable(entry)) {
+            if (!reading.has(id)) startTimer(id);
+          } else {
+            stopTimer(id);
+          }
         });
       },
-      { threshold: 0.35 }
+      { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] }
     );
+
+    // Fast scrolling restarts the reading clock for every section on screen.
+    let lastY = window.scrollY;
+    let lastT = performance.now();
+    const handleScroll = () => {
+      const now = performance.now();
+      const speed = Math.abs(window.scrollY - lastY) / Math.max(1, now - lastT);
+      lastY = window.scrollY;
+      lastT = now;
+      if (speed > SKIM_SPEED) [...reading.keys()].forEach((id) => startTimer(id));
+    };
+
     Object.keys(sectionQuips).forEach((id) => {
       const section = document.getElementById(id);
       if (section) observer.observe(section);
     });
-    return () => observer.disconnect();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+      [...reading.keys()].forEach(stopTimer);
+    };
   }, [react]);
 
   // ---------------------------------------------------------------------------
