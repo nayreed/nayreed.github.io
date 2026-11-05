@@ -1321,8 +1321,6 @@ const InteractiveAlien = () => {
             <rect className="alien-mascot__brow alien-mascot__brow--right" x="74" y="42" width="16" height="3.5" rx="1.75" />
             <rect className="alien-mascot__eye alien-mascot__eye--left" x="41" y="51" width="10" height="10" rx="2" />
             <rect className="alien-mascot__eye alien-mascot__eye--right" x="77" y="51" width="10" height="10" rx="2" />
-            <rect className="alien-mascot__glint" x="43" y="53" width="3" height="3" rx="0.5" />
-            <rect className="alien-mascot__glint" x="79" y="53" width="3" height="3" rx="0.5" />
             <path className="alien-mascot__happy-eye alien-mascot__happy-eye--left" d="M41 59 Q46 50 51 59" />
             <path className="alien-mascot__happy-eye alien-mascot__happy-eye--right" d="M77 59 Q82 50 87 59" />
             <g className="alien-mascot__shades">
@@ -1336,7 +1334,7 @@ const InteractiveAlien = () => {
           <ellipse className="alien-mascot__blush" cx="88" cy="67" rx="5" ry="2.6" />
           <path className="alien-mascot__mouth" d="M55 68h18" />
           <path className="alien-mascot__mouth-shape alien-mascot__mouth-smile" d="M54 66 Q64 74 74 66" />
-          <path className="alien-mascot__mouth-shape alien-mascot__mouth-grin" d="M53 64.5 H75 Q74 75 64 75 Q54 75 53 64.5 Z" />
+          <path className="alien-mascot__mouth-shape alien-mascot__mouth-grin" d="M51 64 Q64 79 77 64" />
           <path className="alien-mascot__mouth-shape alien-mascot__mouth-frown" d="M55 71 Q64 64 73 71" />
           <path className="alien-mascot__mouth-shape alien-mascot__mouth-smirk" d="M56 69 Q66 70.5 73 64.5" />
           <path className="alien-mascot__mouth-shape alien-mascot__mouth-wobble" d="M53 68.5 q2.75 -3 5.5 0 t5.5 0 t5.5 0 t5.5 0" />
