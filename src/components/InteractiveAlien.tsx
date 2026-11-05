@@ -32,7 +32,7 @@ const shortcutMessages = {
 
 // One-time quip the first time each section scrolls into view.
 const sectionQuips: Record<string, string> = {
-  experience: 'Real research, real deadlines.',
+  experience: 'Ohh my god so researchyyyy !!!',
   projects: 'Built with love and a lot of debugging.',
   publications: 'In preparation… like my sleep schedule.',
   education: 'Study mode: ON.',
