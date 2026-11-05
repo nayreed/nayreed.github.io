@@ -1165,14 +1165,10 @@
     transform: scaleX(1.2) translateX(2px);
   }
 
-  /* Queasy (shaken): sickly green, spinning dizzy eyes, heaving with puffed cheeks */
-  .alien-mascot[data-mood='queasy'] .alien-mascot__svg,
-  .alien-mascot[data-mood='vomit'] .alien-mascot__svg {
-    color: color-mix(in srgb, var(--ink) 45%, #7fb21f);
-  }
-
+  /* Queasy (the gag after violent shaking): squinting, cheeks puffing, heaving */
   .alien-mascot[data-mood='queasy'] .alien-mascot__eye {
-    animation: alien-dizzy 700ms linear infinite;
+    animation: none;
+    transform: scaleY(0.45);
   }
 
   .alien-mascot[data-mood='queasy'] .alien-mascot__mouth {
@@ -1180,14 +1176,24 @@
   }
 
   .alien-mascot[data-mood='queasy'] .alien-mascot__mouth-o {
-    animation: alien-gag 650ms ease-in-out infinite;
+    animation: alien-gag 900ms ease-in-out infinite;
   }
 
   .alien-mascot[data-mood='queasy'] .alien-mascot__body {
-    animation: alien-heave 650ms ease-in-out infinite;
+    animation: alien-heave 900ms ease-in-out infinite;
   }
 
-  /* Vomit: eyes squeezed shut, mouth wide open, lurching forward */
+  .alien-mascot[data-mood='queasy'] .alien-mascot__left-arm {
+    animation: none;
+    transform: rotate(14deg) translateY(2px);
+  }
+
+  .alien-mascot[data-mood='queasy'] .alien-mascot__right-arm {
+    animation: none;
+    transform: rotate(-14deg) translateY(2px);
+  }
+
+  /* Vomit: two dry heaves, then it comes out; eyes squeezed shut, mouth wide open */
   .alien-mascot[data-mood='vomit'] .alien-mascot__eye {
     animation: none;
     transform: scaleY(0.12);
@@ -1199,11 +1205,34 @@
 
   .alien-mascot[data-mood='vomit'] .alien-mascot__mouth-o {
     opacity: 1;
-    transform: scale(1.7, 1.5);
+    animation: alien-vomit-mouth 1700ms ease-out both;
   }
 
   .alien-mascot[data-mood='vomit'] .alien-mascot__body {
-    animation: alien-retch 260ms ease-in-out 3;
+    animation: alien-retch 1700ms ease-in-out both;
+  }
+
+  /* Dazed afterwards: slow dizzy eyes, droopy arms, a woozy sway */
+  .alien-mascot[data-mood='dazed'] .alien-mascot__eye {
+    animation: alien-dizzy 2.2s linear infinite;
+  }
+
+  .alien-mascot[data-mood='dazed'] .alien-mascot__mouth {
+    transform: scaleX(0.6);
+  }
+
+  .alien-mascot[data-mood='dazed'] .alien-mascot__body {
+    animation: alien-woozy 2.4s ease-in-out infinite;
+  }
+
+  .alien-mascot[data-mood='dazed'] .alien-mascot__left-arm {
+    animation: none;
+    transform: rotate(-10deg) translateY(3px);
+  }
+
+  .alien-mascot[data-mood='dazed'] .alien-mascot__right-arm {
+    animation: none;
+    transform: rotate(10deg) translateY(3px);
   }
 
   .alien-mascot[data-mood='sleepy'] .alien-mascot__body {
@@ -1417,31 +1446,65 @@
   }
 
   @keyframes alien-gag {
-    0%, 100% {
-      opacity: 0.4;
-      transform: scale(0.6);
+    0%, 55%, 100% {
+      opacity: 0.35;
+      transform: scale(0.55);
     }
-    50% {
+    70% {
       opacity: 1;
-      transform: scale(1.15, 1);
+      transform: scale(1.25, 1.05);
     }
   }
 
   @keyframes alien-heave {
-    0%, 100% {
-      transform: translateY(0) scale(1);
+    0%, 55%, 100% {
+      transform: translateY(0) rotate(0deg) scale(1);
     }
-    45% {
-      transform: translateY(3px) scale(1.04, 0.93);
+    70% {
+      transform: translateY(4px) rotate(-3deg) scale(1.05, 0.92);
     }
   }
 
+  /* 0–25%: dry heave, 25–45%: dry heave, 45–80%: the big one, then settle */
   @keyframes alien-retch {
     0%, 100% {
       transform: translateY(0) rotate(0deg) scale(1);
     }
+    12% {
+      transform: translateY(3px) rotate(-3deg) scale(1.04, 0.94);
+    }
+    25% {
+      transform: translateY(0) rotate(0deg) scale(1);
+    }
+    35% {
+      transform: translateY(3px) rotate(-3deg) scale(1.04, 0.94);
+    }
+    45% {
+      transform: translateY(-2px) rotate(2deg) scale(0.98, 1.04);
+    }
+    55%, 75% {
+      transform: translateY(5px) rotate(-7deg) scale(1.06, 0.9);
+    }
+  }
+
+  @keyframes alien-vomit-mouth {
+    0%, 40% {
+      transform: scale(0.8);
+    }
+    50%, 80% {
+      transform: scale(1.8, 1.6);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes alien-woozy {
+    0%, 100% {
+      transform: translateY(2px) rotate(-4deg);
+    }
     50% {
-      transform: translateY(4px) rotate(-5deg) scale(1.05, 0.92);
+      transform: translateY(3px) rotate(4deg);
     }
   }
 

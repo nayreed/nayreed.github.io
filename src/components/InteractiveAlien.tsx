@@ -3,7 +3,7 @@ import { MASCOT_EVENT, type MascotEventType } from '@/lib/mascotBus';
 
 const moods = ['idle', 'happy', 'curious'] as const;
 type Mood = (typeof moods)[number];
-type PetMood = Mood | 'charged' | 'sleepy' | 'shocked' | 'hiding' | 'wink' | 'shades' | 'queasy' | 'vomit';
+type PetMood = Mood | 'charged' | 'sleepy' | 'shocked' | 'hiding' | 'wink' | 'shades' | 'queasy' | 'vomit' | 'dazed';
 
 const comboMessages = [
   'Nayreed is a good boy',
@@ -72,13 +72,19 @@ const getShortcutMessage = (event: KeyboardEvent) => {
 
 type Point = { x: number; y: number };
 
-// Shake-to-barf tuning: each fast change of direction while dragging adds one point,
-// and points drain away when the shaking stops.
-const SHAKE_MIN_SPEED = 0.5; // px per ms
-const SHAKE_DRAIN_MS = 350; // one point drains away every this many ms
-const QUEASY_AT = 5;
-const VOMIT_AT = 9;
-const VOMIT_COOLDOWN_MS = 6000;
+// Shake-to-barf tuning. The pointer path is split into swings (movement in one direction
+// until it reverses). Only violent swings count: long, fast, and quickly reversed.
+const SWING_MIN_DISTANCE = 50; // px travelled in one direction
+const SWING_MIN_SPEED = 0.9; // px per ms on average over the swing (~900 px/s)
+const SWING_MAX_DURATION = 350; // ms; slower back-and-forth is just moving it around
+const SWING_REVERSE_SLACK = 10; // px it must come back before it counts as a reversal
+const BARF_SWINGS = 5; // violent swings...
+const BARF_WINDOW_MS = 1200; // ...within this time make it gag
+const VOMIT_SWINGS = 6; // more violent swings after the gag...
+const VOMIT_WINDOW_MS = 1500; // ...within this time make it vomit
+const VOMIT_MIN_AFTER_BARF_MS = 900; // it always gags for a moment first
+const RECOVER_AFTER_MS = 5000; // calm time after the last violent swing before "all good"
+const DAZED_MS = 4500; // how long it stays wobbly after vomiting
 const VOMIT_COLORS = ['#9bbf3a', '#b7cf5a', '#7ea32b', '#c9d97a'];
 
 // Spew green pixel chunks from a point on screen: a few heaves, each a burst that arcs
@@ -225,7 +231,22 @@ const InteractiveAlien = () => {
   const idleTimerRef = useRef<number | null>(null);
   const reactionTimerRef = useRef<number | null>(null);
   const reactingRef = useRef(false);
-  const shakeRef = useRef({ score: 0, lastT: 0, lastX: 0, lastY: 0, dirX: 0, dirY: 0, stage: 0, cooldownUntil: 0 });
+  type Axis = { dir: number; extreme: number; extremeT: number; prevExtreme: number; prevExtremeT: number };
+  const newAxis = (value: number, now: number): Axis => ({
+    dir: 0,
+    extreme: value,
+    extremeT: now,
+    prevExtreme: value,
+    prevExtremeT: now,
+  });
+  const shakeRef = useRef({
+    x: newAxis(0, 0),
+    y: newAxis(0, 0),
+    swings: [] as number[], // timestamps of violent swings
+    stage: 'fine' as 'fine' | 'queasy' | 'vomited',
+    barfAt: 0,
+    recoverTimer: 0,
+  });
   const bubbleVisibleRef = useRef(false);
 
   const mood: PetMood = overrideMood ?? moods[moodIndex];
@@ -699,43 +720,109 @@ const InteractiveAlien = () => {
   // Pointer: drag with tilt, click moods, double-click spark
   // ---------------------------------------------------------------------------
 
-  // Shaken too hard: first it gets queasy (barf), and if the shaking keeps going it vomits.
-  const trackShake = (clientX: number, clientY: number) => {
+  // Shaken too hard. Stage 1: it gags ("barf"). If the violent shaking carries on, stage 2:
+  // it retches and vomits, stays dazed for a while, then recovers. Calm down after the gag and
+  // it recovers on its own a few seconds later.
+  const setSick = (nextMood: PetMood, message?: string, bubbleMs = 2400) => {
+    if (reactionTimerRef.current) window.clearTimeout(reactionTimerRef.current);
+    reactingRef.current = true;
+    wake(nextMood);
+    if (message) showBubbleMessage(message, bubbleMs);
+  };
+
+  const recover = (message: string) => {
     const shake = shakeRef.current;
-    const now = performance.now();
-    const dt = Math.max(1, now - shake.lastT);
-    const vx = (clientX - shake.lastX) / dt;
-    const vy = (clientY - shake.lastY) / dt;
-    shake.lastX = clientX;
-    shake.lastY = clientY;
-    shake.lastT = now;
-    shake.score = Math.max(0, shake.score - dt / SHAKE_DRAIN_MS);
-    if (shake.score === 0 && shake.stage === 1) shake.stage = 0; // calmed down
+    window.clearTimeout(shake.recoverTimer);
+    shake.stage = 'fine';
+    shake.swings = [];
+    react('happy', message, 2600);
+  };
 
-    const reversed = (speed: number, previous: number) =>
-      Math.abs(speed) > SHAKE_MIN_SPEED && previous !== 0 && Math.sign(speed) !== previous;
-    if (reversed(vx, shake.dirX) || reversed(vy, shake.dirY)) shake.score += 1;
-    if (Math.abs(vx) > SHAKE_MIN_SPEED) shake.dirX = Math.sign(vx);
-    if (Math.abs(vy) > SHAKE_MIN_SPEED) shake.dirY = Math.sign(vy);
+  const scheduleRecovery = () => {
+    const shake = shakeRef.current;
+    window.clearTimeout(shake.recoverTimer);
+    shake.recoverTimer = window.setTimeout(() => {
+      if (shakeRef.current.stage === 'queasy') recover('Phew… all good now.');
+    }, RECOVER_AFTER_MS);
+  };
 
-    if (now < shake.cooldownUntil) return;
-    if (shake.stage === 0 && shake.score >= QUEASY_AT) {
-      shake.stage = 1;
-      react('queasy', 'Hurk… stop shaking me', 2600);
-    } else if (shake.stage === 1 && shake.score >= VOMIT_AT) {
-      shake.stage = 0;
-      shake.score = 0;
-      shake.cooldownUntil = now + VOMIT_COOLDOWN_MS;
-      react('vomit', 'BLEHHHH', 1500);
-      const el = buttonRef.current;
-      if (el && !prefersReducedMotion()) {
-        // Mouth sits at (64, 68) in the 128-unit drawing, inside 10px of padding.
+  const vomit = () => {
+    const shake = shakeRef.current;
+    shake.stage = 'vomited';
+    window.clearTimeout(shake.recoverTimer);
+    setSick('vomit', 'BLEHHHH', 1700);
+    const el = buttonRef.current;
+    if (el && !prefersReducedMotion()) {
+      // Two dry heaves first; it comes out on the big lurch. Mouth sits at (64, 70) in the 128-unit drawing.
+      window.setTimeout(() => {
         const box = el.getBoundingClientRect();
         const unit = (box.width - 20) / 128;
-        spewVomit({ x: box.left + 10 + 64 * unit, y: box.top + 10 + 70 * unit }, shake.dirX || -1);
-      }
-      window.setTimeout(() => react('happy', '…ugh. Much better.', 2400), 1500);
+        spewVomit({ x: box.left + 10 + 64 * unit, y: box.top + 10 + 70 * unit }, shake.x.dir || -1);
+      }, 780);
     }
+    window.setTimeout(() => setSick('dazed', 'ugh…', DAZED_MS - 600), 1700);
+    window.setTimeout(() => recover("…okay. I'm good now."), 1700 + DAZED_MS);
+  };
+
+  // Splits the pointer path into swings per axis and records the violent ones.
+  const trackShake = (clientX: number, clientY: number) => {
+    const shake = shakeRef.current;
+    if (shake.stage === 'vomited') return; // nothing left to give
+    const now = performance.now();
+
+    const step = (axis: Axis, value: number) => {
+      if (axis.dir === 0) {
+        if (Math.abs(value - axis.extreme) < SWING_REVERSE_SLACK) return;
+        axis.dir = Math.sign(value - axis.extreme);
+        axis.prevExtreme = axis.extreme;
+        axis.prevExtremeT = axis.extremeT;
+        axis.extreme = value;
+        axis.extremeT = now;
+        return;
+      }
+      if ((value - axis.extreme) * axis.dir > 0) {
+        axis.extreme = value; // still going the same way: push the turning point further
+        axis.extremeT = now;
+        return;
+      }
+      if (Math.abs(value - axis.extreme) < SWING_REVERSE_SLACK) return;
+      // Reversed: judge the swing that just finished.
+      const distance = Math.abs(axis.extreme - axis.prevExtreme);
+      const duration = Math.max(1, axis.extremeT - axis.prevExtremeT);
+      if (distance >= SWING_MIN_DISTANCE && duration <= SWING_MAX_DURATION && distance / duration >= SWING_MIN_SPEED) {
+        shake.swings.push(now);
+      }
+      axis.prevExtreme = axis.extreme;
+      axis.prevExtremeT = axis.extremeT;
+      axis.dir = -axis.dir;
+      axis.extreme = value;
+      axis.extremeT = now;
+    };
+
+    const before = shake.swings.length;
+    step(shake.x, clientX);
+    step(shake.y, clientY);
+    if (shake.swings.length === before) return;
+
+    shake.swings = shake.swings.filter((t) => now - t <= Math.max(BARF_WINDOW_MS, VOMIT_WINDOW_MS));
+    const recent = (windowMs: number, since = 0) =>
+      shake.swings.filter((t) => now - t <= windowMs && t > since).length;
+
+    if (shake.stage === 'fine' && recent(BARF_WINDOW_MS) >= BARF_SWINGS) {
+      shake.stage = 'queasy';
+      shake.barfAt = now;
+      setSick('queasy', 'Hurk…', 2200);
+    } else if (
+      shake.stage === 'queasy' &&
+      now - shake.barfAt >= VOMIT_MIN_AFTER_BARF_MS &&
+      recent(VOMIT_WINDOW_MS, shake.barfAt) >= VOMIT_SWINGS
+    ) {
+      vomit();
+      return;
+    } else if (shake.stage === 'queasy' && recent(VOMIT_WINDOW_MS, shake.barfAt) === 3) {
+      showBubbleMessage('Seriously, stop…', 1600);
+    }
+    if (shake.stage === 'queasy') scheduleRecovery();
   };
 
   // Eases the robot toward the pointer every frame: smooth even with uneven pointer events,
@@ -798,7 +885,9 @@ const InteractiveAlien = () => {
       originY: offsetRef.current.y,
       moved: false,
     };
-    Object.assign(shakeRef.current, { lastX: event.clientX, lastY: event.clientY, lastT: performance.now(), dirX: 0, dirY: 0 });
+    const now = performance.now();
+    shakeRef.current.x = newAxis(event.clientX, now);
+    shakeRef.current.y = newAxis(event.clientY, now);
     wake('curious');
   };
 
