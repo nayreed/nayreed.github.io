@@ -645,6 +645,8 @@
     --look-y: 0;
     --pet-x: 0px;
     --pet-y: 0px;
+    --tilt: 0deg;
+    --walk-ms: 1200ms;
     appearance: none;
     border: 1px solid var(--hairline);
     border-radius: 9999px;
@@ -657,24 +659,48 @@
     overflow: visible;
     touch-action: none;
     -webkit-tap-highlight-color: transparent;
-    transform: translate(var(--pet-x), var(--pet-y));
+    transform: translate(var(--pet-x), var(--pet-y)) rotate(var(--tilt));
     transition:
       border-color 180ms ease,
       background-color 180ms ease,
       color 180ms ease,
-      transform 180ms ease;
+      --tilt 520ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .alien-mascot:hover,
   .alien-mascot:focus-visible {
     border-color: var(--hairline-strong);
     background: var(--soft);
-    transform: translate(var(--pet-x), calc(var(--pet-y) - 3px));
+    transform: translate(var(--pet-x), calc(var(--pet-y) - 3px)) rotate(var(--tilt));
   }
 
+  /* While dragging, follow the pointer exactly; the tilt eases toward the drag speed. */
   .alien-mascot[data-dragging='true'] {
     cursor: grabbing;
-    transform: translate(var(--pet-x), var(--pet-y)) scale(1.04);
+    transform: translate(var(--pet-x), var(--pet-y)) rotate(var(--tilt)) scale(1.06);
+    transition:
+      --tilt 120ms ease-out,
+      transform 0ms;
+  }
+
+  /* Wandering: glide along the bottom at walking pace with stepping legs. */
+  .alien-mascot[data-walking='true'] {
+    transition:
+      --tilt 520ms ease,
+      transform var(--walk-ms) cubic-bezier(0.45, 0, 0.55, 1);
+  }
+
+  .alien-mascot[data-walking='true'] .alien-mascot__left-leg {
+    animation: alien-left-step 340ms ease-in-out infinite;
+  }
+
+  .alien-mascot[data-walking='true'] .alien-mascot__right-leg {
+    animation: alien-right-step 340ms ease-in-out infinite;
+  }
+
+  .alien-mascot[data-walking='true'] .alien-mascot__body {
+    animation: alien-walk-bob 340ms ease-in-out infinite;
   }
 
   .alien-mascot:focus-visible {
@@ -779,7 +805,7 @@
         calc(var(--look-y) * 1px)
       )
       rotate(calc(var(--look-x) * 2deg));
-    transition: transform 110ms ease-out;
+    transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .alien-mascot__body {
@@ -828,11 +854,13 @@
   .alien-mascot__left-antenna {
     transform-origin: 46px 28px;
     animation: alien-left-antenna 3s ease-in-out infinite;
+    rotate: calc(var(--tilt) * -1.4);
   }
 
   .alien-mascot__right-antenna {
     transform-origin: 82px 28px;
     animation: alien-right-antenna 3s ease-in-out infinite;
+    rotate: calc(var(--tilt) * -1.4);
   }
 
   .alien-mascot__left-leg {
@@ -848,11 +876,12 @@
       calc(var(--look-x) * 5px),
       calc(var(--look-y) * 3.5px)
     );
-    transition: transform 90ms ease-out;
+    transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .alien-mascot__eye {
-    animation: alien-blink 5.2s steps(1, end) infinite;
+    animation: alien-blink 5.2s ease-in-out infinite;
+    transition: transform 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
     transform-box: fill-box;
     transform-origin: center;
   }
@@ -923,6 +952,132 @@
     animation: alien-right-step 900ms ease-in-out infinite;
   }
 
+  /* Extra face parts, hidden unless a pose needs them */
+  .alien-mascot__mouth-o {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 3.5;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: scale(0.4);
+    transition:
+      opacity 140ms ease,
+      transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .alien-mascot__shades {
+    opacity: 0;
+    transform: translateY(-14px);
+    transition:
+      opacity 180ms ease,
+      transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .alien-mascot__shades-bridge {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 3;
+  }
+
+  .alien-mascot__shades-glint {
+    fill: none;
+    stroke: var(--canvas);
+    stroke-linecap: round;
+    stroke-width: 2;
+    opacity: 0.85;
+  }
+
+  .alien-mascot__left-arm,
+  .alien-mascot__right-arm {
+    transition: transform 260ms cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+
+  .alien-mascot__hands {
+    opacity: 0;
+    transform: translateY(26px);
+    transition:
+      opacity 120ms ease,
+      transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .alien-mascot[data-mood='hiding'] .alien-mascot__hands {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Shocked: wide eyes, open mouth, buzzing antennas, a little jolt */
+  .alien-mascot[data-mood='shocked'] .alien-mascot__eye {
+    animation: none;
+    transform: scale(1.3);
+  }
+
+  .alien-mascot[data-mood='shocked'] .alien-mascot__mouth {
+    opacity: 0;
+  }
+
+  .alien-mascot[data-mood='shocked'] .alien-mascot__mouth-o {
+    opacity: 0.95;
+    transform: scale(1);
+  }
+
+  .alien-mascot[data-mood='shocked'] .alien-mascot__body {
+    animation: alien-jolt 420ms ease-out both;
+  }
+
+  .alien-mascot[data-mood='shocked'] .alien-mascot__left-antenna,
+  .alien-mascot[data-mood='shocked'] .alien-mascot__right-antenna {
+    animation: alien-antenna-buzz 90ms linear infinite;
+  }
+
+  /* Hiding: hands over the eyes */
+  .alien-mascot[data-mood='hiding'] .alien-mascot__left-arm {
+    animation: none;
+    transform: rotate(-112deg) scale(0.62);
+  }
+
+  .alien-mascot[data-mood='hiding'] .alien-mascot__right-arm {
+    animation: none;
+    transform: rotate(112deg) scale(0.62);
+  }
+
+  .alien-mascot[data-mood='hiding'] .alien-mascot__eye {
+    animation: none;
+    transform: scaleY(0.12);
+  }
+
+  .alien-mascot[data-mood='hiding'] .alien-mascot__body {
+    animation: alien-cower 600ms ease-in-out infinite;
+  }
+
+  /* Wink: one eye shut, big grin, a single hop */
+  .alien-mascot[data-mood='wink'] .alien-mascot__eye--right {
+    animation: none;
+    transform: scaleY(0.12);
+  }
+
+  .alien-mascot[data-mood='wink'] .alien-mascot__mouth {
+    transform: scaleX(1.45);
+  }
+
+  .alien-mascot[data-mood='wink'] .alien-mascot__body {
+    animation: alien-hop 520ms ease-in-out 2;
+  }
+
+  /* Shades: sunglasses drop on when the lights come on */
+  .alien-mascot[data-mood='shades'] .alien-mascot__shades {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .alien-mascot[data-mood='shades'] .alien-mascot__eye {
+    animation: none;
+  }
+
+  .alien-mascot[data-mood='shades'] .alien-mascot__mouth {
+    transform: scaleX(1.2) translateX(2px);
+  }
+
   .alien-mascot[data-mood='sleepy'] .alien-mascot__body {
     animation: alien-sleep 5s ease-in-out infinite;
   }
@@ -971,11 +1126,11 @@
   }
 
   @keyframes alien-blink {
-    0%, 88%, 100% {
+    0%, 89%, 95%, 100% {
       transform: scaleY(1);
     }
-    92%, 95% {
-      transform: scaleY(0.16);
+    92% {
+      transform: scaleY(0.1);
     }
   }
 
@@ -1097,6 +1252,48 @@
     }
   }
 
+  @keyframes alien-walk-bob {
+    0%, 100% {
+      transform: translateY(0) rotate(-2deg);
+    }
+    50% {
+      transform: translateY(-3px) rotate(2deg);
+    }
+  }
+
+  @keyframes alien-jolt {
+    0% {
+      transform: translateY(0) scale(1);
+    }
+    25% {
+      transform: translateY(-8px) scale(1.06, 0.94);
+    }
+    55% {
+      transform: translateY(1px) scale(0.97, 1.04);
+    }
+    100% {
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes alien-antenna-buzz {
+    0%, 100% {
+      transform: rotate(-3deg);
+    }
+    50% {
+      transform: rotate(3deg);
+    }
+  }
+
+  @keyframes alien-cower {
+    0%, 100% {
+      transform: translateY(2px) scale(0.98);
+    }
+    50% {
+      transform: translateY(3px) scale(0.96);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .alien-mascot,
     .alien-mascot *,
@@ -1152,4 +1349,11 @@
   .prompt-icon * {
     animation: none !important;
   }
+}
+
+/* Lets the mascot's tilt animate smoothly (see .alien-mascot). */
+@property --tilt {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0deg;
 }

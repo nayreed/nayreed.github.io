@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { playExitGotcha } from '@/lib/exitGotcha';
+import { notifyMascot } from '@/lib/mascotBus';
 
 const researchInterests = [
   'Ambient IoT',
@@ -206,9 +207,11 @@ const runCommand = (raw: string, history: string[]): React.ReactNode | 'CLEAR' |
     .flatMap((t) => (t.length > 2 && t.startsWith('-') && t.endsWith('/') ? [t.slice(0, -1), '/'] : [t]));
   if (tokens[0] === 'sudo') {
     if (isRmRfRoot(tokens.slice(1))) return 'WIPE';
+    notifyMascot('sudo-denied');
     return <p className="text-fade">You are not in the sudoers file. This incident will be reported.</p>;
   }
   if (isRmRfRoot(tokens)) {
+    notifyMascot('rm-refused');
     return (
       <div className="text-fade">
         <p>rm: it is dangerous to operate recursively on '/'</p>
@@ -287,7 +290,9 @@ const runCommand = (raw: string, history: string[]): React.ReactNode | 'CLEAR' |
     case 'exit':
       // The browser's own dialog: OK plays the fake shutdown, Cancel just returns to the prompt.
       if (window.confirm('Are you sure you want to exit?')) {
-        setTimeout(() => void playExitGotcha(), 0);
+        // Give the robot a moment to cover its eyes before the screen switches off.
+        notifyMascot('exit-confirm');
+        setTimeout(() => void playExitGotcha(), 700);
       }
       return null;
     default:
@@ -362,6 +367,7 @@ const Terminal = () => {
     if (result === 'WIPE') {
       setEntries((e) => [...e, { id, cmd: line, output: null, anim: 'wipe' as const }].slice(-MAX_ENTRIES));
       setBusyId(id);
+      notifyMascot('wipe-start');
       return;
     }
     setEntries((e) => [...e, { id, cmd: line, output: result }].slice(-MAX_ENTRIES));
@@ -373,6 +379,7 @@ const Terminal = () => {
       if (e.ctrlKey && (e.key === 'c' || e.key === 'C')) {
         e.preventDefault();
         setBusyId(null);
+        notifyMascot('wipe-cancel');
       } else if (e.ctrlKey && (e.key === 'l' || e.key === 'L')) {
         e.preventDefault();
         clearScreen();
@@ -544,7 +551,13 @@ const Terminal = () => {
                     <span className="text-ink">{entry.cmd}</span>
                   </p>
                   {entry.anim === 'wipe' ? (
-                    <WipeOutput running={busyId === entry.id} onDone={() => setBusyId(null)} />
+                    <WipeOutput
+                      running={busyId === entry.id}
+                      onDone={() => {
+                        setBusyId(null);
+                        notifyMascot('wipe-done');
+                      }}
+                    />
                   ) : (
                     entry.output
                   )}

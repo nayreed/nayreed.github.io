@@ -2,6 +2,8 @@
 // stays dark for a moment, shouts GOTCHA!!!, then comes back as if nothing happened.
 // Plain DOM + Web Animations API, so it works on top of whatever React has rendered.
 
+import { notifyMascot } from './mascotBus';
+
 let running = false;
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -142,6 +144,7 @@ export async function playExitGotcha(): Promise<void> {
       ).finished,
       backdrop.animate([{ opacity: 1 }, { opacity: 0 }], fadeOut).finished,
     ]);
+    notifyMascot('gotcha-done');
   } finally {
     backdrop.remove();
     line.remove();
