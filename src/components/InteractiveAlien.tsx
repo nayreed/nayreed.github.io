@@ -293,6 +293,7 @@ const InteractiveAlien = () => {
   const mood: PetMood = overrideMood ?? moods[moodIndex];
   const moodRef = useRef<PetMood>(mood);
   moodRef.current = mood;
+  const shownMoodRef = useRef<PetMood>(mood);
 
   // ---------------------------------------------------------------------------
   // Position helpers
@@ -411,6 +412,13 @@ const InteractiveAlien = () => {
       { duration, easing: 'cubic-bezier(0.34, 1.4, 0.64, 1)' }
     );
   }, []);
+
+  // A small anticipation squash every time the expression changes, so it pops.
+  useEffect(() => {
+    if (shownMoodRef.current === mood) return;
+    shownMoodRef.current = mood;
+    squash(['1 1', '1.07 0.9', '0.97 1.04', '1 1'], 320);
+  }, [mood, squash]);
 
   // ---------------------------------------------------------------------------
   // Global listeners: eye tracking, selection, shortcuts, terminal events
@@ -1131,9 +1139,11 @@ const InteractiveAlien = () => {
         <g className="alien-mascot__body">
           <g className="alien-mascot__left-antenna">
             <rect x="42" y="6" width="8" height="22" rx="3" />
+            <circle className="alien-mascot__antenna-tip" cx="46" cy="5" r="5" />
           </g>
           <g className="alien-mascot__right-antenna">
             <rect x="78" y="6" width="8" height="22" rx="3" />
+            <circle className="alien-mascot__antenna-tip" cx="82" cy="5" r="5" />
           </g>
 
           <g className="alien-mascot__left-leg">
@@ -1146,8 +1156,14 @@ const InteractiveAlien = () => {
           <path className="alien-mascot__shell" fillRule="evenodd" d="M24 28h80v54H24z M32 36v38h64V36z" />
 
           <g className="alien-mascot__eyes">
+            <rect className="alien-mascot__brow alien-mascot__brow--left" x="38" y="42" width="16" height="3.5" rx="1.75" />
+            <rect className="alien-mascot__brow alien-mascot__brow--right" x="74" y="42" width="16" height="3.5" rx="1.75" />
             <rect className="alien-mascot__eye alien-mascot__eye--left" x="41" y="51" width="10" height="10" rx="2" />
             <rect className="alien-mascot__eye alien-mascot__eye--right" x="77" y="51" width="10" height="10" rx="2" />
+            <rect className="alien-mascot__glint" x="43" y="53" width="3" height="3" rx="0.5" />
+            <rect className="alien-mascot__glint" x="79" y="53" width="3" height="3" rx="0.5" />
+            <path className="alien-mascot__happy-eye alien-mascot__happy-eye--left" d="M41 59 Q46 50 51 59" />
+            <path className="alien-mascot__happy-eye alien-mascot__happy-eye--right" d="M77 59 Q82 50 87 59" />
             <g className="alien-mascot__shades">
               <rect x="35" y="47" width="22" height="16" rx="4" />
               <rect x="71" y="47" width="22" height="16" rx="4" />
@@ -1155,7 +1171,14 @@ const InteractiveAlien = () => {
               <path className="alien-mascot__shades-glint" d="M39 51l5 0 M75 51l5 0" />
             </g>
           </g>
+          <ellipse className="alien-mascot__blush" cx="40" cy="67" rx="5" ry="2.6" />
+          <ellipse className="alien-mascot__blush" cx="88" cy="67" rx="5" ry="2.6" />
           <path className="alien-mascot__mouth" d="M55 68h18" />
+          <path className="alien-mascot__mouth-shape alien-mascot__mouth-smile" d="M54 66 Q64 74 74 66" />
+          <path className="alien-mascot__mouth-shape alien-mascot__mouth-grin" d="M53 64.5 H75 Q74 75 64 75 Q54 75 53 64.5 Z" />
+          <path className="alien-mascot__mouth-shape alien-mascot__mouth-frown" d="M55 71 Q64 64 73 71" />
+          <path className="alien-mascot__mouth-shape alien-mascot__mouth-smirk" d="M56 69 Q66 70.5 73 64.5" />
+          <path className="alien-mascot__mouth-shape alien-mascot__mouth-wobble" d="M53 68.5 q2.75 -3 5.5 0 t5.5 0 t5.5 0 t5.5 0" />
           <ellipse className="alien-mascot__mouth-o" cx="64" cy="69" rx="4" ry="5" />
 
           {/* Hands that slide up over the eyes when hiding; arms are drawn after the face too. */}
