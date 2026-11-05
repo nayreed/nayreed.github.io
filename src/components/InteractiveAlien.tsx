@@ -3,7 +3,7 @@ import { MASCOT_EVENT, type MascotEventType } from '@/lib/mascotBus';
 
 const moods = ['idle', 'happy', 'curious'] as const;
 type Mood = (typeof moods)[number];
-type PetMood = Mood | 'charged' | 'sleepy' | 'shocked' | 'hiding' | 'wink' | 'shades';
+type PetMood = Mood | 'charged' | 'sleepy' | 'shocked' | 'hiding' | 'wink' | 'shades' | 'queasy' | 'vomit';
 
 const comboMessages = [
   'Nayreed is a good boy',
@@ -71,6 +71,82 @@ const getShortcutMessage = (event: KeyboardEvent) => {
 };
 
 type Point = { x: number; y: number };
+
+// Shake-to-barf tuning: each fast change of direction while dragging adds one point,
+// and points drain away when the shaking stops.
+const SHAKE_MIN_SPEED = 0.5; // px per ms
+const SHAKE_DRAIN_MS = 350; // one point drains away every this many ms
+const QUEASY_AT = 5;
+const VOMIT_AT = 9;
+const VOMIT_COOLDOWN_MS = 6000;
+const VOMIT_COLORS = ['#9bbf3a', '#b7cf5a', '#7ea32b', '#c9d97a'];
+
+// Spew green pixel chunks from a point on screen: a few heaves, each a burst that arcs
+// out and falls with gravity, fading as it goes.
+const spewVomit = (origin: Point, direction: number) => {
+  const layer = document.createElement('div');
+  layer.setAttribute('aria-hidden', 'true');
+  Object.assign(layer.style, { position: 'fixed', inset: '0', pointerEvents: 'none', zIndex: '41' });
+  document.body.appendChild(layer);
+
+  type Chunk = { el: HTMLDivElement; x: number; y: number; vx: number; vy: number; born: number; life: number };
+  const chunks: Chunk[] = [];
+  const start = performance.now();
+  const bursts = [0, 260, 520];
+
+  bursts.forEach((delay, burst) => {
+    window.setTimeout(() => {
+      const count = burst === 1 ? 18 : 12;
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        const size = 3 + Math.random() * 5;
+        Object.assign(el.style, {
+          position: 'absolute',
+          left: '0',
+          top: '0',
+          width: `${size}px`,
+          height: `${size}px`,
+          borderRadius: '1.5px',
+          background: VOMIT_COLORS[Math.floor(Math.random() * VOMIT_COLORS.length)],
+          willChange: 'transform, opacity',
+        });
+        layer.appendChild(el);
+        chunks.push({
+          el,
+          x: origin.x,
+          y: origin.y,
+          vx: direction * (0.08 + Math.random() * 0.22) + (Math.random() - 0.5) * 0.12,
+          vy: -0.12 - Math.random() * 0.18,
+          born: performance.now(),
+          life: 900 + Math.random() * 600,
+        });
+      }
+    }, delay);
+  });
+
+  let last = start;
+  const frame = (now: number) => {
+    const dt = Math.min(40, now - last);
+    last = now;
+    let alive = 0;
+    chunks.forEach((c) => {
+      const age = now - c.born;
+      if (age > c.life) {
+        c.el.style.opacity = '0';
+        return;
+      }
+      alive++;
+      c.vy += 0.0016 * dt; // gravity
+      c.x += c.vx * dt;
+      c.y += c.vy * dt;
+      c.el.style.transform = `translate(${c.x}px, ${c.y}px) rotate(${age * 0.4}deg)`;
+      c.el.style.opacity = String(Math.min(1, (1 - age / c.life) * 1.6));
+    });
+    if (alive > 0 || now - start < 700) requestAnimationFrame(frame);
+    else layer.remove();
+  };
+  requestAnimationFrame(frame);
+};
 
 // Catmull-Rom spline: a smooth curve that passes through every point.
 const pointOnCurve = (points: Point[], u: number): Point => {
@@ -149,6 +225,7 @@ const InteractiveAlien = () => {
   const idleTimerRef = useRef<number | null>(null);
   const reactionTimerRef = useRef<number | null>(null);
   const reactingRef = useRef(false);
+  const shakeRef = useRef({ score: 0, lastT: 0, lastX: 0, lastY: 0, dirX: 0, dirY: 0, stage: 0, cooldownUntil: 0 });
   const bubbleVisibleRef = useRef(false);
 
   const mood: PetMood = overrideMood ?? moods[moodIndex];
@@ -622,6 +699,45 @@ const InteractiveAlien = () => {
   // Pointer: drag with tilt, click moods, double-click spark
   // ---------------------------------------------------------------------------
 
+  // Shaken too hard: first it gets queasy (barf), and if the shaking keeps going it vomits.
+  const trackShake = (clientX: number, clientY: number) => {
+    const shake = shakeRef.current;
+    const now = performance.now();
+    const dt = Math.max(1, now - shake.lastT);
+    const vx = (clientX - shake.lastX) / dt;
+    const vy = (clientY - shake.lastY) / dt;
+    shake.lastX = clientX;
+    shake.lastY = clientY;
+    shake.lastT = now;
+    shake.score = Math.max(0, shake.score - dt / SHAKE_DRAIN_MS);
+    if (shake.score === 0 && shake.stage === 1) shake.stage = 0; // calmed down
+
+    const reversed = (speed: number, previous: number) =>
+      Math.abs(speed) > SHAKE_MIN_SPEED && previous !== 0 && Math.sign(speed) !== previous;
+    if (reversed(vx, shake.dirX) || reversed(vy, shake.dirY)) shake.score += 1;
+    if (Math.abs(vx) > SHAKE_MIN_SPEED) shake.dirX = Math.sign(vx);
+    if (Math.abs(vy) > SHAKE_MIN_SPEED) shake.dirY = Math.sign(vy);
+
+    if (now < shake.cooldownUntil) return;
+    if (shake.stage === 0 && shake.score >= QUEASY_AT) {
+      shake.stage = 1;
+      react('queasy', 'Hurk… stop shaking me', 2600);
+    } else if (shake.stage === 1 && shake.score >= VOMIT_AT) {
+      shake.stage = 0;
+      shake.score = 0;
+      shake.cooldownUntil = now + VOMIT_COOLDOWN_MS;
+      react('vomit', 'BLEHHHH', 1500);
+      const el = buttonRef.current;
+      if (el && !prefersReducedMotion()) {
+        // Mouth sits at (64, 68) in the 128-unit drawing, inside 10px of padding.
+        const box = el.getBoundingClientRect();
+        const unit = (box.width - 20) / 128;
+        spewVomit({ x: box.left + 10 + 64 * unit, y: box.top + 10 + 70 * unit }, shake.dirX || -1);
+      }
+      window.setTimeout(() => react('happy', '…ugh. Much better.', 2400), 1500);
+    }
+  };
+
   // Eases the robot toward the pointer every frame: smooth even with uneven pointer events,
   // leans into the movement, and looks where it's being carried.
   const runFollow = useCallback(() => {
@@ -682,6 +798,7 @@ const InteractiveAlien = () => {
       originY: offsetRef.current.y,
       moved: false,
     };
+    Object.assign(shakeRef.current, { lastX: event.clientX, lastY: event.clientY, lastT: performance.now(), dirX: 0, dirY: 0 });
     wake('curious');
   };
 
@@ -697,6 +814,7 @@ const InteractiveAlien = () => {
       setIsDragging(true);
     }
     if (!drag.moved) return;
+    trackShake(event.clientX, event.clientY);
 
     const { x, y } = clampToViewport(drag.originX + dx, drag.originY + dy);
     followRef.current.targetX = x;
