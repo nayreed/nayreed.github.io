@@ -131,11 +131,10 @@ const InteractiveAlien = () => {
     startY: number;
     originX: number;
     originY: number;
-    lastX: number;
-    lastT: number;
-    tilt: number;
     moved: boolean;
   } | null>(null);
+  // Smooth follow: the pointer sets a target, and a per-frame loop eases the robot toward it.
+  const followRef = useRef({ targetX: 0, targetY: 0, tilt: 0, lastT: 0, frame: 0 as number | 0 });
   const wasDraggedRef = useRef(false);
   const walkingRef = useRef(false);
   const floatingRef = useRef(false);
@@ -176,6 +175,11 @@ const InteractiveAlien = () => {
     if (!el) return;
     el.style.setProperty('--pet-x', `${x}px`);
     el.style.setProperty('--pet-y', `${y}px`);
+    // Speech bubble goes left/above by default; flip it when the robot is near the left or top edge.
+    const fromRight = -x; // px from its home corner
+    const fromBottom = -y;
+    el.dataset.bubbleX = window.innerWidth - fromRight < 300 ? 'right' : 'left';
+    el.dataset.bubbleY = window.innerHeight - fromBottom < 190 ? 'below' : 'above';
   }, []);
 
   const clampToViewport = useCallback(
@@ -278,7 +282,7 @@ const InteractiveAlien = () => {
 
     const updateLook = (clientX: number, clientY: number) => {
       const target = buttonRef.current;
-      if (!target || walkingRef.current || floatingRef.current) return;
+      if (!target || walkingRef.current || floatingRef.current || dragRef.current?.moved) return;
 
       const bounds = target.getBoundingClientRect();
       const centerX = bounds.left + bounds.width / 2;
@@ -350,6 +354,13 @@ const InteractiveAlien = () => {
     };
   }, [react, showBubbleMessage, wake]);
 
+  useEffect(
+    () => () => {
+      if (followRef.current.frame) cancelAnimationFrame(followRef.current.frame);
+    },
+    []
+  );
+
   // ---------------------------------------------------------------------------
   // Remembered position + keep it on screen when the window resizes
   // ---------------------------------------------------------------------------
@@ -400,7 +411,13 @@ const InteractiveAlien = () => {
           reading.delete(id);
           if (seen.has(id)) return;
           // Never talk over another message; try again shortly while they keep reading.
-          if (bubbleVisibleRef.current || reactingRef.current || dragRef.current) {
+          if (
+            bubbleVisibleRef.current ||
+            reactingRef.current ||
+            dragRef.current ||
+            walkingRef.current ||
+            floatingRef.current
+          ) {
             startTimer(id, 1500);
             return;
           }
@@ -605,6 +622,54 @@ const InteractiveAlien = () => {
   // Pointer: drag with tilt, click moods, double-click spark
   // ---------------------------------------------------------------------------
 
+  // Eases the robot toward the pointer every frame: smooth even with uneven pointer events,
+  // leans into the movement, and looks where it's being carried.
+  const runFollow = useCallback(() => {
+    const follow = followRef.current;
+    if (follow.frame) return;
+    follow.lastT = performance.now();
+    const step = (now: number) => {
+      const el = buttonRef.current;
+      if (!el) {
+        follow.frame = 0;
+        return;
+      }
+      const dt = Math.min(48, Math.max(1, now - follow.lastT));
+      follow.lastT = now;
+      const { x, y } = offsetRef.current;
+      const ease = 1 - Math.exp(-dt / 45); // ~45 ms time constant: responsive but soft
+      const nx = x + (follow.targetX - x) * ease;
+      const ny = y + (follow.targetY - y) * ease;
+      applyOffset(nx, ny);
+
+      const vx = (nx - x) / dt; // px per ms
+      const vy = (ny - y) / dt;
+      follow.tilt += (clamp(vx * 9, -14, 14) - follow.tilt) * Math.min(1, dt / 90);
+      el.style.setProperty('--tilt', `${follow.tilt.toFixed(2)}deg`);
+      el.style.setProperty('--look-x', clamp(vx * 1.6, -1, 1).toFixed(3));
+      el.style.setProperty('--look-y', clamp(vy * 1.6, -1, 1).toFixed(3));
+
+      const settled =
+        !dragRef.current &&
+        Math.abs(follow.targetX - nx) < 0.4 &&
+        Math.abs(follow.targetY - ny) < 0.4;
+      if (settled) {
+        follow.frame = 0;
+        applyOffset(follow.targetX, follow.targetY);
+        savePosition(offsetRef.current);
+        follow.tilt = 0;
+        el.style.setProperty('--tilt', '0deg'); // springs back upright
+        el.style.setProperty('--look-x', '0');
+        el.style.setProperty('--look-y', '0');
+        setIsDragging(false);
+        squash(['1 1', '1.1 0.88', '0.96 1.05', '1 1'], 420); // little landing bounce
+        return;
+      }
+      follow.frame = requestAnimationFrame(step);
+    };
+    follow.frame = requestAnimationFrame(step);
+  }, [applyOffset, squash]);
+
   const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
     stopWalking();
     stopFloating();
@@ -615,12 +680,8 @@ const InteractiveAlien = () => {
       startY: event.clientY,
       originX: offsetRef.current.x,
       originY: offsetRef.current.y,
-      lastX: event.clientX,
-      lastT: performance.now(),
-      tilt: 0,
       moved: false,
     };
-    setIsDragging(false);
     wake('curious');
   };
 
@@ -638,32 +699,19 @@ const InteractiveAlien = () => {
     if (!drag.moved) return;
 
     const { x, y } = clampToViewport(drag.originX + dx, drag.originY + dy);
-    applyOffset(x, y);
-
-    // Lean into the direction of travel, based on horizontal speed.
-    const now = performance.now();
-    const elapsed = Math.max(1, now - drag.lastT);
-    const speed = (event.clientX - drag.lastX) / elapsed;
-    drag.tilt = drag.tilt * 0.7 + clamp(speed * 9, -14, 14) * 0.3;
-    drag.lastX = event.clientX;
-    drag.lastT = now;
-    event.currentTarget.style.setProperty('--tilt', `${drag.tilt.toFixed(2)}deg`);
+    followRef.current.targetX = x;
+    followRef.current.targetY = y;
+    runFollow();
   };
 
   const finishDrag = (event: React.PointerEvent<HTMLButtonElement>) => {
     const drag = dragRef.current;
-    if (drag?.pointerId === event.pointerId) {
-      dragRef.current = null;
-      if (drag.moved) {
-        savePosition(offsetRef.current);
-        squash(['1 1', '1.1 0.88', '0.96 1.05', '1 1'], 420); // little landing bounce
-      }
-    }
+    if (drag?.pointerId === event.pointerId) dragRef.current = null;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
-    event.currentTarget.style.setProperty('--tilt', '0deg'); // springs back upright
-    setIsDragging(false);
+    // If it was dragged, the follow loop glides the last bit, then lands and saves the spot.
+    if (!drag?.moved) setIsDragging(false);
   };
 
   const resetLook = () => {

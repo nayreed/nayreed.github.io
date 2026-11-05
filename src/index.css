@@ -665,6 +665,7 @@
       background-color 180ms ease,
       color 180ms ease,
       --tilt 520ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      scale 220ms cubic-bezier(0.34, 1.56, 0.64, 1),
       transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
@@ -675,13 +676,16 @@
     transform: translate(var(--pet-x), calc(var(--pet-y) - 3px)) rotate(var(--tilt));
   }
 
-  /* While dragging, follow the pointer exactly; the tilt eases toward the drag speed. */
+  /* While dragging, position and tilt are eased frame by frame in JS, so no CSS transition
+     on them; the pick-up grow uses the separate `scale` property so it can ease on its own. */
   .alien-mascot[data-dragging='true'] {
     cursor: grabbing;
-    transform: translate(var(--pet-x), var(--pet-y)) rotate(var(--tilt)) scale(1.06);
+    scale: 1.06;
+    transform: translate(var(--pet-x), var(--pet-y)) rotate(var(--tilt));
     transition:
-      --tilt 120ms ease-out,
+      scale 220ms cubic-bezier(0.34, 1.56, 0.64, 1),
       transform 0ms;
+    will-change: transform;
   }
 
   /* Wandering: glide along the bottom at walking pace with stepping legs. */
@@ -768,20 +772,58 @@
     color: var(--ink);
     box-shadow: 0 14px 32px rgba(0, 0, 0, 0.14);
     font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    line-height: 1.25;
-    padding: 0.46rem 0.62rem;
+    line-height: 1.3;
+    padding: 0.5rem 0.7rem;
     pointer-events: none;
     opacity: 0;
     text-align: left;
-    transform: translateY(5px) scale(0.96);
+    transform: translateY(6px) scale(0.8);
     transform-origin: right bottom;
+    /* Stay level even when the robot leans, sways or somersaults. */
+    rotate: calc(var(--tilt) * -1);
     transition:
-      opacity 160ms ease,
-      transform 160ms ease;
+      opacity 140ms ease,
+      transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
     white-space: normal;
     overflow-wrap: anywhere;
+    z-index: 1;
+  }
+
+  /* Bubble placement flips toward open space (set from JS based on the robot's position). */
+  .alien-mascot[data-bubble-x='right'] .alien-mascot__secret {
+    right: auto;
+    left: -2px;
+    border-radius: 0.75rem 0.75rem 0.75rem 0.2rem;
+    transform-origin: left bottom;
+  }
+
+  .alien-mascot[data-bubble-x='right'] .alien-mascot__secret::after {
+    right: auto;
+    left: 0.58rem;
+  }
+
+  .alien-mascot[data-bubble-y='below'] .alien-mascot__secret {
+    bottom: auto;
+    top: calc(100% + 12px);
+    border-radius: 0.75rem 0.2rem 0.75rem 0.75rem;
+    transform-origin: right top;
+  }
+
+  .alien-mascot[data-bubble-y='below'][data-bubble-x='right'] .alien-mascot__secret {
+    border-radius: 0.2rem 0.75rem 0.75rem 0.75rem;
+    transform-origin: left top;
+  }
+
+  .alien-mascot[data-bubble-y='below'] .alien-mascot__secret:not([data-visible='true']) {
+    transform: translateY(-6px) scale(0.8);
+  }
+
+  .alien-mascot[data-bubble-y='below'] .alien-mascot__secret::after {
+    bottom: auto;
+    top: -0.34rem;
+    transform: rotate(225deg);
   }
 
   .alien-mascot__secret::after {
@@ -800,6 +842,16 @@
   .alien-mascot__secret[data-visible='true'] {
     opacity: 1;
     transform: translateY(0) scale(1);
+    animation: alien-bubble-bob 2.4s ease-in-out 300ms infinite;
+  }
+
+  @keyframes alien-bubble-bob {
+    0%, 100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -2px;
+    }
   }
 
   .alien-mascot__nap {
