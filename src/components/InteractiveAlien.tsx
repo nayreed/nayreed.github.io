@@ -313,6 +313,7 @@ const InteractiveAlien = () => {
   const lastPointerMoveRef = useRef(0);
   const parkTimerRef = useRef(0);
   const parkedRef = useRef(false);
+  const sixSevenSeenRef = useRef(false); // visitor already found the 6 7 this visit
 
   // ---------------------------------------------------------------------------
   // Position helpers
@@ -607,6 +608,7 @@ const InteractiveAlien = () => {
       if (event.key === '6') lastSix = performance.now();
       else if (event.key === '7' && performance.now() - lastSix < 1200) {
         lastSix = 0;
+        sixSevenSeenRef.current = true;
         const reaction = reactions['six-seven'];
         react(reaction.mood, reaction.message, reaction.hold);
       } else lastSix = 0;
@@ -623,6 +625,7 @@ const InteractiveAlien = () => {
 
     const handleMascotEvent = (event: Event) => {
       const type = (event as CustomEvent<MascotEventType>).detail;
+      if (type === 'six-seven') sixSevenSeenRef.current = true;
       const reaction = reactions[type];
       if (reaction) react(reaction.mood, reaction.message, reaction.hold);
     };
@@ -720,6 +723,31 @@ const InteractiveAlien = () => {
     // Runs once; the handlers only use refs and stable callbacks.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // A one-off hint about the 6 7, at a random moment, only on devices with a keyboard and mouse.
+  useEffect(() => {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    let timer = 0;
+    const tryHint = () => {
+      if (sixSevenSeenRef.current) return;
+      const busy =
+        reactingRef.current ||
+        bubbleVisibleRef.current ||
+        dragRef.current ||
+        walkingRef.current ||
+        floatingRef.current ||
+        isMessy() ||
+        document.visibilityState !== 'visible';
+      if (busy) {
+        timer = window.setTimeout(tryHint, 8000); // try again a little later
+        return;
+      }
+      // If it has dozed off, this wakes it (it stretches first, then asks).
+      react('curious', "Don't type 6 and then 7. Seriously. Don't.", 3600);
+    };
+    timer = window.setTimeout(tryHint, 45000 + Math.random() * 45000);
+    return () => window.clearTimeout(timer);
+  }, [react]);
 
   // ---------------------------------------------------------------------------
   // Remembered position + keep it on screen when the window resizes
