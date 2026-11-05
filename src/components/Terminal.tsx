@@ -68,7 +68,7 @@ const PromptIcon = ({ variant }: { variant: PromptVariant }) => {
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="prompt-icon w-4 h-4 shrink-0 text-ink"
+      className="prompt-icon w-5 h-5 shrink-0 text-ink"
     >
       <polyline points="4 17 10 11 4 5" />
       {variant === 'spike' && (
