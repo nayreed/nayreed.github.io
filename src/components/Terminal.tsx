@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { playExitGotcha } from '@/lib/exitGotcha';
 
 const researchInterests = [
   'Ambient IoT',
@@ -283,6 +284,12 @@ const runCommand = (raw: string, history: string[]): React.ReactNode | 'CLEAR' |
       );
     case 'clear':
       return 'CLEAR';
+    case 'exit':
+      // The browser's own dialog: OK plays the fake shutdown, Cancel just returns to the prompt.
+      if (window.confirm('Are you sure you want to exit?')) {
+        setTimeout(() => void playExitGotcha(), 0);
+      }
+      return null;
     default:
       return (
         <p className="text-fade">
