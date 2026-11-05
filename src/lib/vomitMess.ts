@@ -13,12 +13,14 @@ type Listener = {
   onProgress?: (dirtLeft: number) => void; // 1 = as dirty as it started, 0 = clean
   onCleaned?: () => void;
   onClothChange?: (holding: boolean) => void;
+  onDried?: () => void; // nobody cleaned it, so it dried up and flaked away
 };
 
 type Drip = { x: number; y: number; width: number; length: number; maxLength: number; speed: number; color: string };
 
 const STORAGE_KEY = 'nayreed-screen-mess';
 const MAX_AGE_MS = 24 * 60 * 60 * 1000;
+const DRY_AFTER_MS = 5 * 60 * 1000; // left alone this long (counting across refreshes), it dries up
 const CLOTH_RADIUS = 22;
 const CLEAN_ENOUGH = 0.08; // fraction of the starting dirt that counts as clean
 const SPLAT_COLORS = ['#9bbf3a', '#b0c94f', '#8bb032', '#a9c45a'];
@@ -45,6 +47,8 @@ let dripFrame = 0;
 let settleTimer = 0;
 let sheenFrame = 0;
 let measureTimer = 0;
+let createdAt = 0; // when this mess first landed
+let dryTimer = 0;
 
 // ---------------------------------------------------------------------------
 // Canvas setup
@@ -238,6 +242,8 @@ export const splat = (x: number, y: number, size: number) => {
     settled = true;
     initialDirt = measure();
     lastDirt = 1;
+    if (!createdAt) createdAt = Date.now();
+    scheduleDry();
     save();
     listener.onSettled?.();
   }, 900);
@@ -469,6 +475,45 @@ export const dropCloth = () => {
 // Finishing, persistence, queries
 // ---------------------------------------------------------------------------
 
+// Nobody cleaned it: the stains lose their colour, crust over, and flake away.
+const scheduleDry = () => {
+  window.clearTimeout(dryTimer);
+  dryTimer = window.setTimeout(dryUp, Math.max(0, DRY_AFTER_MS - (Date.now() - createdAt)));
+};
+
+const dryUp = () => {
+  if (!active || !canvas) return;
+  const c = canvas;
+  active = false; // so dropping the cloth below doesn't read as "still dirty"
+  settled = false;
+  dropCloth();
+  c.style.transition = 'filter 2.4s ease, opacity 1.6s ease 2.4s';
+  c.style.filter = 'saturate(0.2) sepia(0.55) brightness(0.8) contrast(0.9)';
+  c.style.opacity = '0';
+  window.setTimeout(() => {
+    ctx?.clearRect(0, 0, c.width, c.height);
+    c.style.transition = '';
+    c.style.filter = '';
+    c.style.opacity = '';
+  }, 4100);
+  forget();
+  listener.onDried?.();
+};
+
+// Reset all state and the saved copy.
+const forget = () => {
+  window.clearTimeout(dryTimer);
+  createdAt = 0;
+  splats = [];
+  drips = [];
+  refreshes = 0;
+  try {
+    window.localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // ignore
+  }
+};
+
 /** Fade whatever is left, run a shine across the glass, and forget the mess. */
 export const finish = () => {
   if (!active || !canvas) return;
@@ -488,14 +533,7 @@ export const finish = () => {
   shine.setAttribute('aria-hidden', 'true');
   document.body.appendChild(shine);
   window.setTimeout(() => shine.remove(), 900);
-  splats = [];
-  drips = [];
-  refreshes = 0;
-  try {
-    window.localStorage.removeItem(STORAGE_KEY);
-  } catch {
-    // ignore
-  }
+  forget();
   listener.onCleaned?.();
 };
 
@@ -509,7 +547,7 @@ function save() {
     const image = small.toDataURL('image/webp', 0.8);
     window.localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ image, savedAt: Date.now(), refreshes, splats: splats.slice(0, 40) })
+      JSON.stringify({ image, savedAt: Date.now(), createdAt, refreshes, splats: splats.slice(0, 40) })
     );
   } catch {
     // storage full or blocked: the mess just won't survive a reload
@@ -522,14 +560,22 @@ function save() {
  */
 export const restore = (): Promise<number> =>
   new Promise((resolve) => {
-    let saved: { image: string; savedAt: number; refreshes?: number; splats?: (Point & { r: number })[] } | null = null;
+    let saved: {
+      image: string;
+      savedAt: number;
+      createdAt?: number;
+      refreshes?: number;
+      splats?: (Point & { r: number })[];
+    } | null = null;
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       saved = raw ? JSON.parse(raw) : null;
     } catch {
       saved = null;
     }
-    if (!saved?.image || Date.now() - saved.savedAt > MAX_AGE_MS) {
+    const landedAt = saved?.createdAt ?? saved?.savedAt ?? 0;
+    // Gone if it is too old, or if it would already have dried up while the page was closed.
+    if (!saved?.image || Date.now() - saved.savedAt > MAX_AGE_MS || Date.now() - landedAt >= DRY_AFTER_MS) {
       try {
         window.localStorage.removeItem(STORAGE_KEY);
       } catch {
@@ -547,6 +593,8 @@ export const restore = (): Promise<number> =>
       splats = saved?.splats ?? [];
       initialDirt = measure();
       refreshes = (saved?.refreshes ?? 0) + 1;
+      createdAt = landedAt;
+      scheduleDry();
       save();
       resolve(refreshes);
     };

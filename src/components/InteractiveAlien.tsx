@@ -518,6 +518,11 @@ const InteractiveAlien = () => {
           showBubbleMessage('Keep going!', 1600);
         }
       },
+      onDried: () => {
+        shakeRef.current.stage = 'fine';
+        shakeRef.current.swings = [];
+        react('embarrassed', '…it dried up. Gross, but fine.', 3200);
+      },
       onCleaned: () => {
         shakeRef.current.stage = 'fine';
         shakeRef.current.swings = [];
