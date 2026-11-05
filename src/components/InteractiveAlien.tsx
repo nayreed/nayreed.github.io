@@ -13,7 +13,7 @@ import {
 
 const moods = ['idle', 'happy', 'curious'] as const;
 type Mood = (typeof moods)[number];
-type PetMood = Mood | 'charged' | 'sleepy' | 'shocked' | 'hiding' | 'wink' | 'shades' | 'queasy' | 'vomit' | 'dazed' | 'embarrassed' | 'offer' | 'sixseven';
+type PetMood = Mood | 'charged' | 'sleepy' | 'shocked' | 'hiding' | 'wink' | 'shades' | 'queasy' | 'vomit' | 'dazed' | 'embarrassed' | 'offer' | 'sixseven' | 'pet' | 'sad' | 'yawn' | 'stretch';
 
 const comboMessages = [
   'Nayreed is a good boy',
@@ -295,6 +295,11 @@ const InteractiveAlien = () => {
   const moodRef = useRef<PetMood>(mood);
   moodRef.current = mood;
   const shownMoodRef = useRef<PetMood>(mood);
+  const yawnTimerRef = useRef(0);
+  const stretchTimerRef = useRef(0);
+  const lastPointerMoveRef = useRef(0);
+  const parkTimerRef = useRef(0);
+  const parkedRef = useRef(false);
 
   // ---------------------------------------------------------------------------
   // Position helpers
@@ -379,12 +384,39 @@ const InteractiveAlien = () => {
     showBubbleMessage(nextMessage);
   }, [showBubbleMessage]);
 
+  // Keeps it awake. It yawns just before nodding off, and stretches when woken from a nap
+  // by the visitor (reactions to events skip the stretch and respond straight away).
   const wake = useCallback((nextMood?: PetMood) => {
     if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
-    if (nextMood) setOverrideMood(nextMood);
+    window.clearTimeout(yawnTimerRef.current);
+    const wasAsleep = moodRef.current === 'sleepy' || moodRef.current === 'yawn';
+    const gentle = !nextMood || nextMood === 'curious' || nextMood === 'happy' || nextMood === 'pet';
+    if (wasAsleep && gentle && !prefersReducedMotion()) {
+      window.clearTimeout(stretchTimerRef.current);
+      setOverrideMood('stretch');
+      stretchTimerRef.current = window.setTimeout(() => setOverrideMood(nextMood ?? null), 950);
+    } else if (nextMood) {
+      window.clearTimeout(stretchTimerRef.current);
+      setOverrideMood(nextMood);
+    } else if (moodRef.current === 'yawn') {
+      setOverrideMood(null);
+    }
+    yawnTimerRef.current = window.setTimeout(() => {
+      if (!reactingRef.current && !dragRef.current) setOverrideMood('yawn');
+    }, 12400);
     idleTimerRef.current = window.setTimeout(() => {
       setOverrideMood('sleepy');
     }, 14000);
+  }, []);
+
+  // Light moods (petting, sadness, curiosity) never interrupt a reaction in progress.
+  const setSoftMood = useCallback((next: PetMood) => {
+    if (reactingRef.current || dragRef.current) return;
+    setOverrideMood(next);
+  }, []);
+
+  const clearSoftMood = useCallback((which: PetMood) => {
+    setOverrideMood((current) => (current === which ? null : current));
   }, []);
 
   // A short, self-ending mood change with a message (used for terminal and section events).
@@ -441,7 +473,97 @@ const InteractiveAlien = () => {
       target.style.setProperty('--look-y', normalizeLook(clientY - centerY, rangeY).toFixed(3));
     };
 
-    const handlePointer = (event: PointerEvent) => updateLook(event.clientX, event.clientY);
+    // A cursor parked right next to it for a while makes it curious; moving off ends that.
+    const watchParking = (clientX: number, clientY: number) => {
+      lastPointerMoveRef.current = performance.now();
+      window.clearTimeout(parkTimerRef.current);
+      const target = buttonRef.current;
+      if (!target) return;
+      const box = target.getBoundingClientRect();
+      const near = Math.hypot(clientX - (box.left + box.width / 2), clientY - (box.top + box.height / 2)) < 150;
+      if (!near) {
+        if (parkedRef.current) {
+          parkedRef.current = false;
+          clearSoftMood('curious');
+        }
+        return;
+      }
+      parkTimerRef.current = window.setTimeout(() => {
+        if (moodRef.current === 'sleepy' || moodRef.current === 'pet') return;
+        parkedRef.current = true;
+        setSoftMood('curious');
+      }, 2500);
+    };
+
+    const handlePointer = (event: PointerEvent) => {
+      updateLook(event.clientX, event.clientY);
+      if (event.type === 'pointermove' && event.pointerType === 'mouse') watchParking(event.clientX, event.clientY);
+    };
+
+    // Mouse leaves the window: it gets a little sad. Comes back: it cheers up.
+    let leftAt = 0;
+    let sadTimer = 0;
+    let lastSadAt = 0;
+    const handleWindowOut = (event: MouseEvent) => {
+      if (event.relatedTarget) return; // still inside the page
+      leftAt = performance.now();
+      window.clearTimeout(sadTimer);
+      sadTimer = window.setTimeout(() => {
+        const now = performance.now();
+        if (moodRef.current === 'sleepy' || reactingRef.current || now - lastSadAt < 45000) return;
+        lastSadAt = now;
+        setSoftMood('sad');
+        showBubbleMessage("…where'd you go?", 2600);
+      }, 1200);
+    };
+    const handleWindowIn = (event: MouseEvent) => {
+      if (event.relatedTarget || !leftAt) return;
+      leftAt = 0;
+      window.clearTimeout(sadTimer);
+      if (moodRef.current === 'sad') react('happy', 'There you are!', 1800);
+    };
+
+    // Back to the tab after a while away: a happy welcome.
+    let hiddenAt = 0;
+    const handleVisibility = () => {
+      if (document.visibilityState === 'hidden') {
+        hiddenAt = performance.now();
+        return;
+      }
+      if (hiddenAt && performance.now() - hiddenAt > 10000 && !reactingRef.current) {
+        react('happy', 'Welcome back!', 2200);
+        squash(['1 1', '1.08 0.9', '0.95 1.08', '1 1'], 420);
+      }
+      hiddenAt = 0;
+    };
+
+    // Every so often, when nobody is moving the mouse, it glances around the page.
+    let glanceTimer = 0;
+    const glance = () => {
+      const target = buttonRef.current;
+      const idle = performance.now() - lastPointerMoveRef.current > 2500;
+      if (
+        target &&
+        idle &&
+        !walkingRef.current &&
+        !floatingRef.current &&
+        !dragRef.current &&
+        !reactingRef.current &&
+        moodRef.current !== 'sleepy' &&
+        !prefersReducedMotion()
+      ) {
+        target.style.setProperty('--look-x', ((Math.random() * 2 - 1) * 0.85).toFixed(3));
+        target.style.setProperty('--look-y', ((Math.random() * 2 - 1) * 0.45).toFixed(3));
+        window.setTimeout(() => {
+          if (performance.now() - lastPointerMoveRef.current > 2500) {
+            target.style.setProperty('--look-x', '0');
+            target.style.setProperty('--look-y', '0');
+          }
+        }, 900);
+      }
+      glanceTimer = window.setTimeout(glance, 4000 + Math.random() * 5000);
+    };
+    glanceTimer = window.setTimeout(glance, 5000);
 
     const handleTouch = (event: TouchEvent) => {
       const touch = event.touches[0] ?? event.changedTouches[0];
@@ -499,6 +621,9 @@ const InteractiveAlien = () => {
     window.addEventListener('keydown', handleSixSeven);
     window.addEventListener(MASCOT_EVENT, handleMascotEvent);
     document.addEventListener('selectionchange', handleSelectionChange);
+    document.addEventListener('mouseout', handleWindowOut);
+    document.addEventListener('mouseover', handleWindowIn);
+    document.addEventListener('visibilitychange', handleVisibility);
 
     return () => {
       window.removeEventListener('pointerdown', handlePointer);
@@ -509,13 +634,21 @@ const InteractiveAlien = () => {
       window.removeEventListener('keydown', handleSixSeven);
       window.removeEventListener(MASCOT_EVENT, handleMascotEvent);
       document.removeEventListener('selectionchange', handleSelectionChange);
+      document.removeEventListener('mouseout', handleWindowOut);
+      document.removeEventListener('mouseover', handleWindowIn);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.clearTimeout(sadTimer);
+      window.clearTimeout(glanceTimer);
+      window.clearTimeout(parkTimerRef.current);
+      window.clearTimeout(yawnTimerRef.current);
+      window.clearTimeout(stretchTimerRef.current);
       [comboTimerRef, clickStreakTimerRef, selectionTimerRef, idleTimerRef, reactionTimerRef, walkTimerRef].forEach(
         (timer) => {
           if (timer.current) window.clearTimeout(timer.current);
         }
       );
     };
-  }, [react, showBubbleMessage, wake]);
+  }, [clearSoftMood, react, setSoftMood, showBubbleMessage, squash, wake]);
 
   useEffect(
     () => () => {
@@ -1128,6 +1261,12 @@ const InteractiveAlien = () => {
       className="alien-mascot fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] right-4 z-40 h-16 w-16 sm:bottom-[calc(env(safe-area-inset-bottom)+1.75rem)] sm:right-7 sm:h-[72px] sm:w-[72px]"
       data-mood={mood}
       data-dragging={isDragging}
+      onPointerEnter={(event) => {
+        if (event.pointerType !== 'mouse' || dragRef.current || isMessy()) return;
+        if (moodRef.current === 'sleepy' || moodRef.current === 'yawn') wake('pet');
+        else setSoftMood('pet');
+      }}
+      onPointerLeave={() => clearSoftMood('pet')}
       onPointerMove={handlePointerMove}
       onPointerDown={handlePointerDown}
       onPointerUp={finishDrag}
@@ -1221,6 +1360,18 @@ const InteractiveAlien = () => {
                 d="M104 89 C109 86 118 85 124 86 C126 91 126 97 125 103 C118 105 111 105 104 103 C103 98 103 93 104 89 Z"
               />
               <path className="alien-mascot__cloth-fold" d="M105 93 C111 95 118 95 124 92" />
+            </g>
+          </g>
+
+          {/* 6 7 arms: elbows bent, palms up, bouncing alternately */}
+          <g className="alien-mascot__six-arms">
+            <g className="alien-mascot__six-arm alien-mascot__six-arm--left">
+              <path className="alien-mascot__arm-line" d="M27 57 C22 64 21 74 21 82 L5 79" />
+              <path className="alien-mascot__palm" d="M-6 71 H13 Q13 78 3.5 78 Q-6 78 -6 71 Z" />
+            </g>
+            <g className="alien-mascot__six-arm alien-mascot__six-arm--right">
+              <path className="alien-mascot__arm-line" d="M101 57 C106 64 107 74 107 82 L123 79" />
+              <path className="alien-mascot__palm" d="M115 71 H134 Q134 78 124.5 78 Q115 78 115 71 Z" />
             </g>
           </g>
 

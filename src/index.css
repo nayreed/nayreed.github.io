@@ -967,7 +967,7 @@
   }
 
   .alien-mascot__eye {
-    animation: alien-blink 5.2s ease-in-out infinite;
+    animation: alien-blink 8.4s ease-in-out infinite;
     transition: transform 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
     transform-box: fill-box;
     transform-origin: center;
@@ -1389,13 +1389,14 @@
   }
 
   /* --- helpers: which mouth / eyes each mood uses --- */
-  .alien-mascot:is([data-mood='happy'], [data-mood='charged'], [data-mood='curious'], [data-mood='wink'], [data-mood='shades'], [data-mood='hiding'], [data-mood='dazed'], [data-mood='embarrassed'], [data-mood='offer'])
+  .alien-mascot:is([data-mood='happy'], [data-mood='charged'], [data-mood='curious'], [data-mood='wink'], [data-mood='shades'], [data-mood='hiding'], [data-mood='dazed'], [data-mood='embarrassed'], [data-mood='offer'], [data-mood='pet'], [data-mood='sad'], [data-mood='yawn'], [data-mood='stretch'])
     .alien-mascot__mouth {
     opacity: 0;
   }
 
   .alien-mascot:is([data-mood='happy'], [data-mood='charged']) .alien-mascot__mouth-grin,
-  .alien-mascot:is([data-mood='offer']) .alien-mascot__mouth-smile,
+  .alien-mascot:is([data-mood='offer'], [data-mood='pet']) .alien-mascot__mouth-smile,
+  .alien-mascot:is([data-mood='sad']) .alien-mascot__mouth-frown,
   .alien-mascot:is([data-mood='curious'], [data-mood='wink'], [data-mood='shades']) .alien-mascot__mouth-smirk,
   .alien-mascot:is([data-mood='hiding'], [data-mood='dazed'], [data-mood='embarrassed']) .alien-mascot__mouth-wobble {
     opacity: 1;
@@ -1581,23 +1582,50 @@
   }
 
   .alien-mascot[data-mood='sixseven'] .alien-mascot__digit--six {
-    animation: alien-67-digit 640ms ease-out infinite;
+    animation: alien-67-digit 560ms ease-out infinite;
   }
 
   .alien-mascot[data-mood='sixseven'] .alien-mascot__digit--seven {
-    animation: alien-67-digit 640ms ease-out 320ms infinite;
+    animation: alien-67-digit 560ms ease-out 280ms infinite;
   }
 
-  .alien-mascot[data-mood='sixseven'] .alien-mascot__left-arm {
-    animation: alien-67-left 640ms ease-in-out infinite;
+  /* Swap the normal arms for bent ones with cupped palms, bouncing up and down alternately */
+  .alien-mascot__six-arms {
+    opacity: 0;
   }
 
+  .alien-mascot__six-arm {
+    transform-box: view-box;
+  }
+
+  .alien-mascot__six-arm--left {
+    transform-origin: 27px 57px;
+  }
+
+  .alien-mascot__six-arm--right {
+    transform-origin: 101px 57px;
+  }
+
+  .alien-mascot[data-mood='sixseven'] .alien-mascot__six-arms {
+    opacity: 1;
+  }
+
+  .alien-mascot[data-mood='sixseven'] .alien-mascot__left-arm,
   .alien-mascot[data-mood='sixseven'] .alien-mascot__right-arm {
-    animation: alien-67-right 640ms ease-in-out infinite;
+    opacity: 0;
+    animation: none;
+  }
+
+  .alien-mascot[data-mood='sixseven'] .alien-mascot__six-arm--left {
+    animation: alien-67-hand 560ms ease-in-out infinite;
+  }
+
+  .alien-mascot[data-mood='sixseven'] .alien-mascot__six-arm--right {
+    animation: alien-67-hand 560ms ease-in-out -280ms infinite;
   }
 
   .alien-mascot[data-mood='sixseven'] .alien-mascot__body {
-    animation: alien-67-bob 320ms ease-in-out infinite;
+    animation: alien-67-bob 280ms ease-in-out infinite;
   }
 
   .alien-mascot[data-mood='sixseven'] .alien-mascot__eye {
@@ -1622,21 +1650,12 @@
     transform: translateY(1px);
   }
 
-  @keyframes alien-67-left {
+  @keyframes alien-67-hand {
     0%, 100% {
-      transform: rotate(132deg) translateY(-4px);
+      transform: translateY(-8px);
     }
     50% {
-      transform: rotate(94deg) translateY(4px);
-    }
-  }
-
-  @keyframes alien-67-right {
-    0%, 100% {
-      transform: rotate(-94deg) translateY(4px);
-    }
-    50% {
-      transform: rotate(-132deg) translateY(-4px);
+      transform: translateY(6px);
     }
   }
 
@@ -1665,6 +1684,155 @@
     60%, 100% {
       opacity: 0;
       transform: translateY(-10px) scale(0.9);
+    }
+  }
+
+  /* Pet (hovered): melts a little: happy eyes, smile, big blush, antennas twirl */
+  .alien-mascot[data-mood='pet'] .alien-mascot__eye {
+    animation: none;
+    opacity: 0;
+  }
+
+  .alien-mascot[data-mood='pet'] .alien-mascot__happy-eye {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .alien-mascot[data-mood='pet'] .alien-mascot__blush {
+    opacity: 0.75;
+  }
+
+  .alien-mascot[data-mood='pet'] .alien-mascot__brow {
+    transform: translateY(-2px);
+  }
+
+  .alien-mascot[data-mood='pet'] .alien-mascot__left-antenna {
+    animation: alien-antenna-twirl-left 900ms ease-in-out infinite;
+  }
+
+  .alien-mascot[data-mood='pet'] .alien-mascot__right-antenna {
+    animation: alien-antenna-twirl-right 900ms ease-in-out infinite;
+  }
+
+  .alien-mascot[data-mood='pet'] .alien-mascot__body {
+    animation: alien-woozy 1.6s ease-in-out infinite;
+  }
+
+  /* Sad (you left): frown, worried brows, drooping antennas, slumped, eyes up and out */
+  .alien-mascot[data-mood='sad'] .alien-mascot__brow--left {
+    transform: translateY(-1px) rotate(-18deg);
+  }
+
+  .alien-mascot[data-mood='sad'] .alien-mascot__brow--right {
+    transform: translateY(-1px) rotate(18deg);
+  }
+
+  .alien-mascot[data-mood='sad'] .alien-mascot__eye {
+    animation: none;
+    transform: scaleY(0.8) translateY(-1px);
+  }
+
+  .alien-mascot[data-mood='sad'] .alien-mascot__left-antenna {
+    animation: none;
+    transform: rotate(-24deg) translateY(2px);
+  }
+
+  .alien-mascot[data-mood='sad'] .alien-mascot__right-antenna {
+    animation: none;
+    transform: rotate(24deg) translateY(2px);
+  }
+
+  .alien-mascot[data-mood='sad'] .alien-mascot__body {
+    animation: none;
+    transform: translateY(3px) scale(0.97);
+  }
+
+  .alien-mascot[data-mood='sad'] .alien-mascot__left-arm {
+    animation: none;
+    transform: rotate(-6deg) translateY(3px);
+  }
+
+  .alien-mascot[data-mood='sad'] .alien-mascot__right-arm {
+    animation: none;
+    transform: rotate(6deg) translateY(3px);
+  }
+
+  /* Yawn (about to nap): big open mouth, eyes squeezed, brows up, a slow stretch upward */
+  .alien-mascot[data-mood='yawn'] .alien-mascot__mouth-o {
+    opacity: 1;
+    animation: alien-yawn-mouth 1.6s ease-in-out both;
+  }
+
+  .alien-mascot[data-mood='yawn'] .alien-mascot__eye {
+    animation: none;
+    transform: scaleY(0.12);
+  }
+
+  .alien-mascot[data-mood='yawn'] .alien-mascot__brow {
+    transform: translateY(-3px);
+  }
+
+  .alien-mascot[data-mood='yawn'] .alien-mascot__body {
+    animation: alien-yawn-body 1.6s ease-in-out both;
+  }
+
+  /* Stretch (woken up): arms up over its head, eyes shut, standing tall */
+  .alien-mascot[data-mood='stretch'] .alien-mascot__left-arm {
+    animation: none;
+    transform: rotate(142deg);
+  }
+
+  .alien-mascot[data-mood='stretch'] .alien-mascot__right-arm {
+    animation: none;
+    transform: rotate(-142deg);
+  }
+
+  .alien-mascot[data-mood='stretch'] .alien-mascot__eye {
+    animation: none;
+    opacity: 0;
+  }
+
+  .alien-mascot[data-mood='stretch'] .alien-mascot__happy-eye {
+    opacity: 1;
+    transform: scale(1, -1);
+  }
+
+  .alien-mascot[data-mood='stretch'] .alien-mascot__mouth-o {
+    opacity: 1;
+    transform: scale(0.8, 0.7);
+  }
+
+  .alien-mascot[data-mood='stretch'] .alien-mascot__body {
+    animation: alien-stretch-body 950ms ease-in-out both;
+  }
+
+  @keyframes alien-yawn-mouth {
+    0% {
+      transform: scale(0.6);
+    }
+    45%, 70% {
+      transform: scale(1.7, 2);
+    }
+    100% {
+      transform: scale(0.7);
+    }
+  }
+
+  @keyframes alien-yawn-body {
+    0%, 100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-2px) scale(0.98, 1.05);
+    }
+  }
+
+  @keyframes alien-stretch-body {
+    0%, 100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-3px) scale(0.96, 1.07);
     }
   }
 
@@ -1718,10 +1886,10 @@
   }
 
   @keyframes alien-blink {
-    0%, 89%, 95%, 100% {
+    0%, 44%, 47%, 89%, 91.5%, 94%, 100% {
       transform: scaleY(1);
     }
-    92% {
+    45.5%, 90.3%, 92.8% {
       transform: scaleY(0.1);
     }
   }
