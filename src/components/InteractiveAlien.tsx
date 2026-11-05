@@ -9,13 +9,11 @@ import {
   setMessListener,
   stainSpots,
   takeCloth,
-  wipe,
-  finish as finishMess,
 } from '@/lib/vomitMess';
 
 const moods = ['idle', 'happy', 'curious'] as const;
 type Mood = (typeof moods)[number];
-type PetMood = Mood | 'charged' | 'sleepy' | 'shocked' | 'hiding' | 'wink' | 'shades' | 'queasy' | 'vomit' | 'dazed' | 'embarrassed' | 'offer' | 'cleaning';
+type PetMood = Mood | 'charged' | 'sleepy' | 'shocked' | 'hiding' | 'wink' | 'shades' | 'queasy' | 'vomit' | 'dazed' | 'embarrassed' | 'offer';
 
 const comboMessages = [
   'Nayreed is a good boy',
@@ -97,7 +95,6 @@ const VOMIT_WINDOW_MS = 1500; // ...within this time make it vomit
 const VOMIT_MIN_AFTER_BARF_MS = 900; // it always gags for a moment first
 const RECOVER_AFTER_MS = 5000; // calm time after the last violent swing before "all good"
 const DAZED_MS = 4500; // how long it stays wobbly after vomiting
-const SELF_CLEAN_AFTER_MS = 20000; // if nobody takes the cloth, the robot cleans up itself
 const REFRESH_TAUNTS = [
   "Nice try. Refreshing doesn't clean screens.",
   'Still here. Refresh all you want.',
@@ -273,8 +270,6 @@ const InteractiveAlien = () => {
   const idleTimerRef = useRef<number | null>(null);
   const reactionTimerRef = useRef<number | null>(null);
   const reactingRef = useRef(false);
-  const selfCleaningRef = useRef(false);
-  const selfCleanTimerRef = useRef(0);
   const saidKeepGoingRef = useRef(false);
   const notAgainAtRef = useRef(0);
   type Axis = { dir: number; extreme: number; extremeT: number; prevExtreme: number; prevExtremeT: number };
@@ -510,12 +505,11 @@ const InteractiveAlien = () => {
     setMessListener({
       onSettled: () => window.setTimeout(noticeMess, 1800),
       onClothChange: (holding) => {
-        window.clearTimeout(selfCleanTimerRef.current);
         if (holding) {
           saidKeepGoingRef.current = false;
-          setSick('happy', 'Scrub it! (Esc to hand it back)', 3200);
+          setSick('happy', 'Rub it off! (Esc to hand it back)', 3200);
         } else if (isMessy()) {
-          selfClean();
+          setSick('offer', "Hey, it's still dirty!", 2600);
         }
       },
       onProgress: (left) => {
@@ -525,13 +519,10 @@ const InteractiveAlien = () => {
         }
       },
       onCleaned: () => {
-        window.clearTimeout(selfCleanTimerRef.current);
-        const byRobot = selfCleaningRef.current;
-        selfCleaningRef.current = false;
         shakeRef.current.stage = 'fine';
         shakeRef.current.swings = [];
         setSparkKey((k) => k + 1);
-        react('happy', byRobot ? 'There. Spotless.' : 'Spotless! Thank you.', 2800);
+        react('happy', 'Spotless! Thank you.', 2800);
       },
     });
 
@@ -549,7 +540,6 @@ const InteractiveAlien = () => {
     return () => {
       cancelled = true;
       setMessListener({});
-      window.clearTimeout(selfCleanTimerRef.current);
     };
     // Runs once; the handlers only use refs and stable callbacks.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -876,12 +866,8 @@ const InteractiveAlien = () => {
   };
 
   const offerCloth = (message = 'Click me for a cloth.') => {
-    if (!isMessy() || isHoldingCloth() || selfCleaningRef.current) return;
+    if (!isMessy() || isHoldingCloth()) return;
     setSick('offer', message, 4200);
-    window.clearTimeout(selfCleanTimerRef.current);
-    selfCleanTimerRef.current = window.setTimeout(() => {
-      if (isMessy() && !isHoldingCloth()) selfClean();
-    }, SELF_CLEAN_AFTER_MS);
   };
 
   const noticeMess = () => {
@@ -889,71 +875,6 @@ const InteractiveAlien = () => {
     if (spot) lookAt(spot);
     setSick('embarrassed', '…what a mess.', 2000);
     window.setTimeout(() => offerCloth(), 2000);
-  };
-
-  // Gives up waiting and floats around the screen scrubbing the stains off itself.
-  const selfClean = () => {
-    const el = buttonRef.current;
-    if (!el || !isMessy() || selfCleaningRef.current) return;
-    selfCleaningRef.current = true;
-    window.clearTimeout(selfCleanTimerRef.current);
-    stopWalking();
-    stopFloating();
-    setSick('cleaning', "fine… I'll do it myself.", 2600);
-    if (prefersReducedMotion()) {
-      finishMess();
-      return;
-    }
-
-    const box = el.getBoundingClientRect();
-    const start = { ...offsetRef.current };
-    const homeX = box.left + box.width / 2 - start.x; // screen centre when the offset is 0
-    const homeY = box.top + box.height / 2 - start.y;
-    const { minX, minY } = limits();
-    const toOffset = (p: Point) => ({ x: clamp(p.x - homeX, minX, 0), y: clamp(p.y - homeY, minY, 0) });
-
-    // Visit the biggest stains, nearest first, then come home.
-    const spots = stainSpots().slice(0, 7);
-    const route: Point[] = [];
-    let at = { x: homeX + start.x, y: homeY + start.y };
-    while (spots.length) {
-      spots.sort((a, b) => Math.hypot(a.x - at.x, a.y - at.y) - Math.hypot(b.x - at.x, b.y - at.y));
-      at = spots.shift() as Point;
-      route.push(at);
-    }
-    if (!route.length) route.push({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-    const points = [start, ...route.map(toOffset), start];
-
-    const duration = clamp(points.length * 1100, 3200, 9000);
-    el.dataset.floating = 'true';
-    const begin = performance.now();
-    let previous: Point | null = null;
-    const frame = (now: number) => {
-      const t = Math.min(1, (now - begin) / duration);
-      const eased = -(Math.cos(Math.PI * t) - 1) / 2;
-      const envelope = Math.sin(Math.PI * t);
-      const p = pointOnCurve(points, eased);
-      // Little scrubbing circles on top of the route.
-      const x = clamp(p.x + Math.sin(now / 55) * 10 * envelope, minX, 0);
-      const y = clamp(p.y + Math.cos(now / 55) * 7 * envelope, minY, 0);
-      applyOffset(x, y);
-      el.style.setProperty('--tilt', `${(Math.sin(now / 90) * 10 * envelope).toFixed(2)}deg`);
-      const screen = { x: homeX + x, y: homeY + y };
-      if (previous) wipe(previous.x, previous.y, screen.x, screen.y, 48);
-      previous = screen;
-      if (t < 1) {
-        requestAnimationFrame(frame);
-        return;
-      }
-      el.style.setProperty('--tilt', '0deg');
-      applyOffset(start.x, start.y);
-      requestAnimationFrame(() => {
-        el.dataset.floating = 'false';
-        squash(['1 1', '1.12 0.86', '0.96 1.05', '1 1'], 440);
-        if (isMessy()) finishMess(); // whatever's left fades out
-      });
-    };
-    requestAnimationFrame(frame);
   };
 
   // Splits the pointer path into swings per axis and records the violent ones.
@@ -1135,12 +1056,10 @@ const InteractiveAlien = () => {
       return;
     }
 
-    // Dirty screen: clicking takes the cloth (or hands it back). Keyboard users can't scrub,
-    // so a keyboard press asks the robot to clean up instead.
+    // Dirty screen: clicking takes the cloth (or hands it back). The robot never cleans it.
     if (isMessy()) {
       if (isHoldingCloth()) dropCloth();
-      else if (selfCleaningRef.current) return;
-      else if (event.detail === 0) selfClean();
+      else if (event.detail === 0) showBubbleMessage('Grab the cloth with your mouse or finger!', 2600);
       else takeCloth({ x: event.clientX, y: event.clientY });
       return;
     }
@@ -1249,9 +1168,9 @@ const InteractiveAlien = () => {
             <g className="alien-mascot__cloth">
               <path
                 className="alien-mascot__cloth-body"
-                d="M104 88 L124 85 L127 101 L122 103 L119 100 L116 104 L112 101 L108 104 L106 100 Z"
+                d="M104 89 C109 86 118 85 124 86 C126 91 126 97 125 103 C118 105 111 105 104 103 C103 98 103 93 104 89 Z"
               />
-              <path className="alien-mascot__cloth-stripe" d="M108 92 L123 90 M109 96 L124 94" />
+              <path className="alien-mascot__cloth-fold" d="M105 93 C111 95 118 95 124 92" />
             </g>
           </g>
 

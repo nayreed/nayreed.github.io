@@ -19,8 +19,8 @@ type Drip = { x: number; y: number; width: number; length: number; maxLength: nu
 
 const STORAGE_KEY = 'nayreed-screen-mess';
 const MAX_AGE_MS = 24 * 60 * 60 * 1000;
-const CLOTH_RADIUS = 24;
-const CLEAN_ENOUGH = 0.06; // fraction of the starting dirt that counts as clean
+const CLOTH_RADIUS = 22;
+const CLEAN_ENOUGH = 0.08; // fraction of the starting dirt that counts as clean
 const SPLAT_COLORS = ['#9bbf3a', '#b0c94f', '#8bb032', '#a9c45a'];
 const SPLAT_DARK = '#5d7a1c';
 
@@ -260,7 +260,7 @@ const measure = () => {
   s.drawImage(canvas, 0, 0, 96, 60);
   const data = s.getImageData(0, 0, 96, 60).data;
   let dirty = 0;
-  for (let i = 3; i < data.length; i += 4) if (data[i] > 28) dirty++;
+  for (let i = 3; i < data.length; i += 4) if (data[i] > 60) dirty++; // ignore faint haze
   return dirty;
 };
 
@@ -268,6 +268,7 @@ const checkProgress = () => {
   if (!settled || !initialDirt) return;
   const left = measure() / initialDirt;
   lastDirt = left;
+  setClothDirt(1 - left);
   listener.onProgress?.(left);
   if (left <= CLEAN_ENOUGH) finish();
 };
@@ -276,18 +277,12 @@ const checkProgress = () => {
 // Wiping
 // ---------------------------------------------------------------------------
 
-/** Scrub from (x0, y0) to (x1, y1): drags some of the mess along, and lifts some off. */
+/** Rub from (x0, y0) to (x1, y1): the cloth soaks up part of the mess under it each pass. */
 export const wipe = (x0: number, y0: number, x1: number, y1: number, radius = CLOTH_RADIUS) => {
   if (!ctx || !canvas || !active) return;
   const c = ctx;
   const r = radius;
-  // Smear: copy what was under the cloth a moment ago to where it is now, faintly.
-  c.save();
-  c.setTransform(1, 0, 0, 1, 0, 0);
-  c.globalAlpha = 0.22;
-  c.drawImage(canvas, (x0 - r) * dpr, (y0 - r) * dpr, 2 * r * dpr, 2 * r * dpr, (x1 - r) * dpr, (y1 - r) * dpr, 2 * r * dpr, 2 * r * dpr);
-  c.restore();
-  // Lift: soft-edged erase along the stroke.
+  // Soak up: soft-edged, partial lift along the stroke (uneven edges leave natural streaks).
   c.save();
   c.globalCompositeOperation = 'destination-out';
   const distance = Math.hypot(x1 - x0, y1 - y0);
@@ -296,7 +291,7 @@ export const wipe = (x0: number, y0: number, x1: number, y1: number, radius = CL
     const x = x0 + ((x1 - x0) * i) / steps;
     const y = y0 + ((y1 - y0) * i) / steps;
     const g = c.createRadialGradient(x, y, r * 0.15, x, y, r);
-    g.addColorStop(0, 'rgba(0,0,0,0.42)');
+    g.addColorStop(0, 'rgba(0,0,0,0.32)'); // a little per pass: it takes real rubbing
     g.addColorStop(1, 'rgba(0,0,0,0)');
     c.fillStyle = g;
     c.beginPath();
@@ -311,7 +306,7 @@ export const wipe = (x0: number, y0: number, x1: number, y1: number, radius = CL
 
 // A brief wet streak where the cloth passed, which dries off. Recent strokes are redrawn each
 // frame with fading strength, so the sheen disappears completely (no leftover haze).
-const SHEEN_MS = 700;
+const SHEEN_MS = 500;
 let sheenStrokes: { x0: number; y0: number; x1: number; y1: number; r: number; t: number }[] = [];
 
 const drawSheen = (x0: number, y0: number, x1: number, y1: number, r: number) => {
@@ -324,7 +319,7 @@ const drawSheen = (x0: number, y0: number, x1: number, y1: number, r: number) =>
     sheenCtx.strokeStyle = '#ffffff';
     sheenCtx.lineCap = 'round';
     for (const s of sheenStrokes) {
-      sheenCtx.globalAlpha = 0.1 * (1 - (now - s.t) / SHEEN_MS);
+      sheenCtx.globalAlpha = 0.06 * (1 - (now - s.t) / SHEEN_MS);
       sheenCtx.lineWidth = s.r * 1.4;
       sheenCtx.beginPath();
       sheenCtx.moveTo(s.x0, s.y0);
@@ -341,55 +336,101 @@ const drawSheen = (x0: number, y0: number, x1: number, y1: number, r: number) =>
 // The cloth (replaces the cursor while held)
 // ---------------------------------------------------------------------------
 
+// A soft white cloth with fold shading and a stitched hem. The stains it picks up appear
+// in three stages as the screen gets cleaner.
 const CLOTH_SVG = `
-<svg viewBox="0 0 40 34" width="40" height="34" aria-hidden="true">
-  <path d="M4 7 L33 3 L37 27 L30 29 L27 26 L24 30 L20 27 L16 31 L12 28 L8 31 L6 27 Z"
-        fill="#bcd6f2" stroke="#2c3e5c" stroke-width="2" stroke-linejoin="round"/>
-  <path d="M9 11 L32 8 M10 16 L33 13 M11 21 L34 18" stroke="#7ea6d6" stroke-width="2.4" stroke-linecap="round"/>
+<svg viewBox="0 0 48 40" width="48" height="40" aria-hidden="true">
+  <path d="M6 9 C14 5 30 4 41 6 C43 14 44 24 42 33 C30 36 17 36 5 33 C4 25 4 16 6 9 Z"
+        fill="#fbfbf9" stroke="#9fa5ad" stroke-width="1.6" stroke-linejoin="round"/>
+  <path d="M8 12 C18 16 30 15 40 11 L40 15 C30 19 18 20 8 16 Z" fill="#ebece8"/>
+  <path d="M7 26 C18 24 31 26 41 24" stroke="#dfe0dc" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M9 11 C16 8 30 7 38 9 C40 16 40 24 39 30 C29 32 18 32 8 30 C7 23 7 17 9 11 Z"
+        stroke="#c5c9ce" stroke-width="1" stroke-dasharray="2 2" fill="none"/>
+  <g class="cloth-dirt" data-stage="1" opacity="0">
+    <path d="M14 21 c3-3 8-2 9 1 c1 4-4 6-8 5 c-3-1-3-4-1-6z" fill="#9bbf3a" opacity="0.85"/>
+  </g>
+  <g class="cloth-dirt" data-stage="2" opacity="0">
+    <path d="M27 13 c2-2 6-1 6 2 c0 3-4 4-6 2 c-1-1-1-3 0-4z" fill="#8bb032" opacity="0.85"/>
+    <rect x="20" y="26" width="3" height="3" fill="#5d7a1c"/>
+  </g>
+  <g class="cloth-dirt" data-stage="3" opacity="0">
+    <path d="M28 24 c2-2 7-1 7 2 c0 3-5 4-7 2z" fill="#a9c45a" opacity="0.9"/>
+    <path d="M10 14 c2-1 4 0 4 2 c-1 2-3 2-4 1z" fill="#9bbf3a" opacity="0.8"/>
+    <rect x="33" y="19" width="2.5" height="2.5" fill="#5d7a1c"/>
+  </g>
 </svg>`;
 
+const setClothDirt = (amount: number) => {
+  if (!cloth) return;
+  cloth.querySelectorAll<SVGGElement>('.cloth-dirt').forEach((group) => {
+    const stage = Number(group.dataset.stage);
+    const start = [0, 0.05, 0.35, 0.65][stage];
+    group.setAttribute('opacity', Math.max(0, Math.min(1, (amount - start) * 4)).toFixed(2));
+  });
+};
+
+// The cloth trails the pointer a touch (it has some weight), squashes when pressed, drags at
+// an angle when moved fast, and the wiping happens wherever the cloth actually is.
+let pointerX = -100;
+let pointerY = -100;
 let clothX = -100;
 let clothY = -100;
-let clothAngle = -14;
+let clothAngle = -10;
+let clothSkew = 0;
 let pressing = false;
-let lastPoint: Point | null = null;
+let clothFrame = 0;
+let clothLast = 0;
 
-const placeCloth = () => {
-  if (!cloth) return;
-  cloth.style.transform = `translate(${clothX - 20}px, ${clothY - 17}px) rotate(${clothAngle.toFixed(1)}deg) scale(${pressing ? 0.92 : 1})`;
+const runCloth = () => {
+  if (clothFrame) return;
+  clothLast = performance.now();
+  const step = (now: number) => {
+    if (!holding || !cloth) {
+      clothFrame = 0;
+      return;
+    }
+    const dt = Math.min(40, Math.max(1, now - clothLast));
+    clothLast = now;
+    const ease = 1 - Math.exp(-dt / (pressing ? 45 : 28)); // heavier while pressed into the glass
+    const nx = clothX + (pointerX - clothX) * ease;
+    const ny = clothY + (pointerY - clothY) * ease;
+    const vx = (nx - clothX) / dt;
+    if (pressing) wipe(clothX, clothY, nx, ny);
+    clothX = nx;
+    clothY = ny;
+    clothAngle += (-10 + Math.max(-24, Math.min(24, vx * 22)) - clothAngle) * Math.min(1, dt / 70);
+    clothSkew += (Math.max(-14, Math.min(14, -vx * 10)) - clothSkew) * Math.min(1, dt / 60);
+    const sx = pressing ? 1.05 : 1;
+    const sy = pressing ? 0.9 : 1;
+    cloth.style.transform = `translate(${(clothX - 24).toFixed(1)}px, ${(clothY - 20).toFixed(1)}px) rotate(${clothAngle.toFixed(1)}deg) skewX(${clothSkew.toFixed(1)}deg) scale(${sx}, ${sy})`;
+    clothFrame = requestAnimationFrame(step);
+  };
+  clothFrame = requestAnimationFrame(step);
 };
 
 const moveCloth = (event: PointerEvent) => {
   if (!holding) return;
-  const dx = event.clientX - clothX;
-  clothX = event.clientX;
-  clothY = event.clientY;
-  // Leans with the scrubbing direction and settles back.
-  clothAngle += (Math.max(-28, Math.min(28, -14 + dx * 2.2)) - clothAngle) * 0.35;
-  placeCloth();
+  pointerX = event.clientX;
+  pointerY = event.clientY;
 };
 
 const onPointerDown = (event: PointerEvent) => {
   if (!holding || !canvas) return;
   pressing = true;
+  pointerX = event.clientX;
+  pointerY = event.clientY;
   canvas.setPointerCapture(event.pointerId);
-  lastPoint = { x: event.clientX, y: event.clientY };
-  placeCloth();
 };
 
 const onPointerMove = (event: PointerEvent) => {
-  if (!holding || !pressing || !lastPoint) return;
-  const next = { x: event.clientX, y: event.clientY };
-  wipe(lastPoint.x, lastPoint.y, next.x, next.y);
-  lastPoint = next;
+  pointerX = event.clientX;
+  pointerY = event.clientY;
 };
 
 const onPointerUp = (event: PointerEvent) => {
   if (!pressing) return;
   pressing = false;
-  lastPoint = null;
   if (canvas?.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
-  placeCloth();
   save();
 };
 
@@ -405,11 +446,12 @@ export const takeCloth = (at?: Point) => {
     document.body.appendChild(cloth);
   }
   if (at) {
-    clothX = at.x;
-    clothY = at.y;
+    clothX = pointerX = at.x;
+    clothY = pointerY = at.y;
   }
+  setClothDirt(1 - lastDirt);
   cloth.style.display = 'block';
-  placeCloth();
+  runCloth();
   document.documentElement.classList.add('cloth-mode');
   listener.onClothChange?.(true);
 };

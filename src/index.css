@@ -1235,7 +1235,7 @@
     transform: rotate(10deg) translateY(3px);
   }
 
-  /* The cloth it hands over (and uses when cleaning up itself) */
+  /* The cloth it hands over */
   .alien-mascot__cloth {
     opacity: 0;
     transform-box: view-box;
@@ -1247,21 +1247,20 @@
   }
 
   .alien-mascot__cloth-body {
-    fill: #bcd6f2;
-    stroke: #2c3e5c;
-    stroke-width: 2.5;
+    fill: #fbfbf9;
+    stroke: #9fa5ad;
+    stroke-width: 2;
     stroke-linejoin: round;
   }
 
-  .alien-mascot__cloth-stripe {
+  .alien-mascot__cloth-fold {
     fill: none;
-    stroke: #7ea6d6;
+    stroke: #d9dad6;
     stroke-width: 2.5;
     stroke-linecap: round;
   }
 
-  .alien-mascot[data-mood='offer'] .alien-mascot__cloth,
-  .alien-mascot[data-mood='cleaning'] .alien-mascot__cloth {
+  .alien-mascot[data-mood='offer'] .alien-mascot__cloth {
     opacity: 1;
     transform: scale(1) rotate(0deg);
   }
@@ -1300,31 +1299,12 @@
     transform: scaleX(1.25);
   }
 
-  /* Cleaning: scrubbing hard with a determined squint */
-  .alien-mascot[data-mood='cleaning'] .alien-mascot__right-arm {
-    animation: alien-scrub 240ms ease-in-out infinite;
-  }
-
-  .alien-mascot[data-mood='cleaning'] .alien-mascot__eye {
-    animation: none;
-    transform: scaleY(0.55);
-  }
-
   @keyframes alien-offer {
     0%, 100% {
       transform: rotate(-38deg);
     }
     50% {
       transform: rotate(-30deg) translateY(-1px);
-    }
-  }
-
-  @keyframes alien-scrub {
-    0%, 100% {
-      transform: rotate(-44deg);
-    }
-    50% {
-      transform: rotate(-20deg);
     }
   }
 
