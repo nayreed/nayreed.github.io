@@ -8,7 +8,8 @@ export type MascotEventType =
   | 'wipe-cancel'
   | 'wipe-done'
   | 'exit-confirm'
-  | 'gotcha-done';
+  | 'gotcha-done'
+  | 'six-seven';
 
 export const MASCOT_EVENT = 'mascot';
 

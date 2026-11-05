@@ -1554,6 +1554,120 @@
     opacity: 0.3;
   }
 
+  /* 6 7: palms up, hands bobbing like scales, smug face, digits popping over each hand */
+  .alien-mascot__digit {
+    position: absolute;
+    top: -6px;
+    color: var(--ink);
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.95rem;
+    font-weight: 800;
+    line-height: 1;
+    opacity: 0;
+    pointer-events: none;
+    text-shadow:
+      0 1px 0 var(--canvas),
+      0 -1px 0 var(--canvas),
+      1px 0 0 var(--canvas),
+      -1px 0 0 var(--canvas);
+  }
+
+  .alien-mascot__digit--six {
+    left: -6px;
+  }
+
+  .alien-mascot__digit--seven {
+    right: -6px;
+  }
+
+  .alien-mascot[data-mood='sixseven'] .alien-mascot__digit--six {
+    animation: alien-67-digit 640ms ease-out infinite;
+  }
+
+  .alien-mascot[data-mood='sixseven'] .alien-mascot__digit--seven {
+    animation: alien-67-digit 640ms ease-out 320ms infinite;
+  }
+
+  .alien-mascot[data-mood='sixseven'] .alien-mascot__left-arm {
+    animation: alien-67-left 640ms ease-in-out infinite;
+  }
+
+  .alien-mascot[data-mood='sixseven'] .alien-mascot__right-arm {
+    animation: alien-67-right 640ms ease-in-out infinite;
+  }
+
+  .alien-mascot[data-mood='sixseven'] .alien-mascot__body {
+    animation: alien-67-bob 320ms ease-in-out infinite;
+  }
+
+  .alien-mascot[data-mood='sixseven'] .alien-mascot__eye {
+    animation: none;
+    transform: scaleY(0.5);
+  }
+
+  .alien-mascot[data-mood='sixseven'] .alien-mascot__mouth {
+    opacity: 0;
+  }
+
+  .alien-mascot[data-mood='sixseven'] .alien-mascot__mouth-smirk {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .alien-mascot[data-mood='sixseven'] .alien-mascot__brow--left {
+    transform: translateY(-4px) rotate(-8deg);
+  }
+
+  .alien-mascot[data-mood='sixseven'] .alien-mascot__brow--right {
+    transform: translateY(1px);
+  }
+
+  @keyframes alien-67-left {
+    0%, 100% {
+      transform: rotate(132deg) translateY(-4px);
+    }
+    50% {
+      transform: rotate(94deg) translateY(4px);
+    }
+  }
+
+  @keyframes alien-67-right {
+    0%, 100% {
+      transform: rotate(-94deg) translateY(4px);
+    }
+    50% {
+      transform: rotate(-132deg) translateY(-4px);
+    }
+  }
+
+  @keyframes alien-67-bob {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(2px);
+    }
+  }
+
+  @keyframes alien-67-digit {
+    0% {
+      opacity: 0;
+      transform: translateY(6px) scale(0.6);
+    }
+    20% {
+      opacity: 1;
+      transform: translateY(-2px) scale(1.1);
+    }
+    45% {
+      opacity: 0.9;
+      transform: translateY(-6px) scale(1);
+    }
+    60%, 100% {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.9);
+    }
+  }
+
   @keyframes alien-antenna-twirl-left {
     0%, 100% {
       transform: rotate(-14deg);

@@ -13,7 +13,7 @@ import {
 
 const moods = ['idle', 'happy', 'curious'] as const;
 type Mood = (typeof moods)[number];
-type PetMood = Mood | 'charged' | 'sleepy' | 'shocked' | 'hiding' | 'wink' | 'shades' | 'queasy' | 'vomit' | 'dazed' | 'embarrassed' | 'offer';
+type PetMood = Mood | 'charged' | 'sleepy' | 'shocked' | 'hiding' | 'wink' | 'shades' | 'queasy' | 'vomit' | 'dazed' | 'embarrassed' | 'offer' | 'sixseven';
 
 const comboMessages = [
   'Nayreed is a good boy',
@@ -51,6 +51,7 @@ const reactions: Record<MascotEventType, { mood: PetMood; message: string; hold:
   'wipe-done': { mood: 'happy', message: 'Phew… still here.', hold: 2400 },
   'exit-confirm': { mood: 'hiding', message: "Don't look!", hold: 1200 },
   'gotcha-done': { mood: 'wink', message: 'Gotcha ;)', hold: 2400 },
+  'six-seven': { mood: 'sixseven', message: '6… 7…', hold: 2800 },
 };
 
 const POSITION_KEY = 'nayreed-mascot-position';
@@ -462,6 +463,19 @@ const InteractiveAlien = () => {
       }, 180);
     };
 
+    // Typing 6 then 7 anywhere on the page (not into a text field) sets off the 6 7 meme.
+    let lastSix = 0;
+    const handleSixSeven = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest('input, textarea, [contenteditable="true"]')) return;
+      if (event.key === '6') lastSix = performance.now();
+      else if (event.key === '7' && performance.now() - lastSix < 1200) {
+        lastSix = 0;
+        const reaction = reactions['six-seven'];
+        react(reaction.mood, reaction.message, reaction.hold);
+      } else lastSix = 0;
+    };
+
     // Joke messages for DevTools shortcuts; the shortcut itself still works.
     const handleShortcutKeyDown = (event: KeyboardEvent) => {
       const shortcutMessage = getShortcutMessage(event);
@@ -482,6 +496,7 @@ const InteractiveAlien = () => {
     window.addEventListener('touchstart', handleTouch, { passive: true });
     window.addEventListener('touchmove', handleTouch, { passive: true });
     window.addEventListener('keydown', handleShortcutKeyDown, { capture: true });
+    window.addEventListener('keydown', handleSixSeven);
     window.addEventListener(MASCOT_EVENT, handleMascotEvent);
     document.addEventListener('selectionchange', handleSelectionChange);
 
@@ -491,6 +506,7 @@ const InteractiveAlien = () => {
       window.removeEventListener('touchstart', handleTouch);
       window.removeEventListener('touchmove', handleTouch);
       window.removeEventListener('keydown', handleShortcutKeyDown, { capture: true });
+      window.removeEventListener('keydown', handleSixSeven);
       window.removeEventListener(MASCOT_EVENT, handleMascotEvent);
       document.removeEventListener('selectionchange', handleSelectionChange);
       [comboTimerRef, clickStreakTimerRef, selectionTimerRef, idleTimerRef, reactionTimerRef, walkTimerRef].forEach(
@@ -1125,6 +1141,12 @@ const InteractiveAlien = () => {
       </span>
       <span className="alien-mascot__nap" aria-hidden="true">
         zzzzz
+      </span>
+      <span className="alien-mascot__digit alien-mascot__digit--six" aria-hidden="true">
+        6
+      </span>
+      <span className="alien-mascot__digit alien-mascot__digit--seven" aria-hidden="true">
+        7
       </span>
       <span className="alien-mascot__halo" aria-hidden="true" />
       <svg ref={svgRef} viewBox="0 0 128 128" aria-hidden="true" className="alien-mascot__svg">

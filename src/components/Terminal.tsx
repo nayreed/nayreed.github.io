@@ -221,7 +221,8 @@ const runCommand = (raw: string, history: string[]): React.ReactNode | 'CLEAR' |
   }
 
   const [name, ...args] = tokens;
-  const cmd = name.toLowerCase();
+  const joined = tokens.join(' ').toLowerCase();
+  const cmd = joined === '6 7' || joined === 'six seven' ? 'six-seven' : name.toLowerCase();
 
   switch (cmd) {
     case 'help':
@@ -287,6 +288,10 @@ const runCommand = (raw: string, history: string[]): React.ReactNode | 'CLEAR' |
       );
     case 'clear':
       return 'CLEAR';
+    case '67':
+    case 'six-seven':
+      notifyMascot('six-seven');
+      return <p className="text-fade">6… 7…</p>;
     case 'exit':
       // The browser's own dialog: OK plays the fake shutdown, Cancel just returns to the prompt.
       if (window.confirm('Are you sure you want to exit?')) {
