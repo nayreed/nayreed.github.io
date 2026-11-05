@@ -584,6 +584,9 @@ const Terminal = () => {
                 value={input}
                 onChange={(e) => {
                   if (busy) return;
+                  // Typing 67 sets the robot off straight away, no Enter needed.
+                  const count67 = (s: string) => (s.match(/67/g) ?? []).length;
+                  if (count67(e.target.value) > count67(input)) notifyMascot('six-seven');
                   setInput(e.target.value);
                   setCursor(e.target.selectionStart ?? e.target.value.length);
                   setHistoryIndex(null);

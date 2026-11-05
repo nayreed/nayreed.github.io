@@ -589,6 +589,15 @@ const InteractiveAlien = () => {
       selectionTimerRef.current = window.setTimeout(() => {
         const selection = window.getSelection();
         const selectedText = selection?.toString().trim() ?? '';
+        // Selecting a standalone 67 (not part of a longer number like 1967) sets off the 6 7 meme.
+        if (/(^|[^\d])6\s?7([^\d]|$)/.test(selectedText)) {
+          if (selectedText === lastSelectionTextRef.current) return;
+          lastSelectionTextRef.current = selectedText;
+          sixSevenSeenRef.current = true;
+          const reaction = reactions['six-seven'];
+          react(reaction.mood, reaction.message, reaction.hold);
+          return;
+        }
         if (countSelectionCharacters(selectedText) <= selectionMinLength || isContactSelection(selection, selectedText)) {
           lastSelectionTextRef.current = '';
           return;
