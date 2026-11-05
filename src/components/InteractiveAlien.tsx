@@ -64,6 +64,19 @@ const normalizeLook = (distance: number, range: number) =>
 
 const countSelectionCharacters = (text: string) => text.replace(/\s/g, '').length;
 
+// Copying contact details is fine: no joke for selections inside a link, or for text that is
+// itself an email address or a web address.
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const WEB_ADDRESS_PATTERN = /^(https?:\/\/|www\.)\S+$|^[\w-]+(\.[\w-]+)*\.[a-z]{2,}(\/\S*)?$/i;
+
+const isContactSelection = (selection: Selection | null, text: string) => {
+  if (EMAIL_PATTERN.test(text) || WEB_ADDRESS_PATTERN.test(text)) return true;
+  if (!selection || selection.rangeCount === 0) return false;
+  const container = selection.getRangeAt(0).commonAncestorContainer;
+  const element = container.nodeType === Node.ELEMENT_NODE ? (container as Element) : container.parentElement;
+  return Boolean(element?.closest('a'));
+};
+
 const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const getShortcutMessage = (event: KeyboardEvent) => {
@@ -573,8 +586,9 @@ const InteractiveAlien = () => {
     const handleSelectionChange = () => {
       if (selectionTimerRef.current) window.clearTimeout(selectionTimerRef.current);
       selectionTimerRef.current = window.setTimeout(() => {
-        const selectedText = window.getSelection()?.toString().trim() ?? '';
-        if (countSelectionCharacters(selectedText) <= selectionMinLength) {
+        const selection = window.getSelection();
+        const selectedText = selection?.toString().trim() ?? '';
+        if (countSelectionCharacters(selectedText) <= selectionMinLength || isContactSelection(selection, selectedText)) {
           lastSelectionTextRef.current = '';
           return;
         }
